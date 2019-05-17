@@ -1,6 +1,4 @@
-package com.course.PhotoSocial.config.security;
-
-import com.course.PhotoSocial.model.UserModel;
+package com.course.PhotoSocial.model;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,10 +9,10 @@ import java.util.Objects;
 public class RoleModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long role_id;
+    private long id;
 
     @Column(nullable = false, unique = true)
-    private String role_name;
+    private String rolename;
 
     @ManyToMany(mappedBy = "roles")
     private List<UserModel> users;
@@ -22,24 +20,24 @@ public class RoleModel {
     public RoleModel() {
     }
 
-    public void setRole_id(long role_id) {
-        this.role_id = role_id;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setRole_name(String role_name) {
-        this.role_name = role_name;
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
     }
 
     public void setUsers(List<UserModel> users) {
         this.users = users;
     }
 
-    public Long getRole_id() {
-        return role_id;
+    public Long getId() {
+        return id;
     }
 
-    public String getRole_name() {
-        return role_name;
+    public String getRolename() {
+        return rolename;
     }
 
     public List<UserModel> getUsers() {
@@ -49,8 +47,8 @@ public class RoleModel {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.role_id);
-        hash = 67 * hash + Objects.hashCode(this.role_name);
+        hash = 67 * hash + Objects.hashCode(this.id);
+        hash = 67 * hash + Objects.hashCode(this.rolename);
         hash = 67 * hash + Objects.hashCode(this.users);
         return hash;
     }

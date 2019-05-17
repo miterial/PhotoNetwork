@@ -1,9 +1,10 @@
 package com.course.PhotoSocial.model;
 
-import com.course.PhotoSocial.config.security.RoleModel;
 import org.hibernate.annotations.Cascade;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,19 +15,15 @@ import java.util.Objects;
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long user_id;
+    private long id;
 
     private String name;
 
     private String surname;
 
-    private String country;
-
-    private String language;
-
     private Date birthday;
 
-    private Date reg_data = Calendar.getInstance().getTime();
+    private Date regdate = Calendar.getInstance().getTime();
 
     @Column(nullable = false, unique = true)
     private String user_name;
@@ -35,6 +32,7 @@ public class UserModel {
     private String password;
 
     @Column(nullable = false, unique = true)
+    @Email
     private String email;
 
     private String profile_picture;
@@ -48,8 +46,8 @@ public class UserModel {
     @OneToMany(mappedBy = "user")
     private List<PhotoModel> photos;
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -60,20 +58,12 @@ public class UserModel {
         this.surname = surname;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
-    public void setReg_data(Date reg_data) {
-        this.reg_data = reg_data;
+    public void setRegdate(Date regdate) {
+        this.regdate = regdate;
     }
 
     public void setUser_name(String user_name) {
@@ -104,8 +94,8 @@ public class UserModel {
         this.photos = photos;
     }
 
-    public long getUser_id() {
-        return user_id;
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -116,20 +106,12 @@ public class UserModel {
         return surname;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
     public Date getBirthday() {
         return birthday;
     }
 
-    public Date getReg_data() {
-        return reg_data;
+    public Date getRegdate() {
+        return regdate;
     }
 
     public String getUser_name() {
@@ -163,13 +145,11 @@ public class UserModel {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + (int) (this.user_id ^ (this.user_id >>> 32));
+        hash = 79 * hash + (int) (this.id ^ (this.id >>> 32));
         hash = 79 * hash + Objects.hashCode(this.name);
         hash = 79 * hash + Objects.hashCode(this.surname);
-        hash = 79 * hash + Objects.hashCode(this.country);
-        hash = 79 * hash + Objects.hashCode(this.language);
         hash = 79 * hash + Objects.hashCode(this.birthday);
-        hash = 79 * hash + Objects.hashCode(this.reg_data);
+        hash = 79 * hash + Objects.hashCode(this.regdate);
         hash = 79 * hash + Objects.hashCode(this.user_name);
         hash = 79 * hash + Objects.hashCode(this.password);
         hash = 79 * hash + Objects.hashCode(this.email);

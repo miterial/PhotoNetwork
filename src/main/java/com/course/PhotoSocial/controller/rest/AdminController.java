@@ -1,7 +1,7 @@
 package com.course.PhotoSocial.controller.rest;
 
-import com.course.PhotoSocial.config.security.RoleModel;
-import com.course.PhotoSocial.config.security.RoleService;
+import com.course.PhotoSocial.model.RoleModel;
+import com.course.PhotoSocial.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,7 @@ public class AdminController {
     public HttpStatus addRole(@RequestParam String roleName) {
         RoleModel role = new RoleModel();
 
-        role.setRole_name(roleName);
+        role.setRolename(roleName);
 
         try {
             roleService.addRole(role);

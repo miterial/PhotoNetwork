@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="partials/header :: header"/>
+<body class="d-flex flex-column h-100">
+<!-- Begin page content -->
+<main role="main" class="flex-shrink-0">
+    <div class="container">
+        <form th:action="@{/registration}" method="post" role="form" class="col-12 col-lg-5" th:object="${newUser}">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="email" th:value="*{email}" th:field="*{email}" class="form-control" name="email" placeholder="email">
+                </div><br>
+                <div class="input-group">
+                    <input type="password" th:value="*{password}" th:field="*{password}" class="form-control" name="password" placeholder="password">
+                </div><br>
+                <div class="input-group">
+                    <input type="text" th:value="*{username}" th:field="*{username}" class="form-control" name="username" placeholder="username">
+                </div><br>
+                <div class="input-group">
+                    <input type="text" th:value="*{name}" th:field="*{name}" class="form-control" name="name" placeholder="name">
+                </div><br>
+                <div class="input-group">
+                    <input type="text" th:value="*{surname}" th:field="*{surname}" class="form-control" name="surname" placeholder="surname">
+                </div><br>
+                <div class="input-group">
+                    <input type="date" th:value="*{birthday}" th:field="*{birthday}" class="form-control" name="birthday" placeholder="birthday">
+                </div>
+                <div class="input-group">
+                    <input type="checkbox" th:value="*{provideServices}" th:field="*{provideServices}" class="form-check-input" name="provideServices"> I want to provide services
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Registration" />
+                <a th:href="@{/registration}" >Login</a>
+                <div th:if="${param.error}" class="form-group text-center">Authentication Failed!</div>
+            </div>
+        </form>
+    </div>
+</main>
+<footer th:replace="partials/footer :: footer"/>
 </body>
 </html>

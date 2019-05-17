@@ -1,5 +1,6 @@
-package com.course.PhotoSocial.config.security;
+package com.course.PhotoSocial.service;
 
+import com.course.PhotoSocial.model.RoleModel;
 import org.springframework.stereotype.Service;
 
 @Service
