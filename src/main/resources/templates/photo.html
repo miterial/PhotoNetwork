@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="partials/header :: header"/>
+<body>
+<nav th:replace="partials/header :: navigation"/>
+
+<div class="container">
+    <div class="row">
+        <div class="col-9">
+            <img th:src="{photo.photofile}" alt="img">
+        </div>
+        <div class="col-3">
+            <p class="text-muted mb-0">Date</p>
+            <p th:text="${photo.uploaddate}"></p>
+            <p th:text="${photo.name}"></p>
+            <p th:text="${photo.description}"></p>
+            <p><span th:text="${photo.likecount}"></span>
+                <span th:text="${photo.viewcount}"></span></p>
+            <a th:href="@{'/category/' + ${photo.category.name}}" th:text="${photo.category}"></a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -50,7 +50,7 @@ public class PhotoController {
             photo.setDescription(photo_descrp);
             photo.setPhotofile("data:image/jpeg;base64," + Base64.getEncoder().
                     encodeToString(photo_file.getBytes()));
-            photo.setCategory(categoryService.findByName(category));
+            photo.setCategory(categoryService.findByName(category).get());
             photo.setUser(userService.findByUsername(uname));
             photoService.save(photo);
         } catch (IOException ex) {
@@ -63,7 +63,7 @@ public class PhotoController {
         return photo.getId();
     }
 
-    @RequestMapping(value = "modifyPhoto")
+    @RequestMapping(value = "/modify")
     public long modifyPhoto(@RequestParam String photo_name,
                             @RequestParam String photo_descrp,
                             @RequestParam String category,
@@ -77,7 +77,7 @@ public class PhotoController {
                 photo = optional.get();
                 photo.setName(photo_name);
                 photo.setDescription(photo_descrp);
-                photo.setCategory(categoryService.findByName(category));
+                photo.setCategory(categoryService.findByName(category).get());
                 photoService.save(photo);
             }
         } catch (IllegalStateException ex) {
@@ -104,7 +104,7 @@ public class PhotoController {
 
         try {
             List<PhotoModel> popular_photos = photoService.getPopularPhotos();
-            res.addAll(entityToDto(popular_photos));
+            res.addAll(photoService.toDto(popular_photos));
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -118,7 +118,7 @@ public class PhotoController {
 
         try {
             List<PhotoModel> newPhotos = photoService.getNewPhotos();
-            res.addAll(entityToDto(newPhotos));
+            res.addAll(photoService.toDto(newPhotos));
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -136,46 +136,10 @@ public class PhotoController {
             Optional<CategoryModel> category = categoryService.findById(catId);
             if(category.isPresent())
             photosInCategory = photoService.findByCategory(category.get());
-            photosInCategoryDTO.addAll(entityToDto(photosInCategory));
+            photosInCategoryDTO.addAll(photoService.toDto(photosInCategory));
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return photosInCategoryDTO;
-    }
-
-    private List<PhotoDtoOut> entityToDto(List<PhotoModel> enteties) {
-        List<PhotoDtoOut> res = new ArrayList<>();
-        RoleDtoOut roleDTO;
-        UserDtoOut userDTO;
-        PhotoDtoOut photoDTO;
-
-        try {
-            for (PhotoModel photo : enteties) {
-                UserModel usr = photo.getUser();
-                ArrayList<RoleDtoOut> roles = new ArrayList<>();
-                for (RoleModel r : usr.getRoles()) {
-                    roleDTO = new RoleDtoOut(r.getRolename());
-                    roles.add(roleDTO);
-                }
-                userDTO = new UserDtoOut(usr.getName(), usr.getSurname(),
-                        usr.getBirthday(), usr.getRegdate(),
-                        usr.getUsername(), usr.getEmail(),
-                        usr.getAvatar(), roles);
-
-                photoDTO = new PhotoDtoOut(photo.getName(),
-                        photo.getDescription(),
-                        photo.getLikecount(),
-                        photo.getViewcount(),
-                        photo.getUploaddate(),
-                        userDTO,
-                        photo.getCategory().getName(),
-                        photo.getPhotofile());
-
-                res.add(photoDTO);
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return res;
     }
 }

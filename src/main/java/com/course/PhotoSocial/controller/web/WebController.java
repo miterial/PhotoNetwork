@@ -3,6 +3,7 @@ package com.course.PhotoSocial.controller.web;
 import com.course.PhotoSocial.controller.rest.AdminController;
 import com.course.PhotoSocial.model.UserModel;
 import com.course.PhotoSocial.model.dto.UserDtoIn;
+import com.course.PhotoSocial.service.PhotoService;
 import com.course.PhotoSocial.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,14 +24,15 @@ public class WebController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PhotoService photoService;
 
     @GetMapping("/login")
     public ModelAndView loginPage(ModelAndView modelAndView, HttpServletResponse response) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             response.sendRedirect("/");
-        }
-        else {
+        } else {
             modelAndView.setViewName("login");
         }
         return modelAndView;
@@ -41,8 +43,7 @@ public class WebController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             response.sendRedirect("/");
-        }
-        else {
+        } else {
             modelAndView.addObject("newUser", new UserDtoIn());
             modelAndView.setViewName("registration");
         }
@@ -58,5 +59,45 @@ public class WebController {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
         response.sendRedirect("/");
+    }
+
+    @GetMapping("/photo/{photoId}")
+    public ModelAndView getPhoto(@PathVariable String photoId, ModelAndView model) {
+        try {
+            long id = Long.parseLong(photoId);
+            model.addObject("photo", photoService.toDto(photoService.findById(id).get()));
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
+    /** Show new photos on main page */
+    //todo: show photos of users to which this user is subscribed
+    @GetMapping({"", "/"})
+    public ModelAndView home(ModelAndView model) {
+        model.setViewName("index");
+
+        try {
+            model.addObject("photos", photoService.toDto(photoService.getNewPhotos()));
+
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
+    /** Show popular photos */
+    @GetMapping("/popular")
+    public ModelAndView popular(ModelAndView model) {
+        model.setViewName("index");
+
+        try {
+            model.addObject("photos", photoService.toDto(photoService.getPopularPhotos()));
+
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
     }
 }

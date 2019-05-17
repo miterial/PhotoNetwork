@@ -7,6 +7,8 @@ import java.util.Date;
 public class PhotoDtoOut {
 
     @JsonProperty
+    private String id;
+    @JsonProperty
     private String name;
     @JsonProperty
     private String description;
@@ -25,7 +27,8 @@ public class PhotoDtoOut {
 
     public PhotoDtoOut() {}
 
-    public PhotoDtoOut(String name, String description, long likecount, long viewcount, Date uploaddate, UserDtoOut user, String category, String photofile) {
+    public PhotoDtoOut(String id, String name, String description, long likecount, long viewcount, Date uploaddate, UserDtoOut user, String category, String photofile) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.likecount = likecount;
@@ -98,5 +101,9 @@ public class PhotoDtoOut {
 
     public void setPhotofile(String photofile) {
         this.photofile = photofile;
+    }
+
+    public String getId() {
+        return id;
     }
 }
