@@ -1,7 +1,6 @@
 package com.course.PhotoSocial.model;
 
 import org.hibernate.annotations.Cascade;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -26,7 +25,7 @@ public class UserModel {
     private Date regdate = Calendar.getInstance().getTime();
 
     @Column(nullable = false, unique = true)
-    private String user_name;
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -35,7 +34,7 @@ public class UserModel {
     @Email
     private String email;
 
-    private String profile_picture;
+    private String avatar;
 
     private boolean enabled = true;
 
@@ -66,8 +65,8 @@ public class UserModel {
         this.regdate = regdate;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
@@ -78,8 +77,8 @@ public class UserModel {
         this.email = email;
     }
 
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public void setEnabled(boolean enabled) {
@@ -114,8 +113,8 @@ public class UserModel {
         return regdate;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
@@ -126,8 +125,8 @@ public class UserModel {
         return email;
     }
 
-    public String getProfile_picture() {
-        return profile_picture;
+    public String getAvatar() {
+        return avatar;
     }
 
     public boolean isEnabled() {
@@ -150,10 +149,10 @@ public class UserModel {
         hash = 79 * hash + Objects.hashCode(this.surname);
         hash = 79 * hash + Objects.hashCode(this.birthday);
         hash = 79 * hash + Objects.hashCode(this.regdate);
-        hash = 79 * hash + Objects.hashCode(this.user_name);
+        hash = 79 * hash + Objects.hashCode(this.username);
         hash = 79 * hash + Objects.hashCode(this.password);
         hash = 79 * hash + Objects.hashCode(this.email);
-        hash = 79 * hash + Objects.hashCode(this.profile_picture);
+        hash = 79 * hash + Objects.hashCode(this.avatar);
         hash = 79 * hash + (this.enabled ? 1 : 0);
         hash = 79 * hash + Objects.hashCode(this.roles);
         hash = 79 * hash + Objects.hashCode(this.photos);

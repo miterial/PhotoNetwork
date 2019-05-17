@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setName(newUser.getName());
         user.setSurname(newUser.getSurname());
-        user.setUser_name(newUser.getUsername());
+        user.setUsername(newUser.getUsername());
         user.setBirthday(newUser.getBirthday());
         //user.setProfilePicture todo
 
@@ -75,5 +75,9 @@ public class UserService implements UserDetailsService {
         user.setRoles(roles);
 
         userRepository.save(user);
+    }
+
+    public UserModel findByUsername(String uname) {
+        return userRepository.findByUsername(uname);
     }
 }

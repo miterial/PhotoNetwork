@@ -9,10 +9,10 @@ import java.util.Objects;
 public class CategoryModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long category_id;
+    private long id;
 
     @Column(nullable = false, unique = true)
-    private String category_name;
+    private String name;
 
     @OneToMany(mappedBy = "category")
     private List<PhotoModel> photos;
@@ -20,24 +20,24 @@ public class CategoryModel {
     public CategoryModel() {
     }
 
-    public void setCategory_id(long category_id) {
-        this.category_id = category_id;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setPhotos(List<PhotoModel> photos) {
         this.photos = photos;
     }
 
-    public Long getCategory_id() {
-        return category_id;
+    public Long getId() {
+        return id;
     }
 
-    public String getCategory_name() {
-        return category_name;
+    public String getName() {
+        return name;
     }
 
     public List<PhotoModel> getPhotos() {
@@ -47,8 +47,8 @@ public class CategoryModel {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 37 * hash + Objects.hashCode(this.category_id);
-        hash = 37 * hash + Objects.hashCode(this.category_name);
+        hash = 37 * hash + Objects.hashCode(this.id);
+        hash = 37 * hash + Objects.hashCode(this.name);
         hash = 37 * hash + Objects.hashCode(this.photos);
         return hash;
     }

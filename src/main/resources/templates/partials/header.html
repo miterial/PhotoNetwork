@@ -1,4 +1,4 @@
-<head th:fragment="header">
+<head th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml">
     <title>PhotoNetwork</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -6,7 +6,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<nav th:fragment="navigation"class="navbar navbar-default navbar-inverse navbar-fixed-top bar" role="navigation">
+<nav th:fragment="navigation" class="navbar navbar-default navbar-inverse navbar-fixed-top bar" role="navigation" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -15,13 +15,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#home">PhotoSocial</a>
+            <a class="navbar-brand" th:href="@{/}">PhotoSocial</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a th:href="@{/}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a th:href="@{/popular}"><span class="glyphicon glyphicon-camera"></span> Popular</a></li>
-                <li><a th:href="@{/new}"><span class="glyphicon glyphicon-picture"></span> New Entry</a></li>
+                <li><a th:href="@{/popular}"><span class="glyphicon glyphicon-camera"></span> Popular Photos</a></li>
+                <li><a th:href="@{/new}"><span class="glyphicon glyphicon-picture"></span> New Photos</a></li>
                 <li><a th:href="@{/admin}"><span class="glyphicon glyphicon-eye-open"></span> Admin</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

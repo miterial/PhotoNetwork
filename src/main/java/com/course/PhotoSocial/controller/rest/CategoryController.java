@@ -26,7 +26,7 @@ public class CategoryController {
 
         CategoryModel category = new CategoryModel();
 
-        category.setCategory_name(category_name);
+        category.setName(category_name);
 
         try {
             categoryService.addCategory(category);
