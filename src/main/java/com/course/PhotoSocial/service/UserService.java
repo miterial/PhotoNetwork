@@ -10,8 +10,10 @@ import com.course.PhotoSocial.model.dto.UserServicesDtoIn;
 import com.course.PhotoSocial.repository.RoleRepository;
 import com.course.PhotoSocial.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +23,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -113,12 +117,12 @@ public class UserService implements UserDetailsService {
                 usr.getAvatar(), roles, usr.isProvideServices());
     }
 
-    public void changeAvatar(MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
+    public void changeAvatar(MultipartFile file) throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserModel user = findByEmail(auth.getName());
+        user.setAvatar("data:image/jpeg;base64," + Base64.getEncoder().
+                encodeToString(file.getBytes()));
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/avatars/")
-                .path(fileName)
-                .toUriString();
+        userRepository.save(user);
     }
 }

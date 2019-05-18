@@ -2,20 +2,24 @@ package com.course.PhotoSocial.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.ws.ServiceMode;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+@Service
 public class FileStorageService {
     private final Path fileStorageLocation;
 
-    @Value("{file.uploadDir}")
-    private String uploadDir;
+    private String uploadDir = "./uploadDir";
 
     @Autowired
     public FileStorageService() {
@@ -47,6 +51,10 @@ public class FileStorageService {
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
+    }
+
+    public String getUploadDir() {
+        return uploadDir;
     }
 
     public class FileStorageException extends RuntimeException {

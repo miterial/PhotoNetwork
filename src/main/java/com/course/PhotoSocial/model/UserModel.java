@@ -36,6 +36,8 @@ public class UserModel {
     @Email
     private String email;
 
+    @Lob
+    @Column(length = 3000)
     private String avatar;
 
     private boolean enabled = true;

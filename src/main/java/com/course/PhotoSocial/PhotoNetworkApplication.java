@@ -2,6 +2,7 @@ package com.course.PhotoSocial;
 
 import com.course.PhotoSocial.model.RoleModel;
 import com.course.PhotoSocial.repository.RoleRepository;
+import com.course.PhotoSocial.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@EnableConfigurationProperties
 public class PhotoNetworkApplication {
 
 	@Autowired
