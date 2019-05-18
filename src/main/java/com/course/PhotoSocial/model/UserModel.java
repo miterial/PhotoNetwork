@@ -4,6 +4,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,10 +25,11 @@ public class UserModel {
 
     private Date regdate = Calendar.getInstance().getTime();
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String username;
 
     @Column(nullable = false)
+    @Size(min=6)
     private String password;
 
     @Column(nullable = false, unique = true)
@@ -38,9 +40,15 @@ public class UserModel {
 
     private boolean enabled = true;
 
+    private boolean provideServices = true;
+
     @ManyToMany
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<RoleModel> roles;
+
+    @OneToMany(mappedBy = "user")
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    private List<ServiceModel> services;
 
     @OneToMany(mappedBy = "user")
     private List<PhotoModel> photos;
@@ -141,6 +149,22 @@ public class UserModel {
         return photos;
     }
 
+
+    public List<ServiceModel> getServices() {
+        return services;
+    }
+
+    public void setServices(List<ServiceModel> services) {
+        this.services = services;
+    }
+
+    public boolean isProvideServices() {
+        return provideServices;
+    }
+
+    public void setProvideServices(boolean provideServices) {
+        this.provideServices = provideServices;
+    }
     @Override
     public int hashCode() {
         int hash = 7;
@@ -154,6 +178,8 @@ public class UserModel {
         hash = 79 * hash + Objects.hashCode(this.email);
         hash = 79 * hash + Objects.hashCode(this.avatar);
         hash = 79 * hash + (this.enabled ? 1 : 0);
+        hash = 79 * hash + (this.provideServices ? 1 : 0);
+        hash = 79 * hash + Objects.hashCode(this.services);
         hash = 79 * hash + Objects.hashCode(this.roles);
         hash = 79 * hash + Objects.hashCode(this.photos);
         return hash;

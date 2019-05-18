@@ -12,13 +12,13 @@ public class UserDtoIn {
     private String email;
     @JsonProperty(required = true)
     private String password;
-    @JsonProperty(required = true)
+    @JsonProperty
     private String name;
-    @JsonProperty(required = true)
+    @JsonProperty
     private String surname;
-    @JsonProperty(required = true)
+    @JsonProperty
     private String username;
-    @JsonProperty(required = true)
+    @JsonProperty
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
     @JsonProperty

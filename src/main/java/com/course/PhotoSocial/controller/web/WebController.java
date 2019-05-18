@@ -4,6 +4,7 @@ import com.course.PhotoSocial.controller.rest.AdminController;
 import com.course.PhotoSocial.model.UserModel;
 import com.course.PhotoSocial.model.dto.UserDtoIn;
 import com.course.PhotoSocial.service.PhotoService;
+import com.course.PhotoSocial.service.ServicesService;
 import com.course.PhotoSocial.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +27,8 @@ public class WebController {
     private UserService userService;
     @Autowired
     private PhotoService photoService;
+    @Autowired
+    private ServicesService servicesService;
 
     @GetMapping("/login")
     public ModelAndView loginPage(ModelAndView modelAndView, HttpServletResponse response) throws IOException {
@@ -94,6 +97,23 @@ public class WebController {
 
         try {
             model.addObject("photos", photoService.toDto(photoService.getPopularPhotos()));
+
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
+    @GetMapping("/account")
+    public ModelAndView account(ModelAndView model) {
+        model.setViewName("account_form");
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserModel user = userService.findByEmail(auth.getName());
+            model.addObject("currentUser", userService.toDto(user));
+
+            if(user.isProvideServices())
+                model.addObject("services", servicesService.getDefaultServices());
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);

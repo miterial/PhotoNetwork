@@ -23,6 +23,8 @@ public class PhotoService {
 
     @Autowired
     private PhotoRepository photoRepository;
+    @Autowired
+    private UserService userService;
 
     public void save(PhotoModel photo) {
         photoRepository.save(photo);
@@ -38,12 +40,12 @@ public class PhotoService {
 
     public List<PhotoModel> getPopularPhotos() {
         //todo
-        return null;
+        return new ArrayList<>();
     }
 
     public List<PhotoModel> getNewPhotos() {
         //todo
-        return null;
+        return new ArrayList<>();
     }
 
     public List<PhotoModel> findByCategory(CategoryModel category) {
@@ -57,16 +59,7 @@ public class PhotoService {
         PhotoDtoOut photoDTO;
 
         try {
-                UserModel usr = photo.getUser();
-                ArrayList<RoleDtoOut> roles = new ArrayList<>();
-                for (RoleModel r : usr.getRoles()) {
-                    roleDTO = new RoleDtoOut(r.getRolename());
-                    roles.add(roleDTO);
-                }
-                userDTO = new UserDtoOut(usr.getName(), usr.getSurname(),
-                        usr.getBirthday(), usr.getRegdate(),
-                        usr.getUsername(), usr.getEmail(),
-                        usr.getAvatar(), roles);
+                userDTO = userService.toDto(photo.getUser());
 
                 photoDTO = new PhotoDtoOut(String.valueOf(photo.getId()), photo.getName(),
                         photo.getDescription(),
@@ -86,22 +79,12 @@ public class PhotoService {
 
     public List<PhotoDtoOut> toDto(List<PhotoModel> entities) {
         List<PhotoDtoOut> res = new ArrayList<>();
-        RoleDtoOut roleDTO;
         UserDtoOut userDTO;
         PhotoDtoOut photoDTO;
 
         try {
             for (PhotoModel photo : entities) {
-                UserModel usr = photo.getUser();
-                ArrayList<RoleDtoOut> roles = new ArrayList<>();
-                for (RoleModel r : usr.getRoles()) {
-                    roleDTO = new RoleDtoOut(r.getRolename());
-                    roles.add(roleDTO);
-                }
-                userDTO = new UserDtoOut(usr.getName(), usr.getSurname(),
-                        usr.getBirthday(), usr.getRegdate(),
-                        usr.getUsername(), usr.getEmail(),
-                        usr.getAvatar(), roles);
+                userDTO = userService.toDto(photo.getUser());
 
                 photoDTO = new PhotoDtoOut(String.valueOf(photo.getId()), photo.getName(),
                         photo.getDescription(),

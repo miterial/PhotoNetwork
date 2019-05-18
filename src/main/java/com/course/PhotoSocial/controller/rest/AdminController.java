@@ -2,8 +2,10 @@ package com.course.PhotoSocial.controller.rest;
 
 import com.course.PhotoSocial.model.CategoryModel;
 import com.course.PhotoSocial.model.RoleModel;
+import com.course.PhotoSocial.model.ServiceModel;
 import com.course.PhotoSocial.service.CategoryService;
 import com.course.PhotoSocial.service.RoleService;
+import com.course.PhotoSocial.service.ServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ public class AdminController {
     RoleService roleService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private ServicesService servicesService;
 
     @PostMapping("/role")
     public HttpStatus addRole(@RequestParam String roleName) {
@@ -97,4 +101,51 @@ public class AdminController {
         return HttpStatus.OK;
     }
 
+
+    @PostMapping("/service")
+    public HttpStatus addService(@RequestParam String serviceName) {
+        ServiceModel service = new ServiceModel();
+
+        service.setName(serviceName);
+
+        try {
+            servicesService.save(service);
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return HttpStatus.OK;
+    }
+
+    @PutMapping("/service")
+    public HttpStatus updateService(@RequestParam String serviceName) {
+        Optional<ServiceModel> service = servicesService.findByName(serviceName);
+
+        if(service.isPresent()) {
+            service.get().setName(serviceName);
+
+            try {
+                servicesService.save(service.get());
+            } catch (Exception ex) {
+                Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+
+            }
+
+            return HttpStatus.OK;
+        }
+        return HttpStatus.NOT_FOUND;
+    }
+
+    @DeleteMapping("/service")
+    public HttpStatus deleteService(@RequestParam String serviceName) {
+        try {
+            servicesService.deleteByName(serviceName);
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return HttpStatus.OK;
+    }
 }

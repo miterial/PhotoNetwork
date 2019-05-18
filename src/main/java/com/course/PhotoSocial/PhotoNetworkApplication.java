@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
+@EnableConfigurationProperties
 public class PhotoNetworkApplication {
 
 	@Autowired
@@ -22,17 +24,19 @@ public class PhotoNetworkApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(ApplicationContext context) {
 		return args -> {
-			RoleModel role = new RoleModel();
-			role.setRolename("USER");
-			roleRepository.save(role);
+			if(roleRepository.findAll().isEmpty()) {
+				RoleModel role = new RoleModel();
+				role.setRolename("USER");
+				roleRepository.save(role);
 
-			role = new RoleModel();
-			role.setRolename("MASTER");
-			roleRepository.save(role);
+				role = new RoleModel();
+				role.setRolename("MASTER");
+				roleRepository.save(role);
 
-			role = new RoleModel();
-			role.setRolename("ADMIN");
-			roleRepository.save(role);
+				role = new RoleModel();
+				role.setRolename("ADMIN");
+				roleRepository.save(role);
+			}
 		};
 	}
 }

@@ -1,8 +1,12 @@
 package com.course.PhotoSocial.service;
 
 import com.course.PhotoSocial.model.RoleModel;
+import com.course.PhotoSocial.model.ServiceModel;
 import com.course.PhotoSocial.model.UserModel;
+import com.course.PhotoSocial.model.dto.RoleDtoOut;
 import com.course.PhotoSocial.model.dto.UserDtoIn;
+import com.course.PhotoSocial.model.dto.UserDtoOut;
+import com.course.PhotoSocial.model.dto.UserServicesDtoIn;
 import com.course.PhotoSocial.repository.RoleRepository;
 import com.course.PhotoSocial.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +17,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -29,6 +33,10 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private ServicesService servicesService;
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @Override
     @Transactional
@@ -61,10 +69,19 @@ public class UserService implements UserDetailsService {
         UserModel user = new UserModel();
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+
+        userRepository.save(user);
+    }
+
+    public void updateUser(UserDtoIn newUser) {
+        UserModel user = userRepository.findByEmail(newUser.getEmail());
+        user.setEmail(newUser.getEmail());
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setName(newUser.getName());
         user.setSurname(newUser.getSurname());
         user.setUsername(newUser.getUsername());
         user.setBirthday(newUser.getBirthday());
+        user.setProvideServices(newUser.isProvideServices());
         //user.setProfilePicture todo
 
         List<RoleModel> roles = new ArrayList<>();
@@ -79,5 +96,29 @@ public class UserService implements UserDetailsService {
 
     public UserModel findByUsername(String uname) {
         return userRepository.findByUsername(uname);
+    }
+
+    public UserModel findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public UserDtoOut toDto(UserModel usr) {
+        ArrayList<RoleDtoOut> roles = new ArrayList<>();
+        for (RoleModel r : usr.getRoles()) {
+            roles.add(new RoleDtoOut(r.getRolename()));
+        }
+        return new UserDtoOut(usr.getId(), usr.getName(), usr.getSurname(),
+                usr.getBirthday(), usr.getRegdate(),
+                usr.getUsername(), usr.getEmail(),
+                usr.getAvatar(), roles, usr.isProvideServices());
+    }
+
+    public void changeAvatar(MultipartFile file) {
+        String fileName = fileStorageService.storeFile(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/avatars/")
+                .path(fileName)
+                .toUriString();
     }
 }
