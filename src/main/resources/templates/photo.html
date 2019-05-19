@@ -8,7 +8,9 @@
 <div class="container">
     <div class="row">
         <div class="col-9 text-center">
-            <img th:src="${photo.photofile}" class="img-thumbnail" alt="img">
+            <img id="photoFile" th:src="${photo.photofile}" class="img-thumbnail" alt="img" th:data-id="${photo.id}">
+            <button id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
+            <a th:if="${photo.license != T(com.course.PhotoNetwork.model.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success">Скачать</a>
         </div>
         <div class="col-3">
             <a th:href="@{'/user/' + ${photo.user.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}" alt="user"/></a>
@@ -23,5 +25,7 @@
     </div>
 </div>
 </main>
+<footer th:replace="partials/footer :: footer"/>
+<script th:src="@{/js/photo.js}"></script>
 </body>
 </html>
