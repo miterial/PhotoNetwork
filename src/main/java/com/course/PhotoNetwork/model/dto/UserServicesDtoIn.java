@@ -6,23 +6,23 @@ import java.util.List;
 
 public class UserServicesDtoIn {
     @JsonProperty
-    List<ServiceDtoIn> services;
+    List<ServiceDto> services;
     @JsonProperty
     long userId;
 
     public UserServicesDtoIn() {
     }
 
-    public UserServicesDtoIn(List<ServiceDtoIn> services, long userId) {
+    public UserServicesDtoIn(List<ServiceDto> services, long userId) {
         this.services = services;
         this.userId = userId;
     }
 
-    public List<ServiceDtoIn> getServices() {
+    public List<ServiceDto> getServices() {
         return services;
     }
 
-    public void setServices(List<ServiceDtoIn> services) {
+    public void setServices(List<ServiceDto> services) {
         this.services = services;
     }
 

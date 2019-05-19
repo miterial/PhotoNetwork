@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="partials/header :: header"/>
+<body>
+<nav th:replace="partials/header :: navigation"/>
+<main class="my-5">
+    <div class="container">
+            <div class="row" th:data-id="${user.id}">
+                <div class="col-6">
+                    <h2>Информация профиля</h2>
+                    <img th:src="${user.avatar}" class="img-fluid mb-2" >
+                    <p th:text="${user.description}"></p>
+
+                    <div class="form-group">
+                        <h3><span th:if="${user.name}" th:text="${user.name}"></span><span th:if="${user.surname}" th:text="${user.surname}"></span></h3>
+
+                        <p th:if="${user.username}" th:text="${'@' + user.username}"></p>
+
+                        <p th:text="${'Контактная почта: ' + user.email}"></p>
+
+                        <p th:if="${user.birthday}" th:text="${'День рождения: ' + user.birthday}"></p>
+
+                        <p th:text="${'Дата регистрации: ' + user.regdate}"></p>
+
+                        <th:block th:if="${user.provideServices and user.services.size()>0}">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>Услуга</td>
+                                        <td>Цена</td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="services : ${user.services}">
+                                        <td th:text="${services.name}"></td>
+                                        <td th:text="${services.price}"></td>
+                                        <td><button id="bookingButton" class="btn btn-primary" th:data-id="${service.id}">Записаться</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h2>Загруженные фото</h2>
+                    <div class="row">
+                            <th:block  th:each="photo : ${user.photos}">
+                                <div th:replace="partials/photo_in_list_account :: photo"></div></th:block>
+                    </div>
+                </div>
+            </div>
+    </div>
+</main>
+<footer th:replace="partials/footer :: footer"/>
+<script th:src="@{/js/account.js}"></script>
+</body>
+</html>

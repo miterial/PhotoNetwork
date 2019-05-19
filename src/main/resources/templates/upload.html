@@ -30,7 +30,7 @@
                         <div class="form-group">
                             <label>Выберите лицензию</label>
                             <select th:field="*{license}" class="form-control">
-                                <option th:each="license : ${T(com.course.PhotoNetwork.model.PhotoLicense.values()}" th:value="${license}" th:text="${license.val}"></option>
+                                <option th:each="license : ${T(com.course.PhotoNetwork.model.PhotoLicense).values()}" th:value="${license}" th:text="${license.val}"></option>
                             </select>
                         </div>
                     </div>

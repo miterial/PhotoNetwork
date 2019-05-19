@@ -148,4 +148,16 @@ public class WebController {
         }
         return model;
     }
+
+    @GetMapping("/user/{userId}")
+    public ModelAndView user(@PathVariable Long userId, ModelAndView model) {
+        model.setViewName("account");
+        try {
+            model.addObject("user", userService.toDto(userService.findById(userId).get()));
+
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
 }

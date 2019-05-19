@@ -28,13 +28,15 @@ public class UserDtoOut {
     @JsonProperty
     private String avatar;
     @JsonProperty
-    private List<RoleDtoOut> roles;
+    private List<ServiceDto> services;
     @JsonProperty
     private boolean provideServices;
+    @JsonProperty
+    private List<PhotoDtoOutSmall> photos;
 
     public UserDtoOut() { }
 
-    public UserDtoOut(long id, String name, String surname, Date birthday, Date regdate, String username, String description, String email, String avatar, List<RoleDtoOut> roles, boolean provideServices) {
+    public UserDtoOut(long id, String name, String surname, Date birthday, Date regdate, String username, String description, String email, String avatar, List<ServiceDto> services, boolean provideServices, List<PhotoDtoOutSmall> photos) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -44,9 +46,10 @@ public class UserDtoOut {
         this.description = description;
         this.email = email;
         this.provideServices = provideServices;
+        this.photos = photos;
         this.password = "";
         this.avatar = avatar;
-        this.roles = roles;
+        this.services = services;
     }
 
     public String getName() {
@@ -105,12 +108,12 @@ public class UserDtoOut {
         this.avatar = avatar;
     }
 
-    public List<RoleDtoOut> getRoles() {
-        return roles;
+    public List<ServiceDto> getServices() {
+        return services;
     }
 
-    public void setRoles(List<RoleDtoOut> roles) {
-        this.roles = roles;
+    public void setServices(List<ServiceDto> services) {
+        this.services = services;
     }
 
     public long getId() {
@@ -143,5 +146,13 @@ public class UserDtoOut {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<PhotoDtoOutSmall> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoDtoOutSmall> photos) {
+        this.photos = photos;
     }
 }

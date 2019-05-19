@@ -6,6 +6,7 @@ import com.course.PhotoNetwork.model.LikeModel;
 import com.course.PhotoNetwork.model.PhotoModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.PhotoDtoOut;
+import com.course.PhotoNetwork.model.dto.PhotoDtoOutSmall;
 import com.course.PhotoNetwork.model.dto.UserDtoOut;
 import com.course.PhotoNetwork.repository.LikeRepository;
 import com.course.PhotoNetwork.repository.PhotoRepository;
@@ -98,6 +99,26 @@ public class PhotoService {
                         userDTO,
                         photo.getCategory().getName(),
                         photo.getPhotofile(), photo.getLicense());
+
+                res.add(photoDTO);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }
+
+
+    public List<PhotoDtoOutSmall> toDtoSmall(List<PhotoModel> entities) {
+        List<PhotoDtoOutSmall> res = new ArrayList<>();
+        PhotoDtoOutSmall photoDTO;
+
+        try {
+            for (PhotoModel photo : entities) {
+
+                photoDTO = new PhotoDtoOutSmall(String.valueOf(photo.getId()),
+                        photo.getUploaddate(),
+                        photo.getPhotofile());
 
                 res.add(photoDTO);
             }

@@ -1,12 +1,12 @@
 package com.course.PhotoNetwork.service;
 
-import com.course.PhotoNetwork.model.dto.ServiceDtoIn;
+import com.course.PhotoNetwork.model.dto.ServiceDto;
 import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
 import com.course.PhotoNetwork.repository.UserRepository;
 import com.course.PhotoNetwork.model.ServiceEnum;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
-import com.course.PhotoNetwork.model.dto.ServiceDtoOut;
+import com.course.PhotoNetwork.model.dto.ServiceDtoSmall;
 import com.course.PhotoNetwork.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,11 +27,11 @@ public class ServicesService {
         return serviceRepository.findAll();
     }
 
-    public List<ServiceDtoOut> toDto(List<ServiceModel> all) {
-        List<ServiceDtoOut> res = new ArrayList<>();
+    public List<ServiceDtoSmall> toDto(List<ServiceModel> all) {
+        List<ServiceDtoSmall> res = new ArrayList<>();
 
         all.forEach(a ->{
-            ServiceDtoOut out = new ServiceDtoOut(a.getName());
+            ServiceDtoSmall out = new ServiceDtoSmall(a.getName());
             res.add(out);
         });
 
@@ -50,12 +50,12 @@ public class ServicesService {
         serviceRepository.deleteByName(serviceName);
     }
 
-    public List<ServiceDtoOut> getDefaultServices() {
-        List<ServiceDtoOut> res = new ArrayList<>();
+    public List<ServiceDtoSmall> getDefaultServices() {
+        List<ServiceDtoSmall> res = new ArrayList<>();
         ServiceEnum[] defaults = ServiceEnum.values();
 
         for(ServiceEnum d : defaults) {
-            res.add(new ServiceDtoOut(d.getVal()));
+            res.add(new ServiceDtoSmall(d.getVal()));
         }
         return res;
     }
@@ -72,7 +72,7 @@ public class ServicesService {
 
     }
 
-    private List<ServiceModel> toEntity(List<ServiceDtoIn> services, UserModel userModel) {
+    private List<ServiceModel> toEntity(List<ServiceDto> services, UserModel userModel) {
         List<ServiceModel> res = new ArrayList<>();
 
         services.forEach(a -> {

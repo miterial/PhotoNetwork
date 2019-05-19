@@ -2,11 +2,11 @@ package com.course.PhotoNetwork.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ServiceDtoOut {
+public class ServiceDtoSmall {
     @JsonProperty
     private String name;
 
-    public ServiceDtoOut(String name) {
+    public ServiceDtoSmall(String name) {
         this.name = name;
     }
 

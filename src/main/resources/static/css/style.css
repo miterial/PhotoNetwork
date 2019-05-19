@@ -8,3 +8,6 @@ input[name="price"] {
 .custom-file {
     margin-bottom: 1em;
 }
+.img-thumbnail {
+    margin-bottom: 10px;
+}

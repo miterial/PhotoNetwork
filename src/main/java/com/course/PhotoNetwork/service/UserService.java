@@ -1,10 +1,9 @@
 package com.course.PhotoNetwork.service;
 
 import com.course.PhotoNetwork.model.RoleModel;
+import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
-import com.course.PhotoNetwork.model.dto.RoleDtoOut;
-import com.course.PhotoNetwork.model.dto.UserDtoIn;
-import com.course.PhotoNetwork.model.dto.UserDtoOut;
+import com.course.PhotoNetwork.model.dto.*;
 import com.course.PhotoNetwork.repository.RoleRepository;
 import com.course.PhotoNetwork.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +32,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private ServicesService servicesService;
-    @Autowired
-    private FileStorageService fileStorageService;
+    private PhotoService photoService;
 
     @Override
     @Transactional
@@ -103,16 +100,17 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDtoOut toDto(UserModel usr) {
-        ArrayList<RoleDtoOut> roles = new ArrayList<>();
-        for (RoleModel r : usr.getRoles()) {
-            roles.add(new RoleDtoOut(r.getRolename()));
+        ArrayList<ServiceDto> services = new ArrayList<>();
+        for (ServiceModel r : usr.getServices()) {
+            services.add(new ServiceDto(r.getId(), r.getName(), r.getPrice()));
         }
         return new UserDtoOut(usr.getId(), usr.getName(), usr.getSurname(),
                 usr.getBirthday(), usr.getRegdate(),
                 usr.getUsername(), usr.getDescription(), usr.getEmail(),
-                usr.getAvatar(), roles, usr.isProvideServices());
+                usr.getAvatar(), services, usr.isProvideServices(), photoService.toDtoSmall(usr.getPhotos()));
     }
 
+    @Deprecated
     public void changeAvatar(MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserModel user = findByEmail(auth.getName());
@@ -120,5 +118,9 @@ public class UserService implements UserDetailsService {
                 encodeToString(file.getBytes()));
 
         userRepository.save(user);
+    }
+
+    public Optional<UserModel> findById(Long userId) {
+        return userRepository.findById(userId);
     }
 }

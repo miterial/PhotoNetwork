@@ -1,0 +1,5 @@
+<div class="col-3" th:fragment="photo" xmlns:th="http://www.w3.org/1999/xhtml">
+    <a th:href="@{'/photo/' + ${photo.id}}">
+        <img class="img-thumbnail img-fluid" th:src="${photo.photofile}" alt="photo">
+    </a>
+</div>
