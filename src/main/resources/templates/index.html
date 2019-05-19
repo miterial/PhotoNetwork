@@ -5,9 +5,11 @@
 <nav th:replace="partials/header :: navigation"/>
 
     <main class="my-5">
+        <h1 class="text-center">Новые фото</h1>
         <div class="container">
-            <div class="card-columns" th:each="photo : ${photos}">
-                <div th:replace="partials/photo :: photo"></div>
+            <div class="card-columns" >
+                <th:block  th:each="photo : ${photos}">
+                <div th:replace="partials/photo_in_list :: photo"></div></th:block>
             </div>
         </div>
     </main>

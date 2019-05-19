@@ -4,22 +4,24 @@
 <body>
 <nav th:replace="partials/header :: navigation"/>
 
+<main class="my-5">
 <div class="container">
     <div class="row">
-        <div class="col-9">
-            <img th:src="{photo.photofile}" alt="img">
+        <div class="col-9 text-center">
+            <img th:src="${photo.photofile}" class="img-thumbnail" alt="img">
         </div>
         <div class="col-3">
-            <p class="text-muted mb-0">Date</p>
+            <a th:href="@{'/user/' + ${photo.user.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}" alt="user"/></a>
+            <span th:if="${photo.user.name != null and photo.user.surname != null}" th:text="${photo.user.name + photo.user.surname}"></span>
             <p th:text="${photo.uploaddate}"></p>
             <p th:text="${photo.name}"></p>
             <p th:text="${photo.description}"></p>
             <p><span th:text="${photo.likecount}"></span>
                 <span th:text="${photo.viewcount}"></span></p>
-            <a th:href="@{'/category/' + ${photo.category.name}}" th:text="${photo.category}"></a>
+            <a th:href="@{'/category/' + ${photo.category}}" class="text-muted" th:text="${'#' + photo.category}"></a>
         </div>
     </div>
 </div>
-
+</main>
 </body>
 </html>

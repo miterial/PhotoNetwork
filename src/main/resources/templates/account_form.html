@@ -8,25 +8,16 @@
         <div class="row" th:data-id="${currentUser.id}">
             <div class="col-6">
                 <h3 id="reg_label">Фото профиля</h3>
-                <img th:src="${currentUser.avatar}" class="img-fluid" >
+                <img th:src="${currentUser.avatar}" class="text-center img-fluid" >
                 <form role="form" method="POST" enctype="multipart/form-data" th:action="@{/api/account/avatar}">
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            <input type="file" name="file" value="Выбрать">
-                        </span>
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="file" id="customFile" lang="ru">
+                            <label class="custom-file-label" for="customFile">Выбрать файл</label>
+                        </div>
+                        <button class="btn btn-success" type="submit">Установить</button>
                     </div>
-                    <button class="btn btn-success" type="submit">Установить</button>
                 </form>
-                <h3 th:if="${services}">Выбрать предоставляемые услуги</h3>
-                <th:block th:each="service : ${services}">
-                    <div class="form-inline form-group justify-content-between">
-                        <span><input type="checkbox" class="form-check-input service" th:name="${service.name}" th:text="${service.name}"></span>
-                        <input type="number" class="form-control" name="price" placeholder="цена">
-                    </div>
-                </th:block>
-                <input th:if="${services}" type="button" id="saveServices" class="btn btn-primary" value="Сохранить" />
-            </div>
-            <div class="col-6">
                 <h3>Изменить информацию профиля</h3>
                 <form th:action="@{/api/account/update}" method="post" role="form" th:object="${currentUser}">
                     <div class="form-group">
@@ -56,6 +47,17 @@
                         <input type="submit" class="btn btn-primary" value="Сохранить" />
                     </div>
                 </form>
+            </div>
+
+            <div class="col-6">
+                <h3 th:if="${services}">Выбрать предоставляемые услуги</h3>
+                <th:block th:each="service : ${services}">
+                    <div class="form-inline form-group justify-content-between">
+                        <span><input type="checkbox" class="form-check-input service" th:name="${service.name}" th:text="${service.name}"></span>
+                        <input type="number" class="form-control" name="price" placeholder="цена">
+                    </div>
+                </th:block>
+                <input th:if="${services}" type="button" id="saveServices" class="btn btn-primary" value="Сохранить" />
             </div>
         </div>
     </div>

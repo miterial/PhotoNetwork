@@ -2,7 +2,9 @@ package com.course.PhotoSocial.controller.web;
 
 import com.course.PhotoSocial.controller.rest.AdminController;
 import com.course.PhotoSocial.model.UserModel;
+import com.course.PhotoSocial.model.dto.PhotoDtoIn;
 import com.course.PhotoSocial.model.dto.UserDtoIn;
+import com.course.PhotoSocial.service.CategoryService;
 import com.course.PhotoSocial.service.PhotoService;
 import com.course.PhotoSocial.service.ServicesService;
 import com.course.PhotoSocial.service.UserService;
@@ -29,6 +31,8 @@ public class WebController {
     private PhotoService photoService;
     @Autowired
     private ServicesService servicesService;
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/login")
     public ModelAndView loginPage(ModelAndView modelAndView, HttpServletResponse response) throws IOException {
@@ -66,6 +70,7 @@ public class WebController {
 
     @GetMapping("/photo/{photoId}")
     public ModelAndView getPhoto(@PathVariable String photoId, ModelAndView model) {
+        model.setViewName("photo");
         try {
             long id = Long.parseLong(photoId);
             model.addObject("photo", photoService.toDto(photoService.findById(id).get()));
@@ -114,6 +119,20 @@ public class WebController {
 
             if(user.isProvideServices())
                 model.addObject("services", servicesService.getDefaultServices());
+
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
+    @GetMapping("/upload")
+    public ModelAndView upload(ModelAndView model) {
+        model.setViewName("upload");
+        try {
+            model.addObject("newPhoto", new PhotoDtoIn());
+
+            model.addObject("categories", categoryService.findAll());
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);

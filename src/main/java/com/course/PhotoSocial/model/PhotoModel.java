@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "photo")
-public class PhotoModel {
+public class PhotoModel implements Comparable<PhotoModel>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -124,5 +124,10 @@ public class PhotoModel {
         hash = 59 * hash + Objects.hashCode(this.user);
         hash = 59 * hash + Objects.hashCode(this.category);
         return hash;
+    }
+
+    @Override
+    public int compareTo(PhotoModel o) {
+        return o.getUploaddate().compareTo(getUploaddate());
     }
 }

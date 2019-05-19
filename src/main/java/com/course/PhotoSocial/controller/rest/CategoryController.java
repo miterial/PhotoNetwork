@@ -29,7 +29,7 @@ public class CategoryController {
         category.setName(category_name);
 
         try {
-            categoryService.addCategory(category);
+            categoryService.save(category);
         } catch (Exception ex) {
             Logger.getLogger(CategoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -41,7 +41,7 @@ public class CategoryController {
     public List<CategoryModel> getAllCategories() {
 
         try {
-            return categoryService.getAllCategories();
+            return categoryService.findAll();
         } catch (Exception ex) {
             Logger.getLogger(CategoryController.class.getName()).log(Level.SEVERE, null, ex);
         }

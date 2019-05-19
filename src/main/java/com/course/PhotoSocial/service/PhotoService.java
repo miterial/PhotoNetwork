@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -44,24 +45,24 @@ public class PhotoService {
     }
 
     public List<PhotoModel> getNewPhotos() {
-        //todo
-        return new ArrayList<>();
+        List<PhotoModel> res = photoRepository.findAll();
+        Collections.sort(res);
+        return res;
     }
 
     public List<PhotoModel> findByCategory(CategoryModel category) {
         return photoRepository.findByCategory(category);
     }
 
-    public List<PhotoDtoOut> toDto(PhotoModel photo) {
-        List<PhotoDtoOut> res = new ArrayList<>();
-        RoleDtoOut roleDTO;
+    public PhotoDtoOut toDto(PhotoModel photo) {
+        PhotoDtoOut res = null;
         UserDtoOut userDTO;
         PhotoDtoOut photoDTO;
 
         try {
                 userDTO = userService.toDto(photo.getUser());
 
-                photoDTO = new PhotoDtoOut(String.valueOf(photo.getId()), photo.getName(),
+                return new PhotoDtoOut(String.valueOf(photo.getId()), photo.getName(),
                         photo.getDescription(),
                         photo.getLikecount(),
                         photo.getViewcount(),
@@ -70,11 +71,10 @@ public class PhotoService {
                         photo.getCategory().getName(),
                         photo.getPhotofile());
 
-                res.add(photoDTO);
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return res;
+        return new PhotoDtoOut();
     }
 
     public List<PhotoDtoOut> toDto(List<PhotoModel> entities) {

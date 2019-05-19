@@ -14,14 +14,6 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public void addCategory(CategoryModel category) {
-        //todo
-    }
-
-    public List<CategoryModel> getAllCategories() {
-        return null; //todo
-    }
-
     public Optional<CategoryModel> findByName(String category) {
         return categoryRepository.findByName(category);
     }
@@ -36,5 +28,9 @@ public class CategoryService {
 
     public void deleteByName(String categoryName) {
         categoryRepository.deleteByName(categoryName);
+    }
+
+    public List<CategoryModel> findAll() {
+        return categoryRepository.findAll();
     }
 }

@@ -4,6 +4,7 @@ import com.course.PhotoSocial.model.CategoryModel;
 import com.course.PhotoSocial.model.PhotoModel;
 import com.course.PhotoSocial.model.RoleModel;
 import com.course.PhotoSocial.model.UserModel;
+import com.course.PhotoSocial.model.dto.PhotoDtoIn;
 import com.course.PhotoSocial.model.dto.PhotoDtoOut;
 import com.course.PhotoSocial.model.dto.RoleDtoOut;
 import com.course.PhotoSocial.model.dto.UserDtoOut;
@@ -12,6 +13,8 @@ import com.course.PhotoSocial.service.PhotoService;
 import com.course.PhotoSocial.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +27,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Controller
+@RestController
 @RequestMapping("/api/photo")
 public class PhotoController {
 
@@ -35,24 +38,28 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
-    @PostMapping(value = "/add")
-    public long addPhoto(@RequestParam MultipartFile photo_file,
-                         @RequestParam String photo_name,
-                         @RequestParam String photo_descrp,
-                         @RequestParam String uname,
-                         @RequestParam String category) {
+    @PostMapping(value = "/add", consumes = "multipart/form-data")
+    public HttpStatus addPhoto(@ModelAttribute PhotoDtoIn newPhoto) {
 
         PhotoModel photo = null;
 
         try {
             photo = new PhotoModel();
-            photo.setName(photo_name);
-            photo.setDescription(photo_descrp);
+            photo.setName(newPhoto.getName());
+            photo.setDescription(newPhoto.getDescription());
             photo.setPhotofile("data:image/jpeg;base64," + Base64.getEncoder().
-                    encodeToString(photo_file.getBytes()));
-            photo.setCategory(categoryService.findByName(category).get());
-            photo.setUser(userService.findByUsername(uname));
+                    encodeToString(newPhoto.getPhotofile().getBytes()));
+            long catId = Long.parseLong(newPhoto.getCategory());
+            photo.setCategory(categoryService.findById(catId).get());
+
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserModel user = userService.findByEmail(auth.getName());
+            photo.setUser(user);
+
             photoService.save(photo);
+
+            return HttpStatus.OK;
+
         } catch (IOException ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateException ex) {
@@ -60,7 +67,7 @@ public class PhotoController {
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return photo.getId();
+        return HttpStatus.BAD_REQUEST;
     }
 
     @RequestMapping(value = "/modify")
