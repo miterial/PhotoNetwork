@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,10 +38,6 @@ public class UserService implements UserDetailsService {
     private RoleRepository roleRepository;
     @Autowired
     private PhotoService photoService;
-    @Autowired
-    private ServicesService servicesService;
-    @Autowired
-    private BookingRepository bookingRepository;
 
     @Override
     @Transactional
@@ -79,22 +77,25 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void updateUser(UserDtoIn newUser) throws IOException {
+    public void updateUser(UserDtoIn newUser) throws IOException, ParseException {
         UserModel user = userRepository.findByEmail(newUser.getEmail());
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setName(newUser.getName());
         user.setSurname(newUser.getSurname());
         user.setUsername(newUser.getUsername());
-        user.setBirthday(newUser.getBirthday());
         user.setProvideServices(newUser.isProvideServices());
         user.setDescription(newUser.getDescription());
         user.setAvatar("data:image/jpeg;base64," + Base64.getEncoder().
                 encodeToString(newUser.getAvatar().getBytes()));
 
+
+        //if(newUser.getBirthday() != null)
+            //user.setBirthday(new SimpleDateFormat("dd-MM-yyyy").parse(newUser.getBirthday()));
+
         List<RoleModel> roles = new ArrayList<>();
         roles.add(roleRepository.findByRolename("USER"));
-        if(newUser.isProvideServices())
+        if(user.isProvideServices())
             roles.add(roleRepository.findByRolename("MASTER"));
 
         user.setRoles(roles);
@@ -156,24 +157,5 @@ public class UserService implements UserDetailsService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserModel currentUser = findByEmail(auth.getName());
         return userRepository.findAll().stream().filter(u -> u.getSubscribers().contains(currentUser)).collect(Collectors.toList());
-    }
-
-    public void bookService(BookingServiceDtoIn bookingServiceDtoIn) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserModel currentUser = findByEmail(auth.getName());
-
-        if(servicesService.findByMasterAndDate(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDate()) != null)
-            throw new IllegalStateException("Дата уже зарезервирована");
-
-        ServiceModel service = servicesService.findById(bookingServiceDtoIn.getServiceId()).get();
-
-        BookingModel booking = new BookingModel();
-        booking.setCustomer(currentUser);
-        booking.setMaster(userRepository.findById(bookingServiceDtoIn.getMasterId()).get());
-        booking.setService(service);
-        booking.setBookingDate(bookingServiceDtoIn.getDate());
-
-        bookingRepository.save(booking);
-
     }
 }

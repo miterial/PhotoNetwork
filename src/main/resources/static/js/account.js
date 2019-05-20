@@ -1,5 +1,7 @@
 $( document ).ready(function() {
 
+    $(".datepickers-container").css('z-index',1055);
+
     $("#saveServices").on('click', function () {
 
         var services = [];
@@ -7,8 +9,8 @@ $( document ).ready(function() {
         $(".services").each(function () {
             if($(".services").prop('checked')) {
                 var temp = {};
-                temp["name"] = $(".services").attr('name');
-                temp["price"] = $(".services").closest("div").find("input[name='price']").val();
+                temp["name"] = $(this).attr('name');
+                temp["price"] = $(this).closest("div").find("input[name='price']").val();
                 if(temp["price"] === "") {
                     console.log("fill in the price!")
                     return false;
@@ -63,19 +65,19 @@ $( document ).ready(function() {
         var userId = $("#account").attr("data-id");
         var serviceId = $(this).parents("tr").data("id");
 
-        $(".modal").data("id-user", userId);
-        $(".modal").data("id-service", serviceId);
+        $("#serviceNameModal").attr("data-id-user", userId);
+        $("#servicePriceModal").attr("data-id-service", serviceId);
 
-        $("#serviceNameModal").text($(this).parents("tr").find(".serviceName"));
-        $("#servicePriceModal").text($(this).parents("tr").find(".servicePrice"));
+        $("#serviceNameModal").text($(this).parents("tr").find(".serviceName").text());
+        $("#servicePriceModal").text($(this).parents("tr").find(".servicePrice").text());
 
     });
 
     $("#bookingBtn").on('click', function () {
 
-        var masterId = $("#bookingBtn").parents(".modal").attr("data-user-id");
-        var serviceId = $("#bookingBtn").parents(".modal").attr("data-service-id");
-        var date = $("input[name='bookingdate']").text();
+        var masterId = $("#serviceNameModal").attr("data-id-user");
+        var serviceId = $("#servicePriceModal").attr("data-id-service");;
+        var date = $(".datepicker-here").val();
 
         var data = {};
         data["masterId"] = masterId;
@@ -85,12 +87,12 @@ $( document ).ready(function() {
         console.log(data);
 
         $.ajax({
-            url: '/api/account/booking/' + id,
+            url: '/api/account/booking',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function () {
-                console.log("subscribed!");
+                console.log("booked!");
                 //showSuccessToast("New blacklist created!");
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
                 //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409

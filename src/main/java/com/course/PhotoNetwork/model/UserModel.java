@@ -1,10 +1,14 @@
 package com.course.PhotoNetwork.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.Cascade;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +19,7 @@ import java.util.Objects;
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull
     private long id;
 
     private String name;
@@ -65,10 +70,6 @@ public class UserModel {
 
     @OneToMany(mappedBy = "user")
     private List<LikeModel> likes;
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -221,5 +222,13 @@ public class UserModel {
 
     public void setCustomers(List<UserModel> customers) {
         this.customers = customers;
+    }
+
+    public List<LikeModel> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<LikeModel> likes) {
+        this.likes = likes;
     }
 }

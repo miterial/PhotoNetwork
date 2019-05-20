@@ -1,5 +1,8 @@
 package com.course.PhotoNetwork.controller.web;
 
+import com.course.PhotoNetwork.controller.rest.PhotoController;
+import com.course.PhotoNetwork.model.CategoryModel;
+import com.course.PhotoNetwork.model.dto.PhotoDtoOut;
 import com.course.PhotoNetwork.service.UserService;
 import com.course.PhotoNetwork.controller.rest.AdminController;
 import com.course.PhotoNetwork.model.PhotoModel;
@@ -21,6 +24,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,14 +96,13 @@ public class WebController {
     }
 
     /** Show new photos on main page */
-    //todo: show photos of users to which this user is subscribed
     @GetMapping({"", "/"})
     public ModelAndView home(ModelAndView model) {
         model.setViewName("index");
 
         try {
             model.addObject("photos", photoService.toDto(photoService.getNewPhotos()));
-
+            model.addObject("title", "Новые фото от интересных вам пользователей");
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -160,6 +165,27 @@ public class WebController {
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
+    @GetMapping("/category/{categoryName}")
+    public ModelAndView getPhotosFromCategory(@PathVariable String categoryName, ModelAndView model) {
+        List<PhotoModel> photosInCategory = null;
+        ArrayList<PhotoDtoOut> photosInCategoryDTO = new ArrayList<>();
+
+        try {
+            Optional<CategoryModel> category = categoryService.findByName(categoryName);
+            if(category.isPresent()) {
+                photosInCategory = photoService.findByCategory(category.get());
+                photosInCategoryDTO.addAll(photoService.toDto(photosInCategory));
+            }
+            model.addObject("photos",photosInCategoryDTO);
+            model.addObject("title","Фото в категории " + categoryName);
+            model.setViewName("index");
+        } catch (Exception ex) {
+            Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
+            model.setViewName("error");
         }
         return model;
     }

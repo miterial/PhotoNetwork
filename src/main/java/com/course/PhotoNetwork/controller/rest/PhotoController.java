@@ -3,6 +3,7 @@ package com.course.PhotoNetwork.controller.rest;
 import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.PhotoModel;
 import com.course.PhotoNetwork.model.UserModel;
+import com.course.PhotoNetwork.model.dto.PhotoDtoOutSmall;
 import com.course.PhotoNetwork.service.CategoryService;
 import com.course.PhotoNetwork.service.PhotoService;
 import com.course.PhotoNetwork.service.UserService;
@@ -10,9 +11,12 @@ import com.course.PhotoNetwork.model.dto.PhotoDtoIn;
 import com.course.PhotoNetwork.model.dto.PhotoDtoOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +26,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@RestController
+@Controller
 @RequestMapping("/api/photo")
 public class PhotoController {
 
@@ -34,7 +38,7 @@ public class PhotoController {
     private PhotoService photoService;
 
     @PostMapping(value = "/add", consumes = "multipart/form-data")
-    public HttpStatus addPhoto(@ModelAttribute PhotoDtoIn newPhoto) {
+    public String addPhoto(@ModelAttribute PhotoDtoIn newPhoto, ModelAndView model) {
 
         PhotoModel photo = null;
 
@@ -53,8 +57,7 @@ public class PhotoController {
 
             photoService.save(photo);
 
-            return HttpStatus.OK;
-
+            return "redirect:/upload";
         } catch (IOException ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateException ex) {
@@ -62,32 +65,31 @@ public class PhotoController {
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return HttpStatus.BAD_REQUEST;
+        return "redirect:/error";
     }
 
-    @RequestMapping(value = "/modify")
-    public long modifyPhoto(@RequestParam String photo_name,
-                            @RequestParam String photo_descrp,
-                            @RequestParam String category,
-                            @RequestParam long photo_id) {
+    @RequestMapping(value = "/modify", consumes = "multipart/form-data")
+    public String modifyPhoto(@ModelAttribute PhotoDtoIn photoDtoIn, ModelAndView model) {
 
-        PhotoModel photo = null;
+        PhotoModel photo;
 
         try {
-            Optional<PhotoModel> optional = photoService.findById(photo_id);
+            Optional<PhotoModel> optional = photoService.findById(Long.parseLong(photoDtoIn.getId()));
             if (optional.isPresent()) {
                 photo = optional.get();
-                photo.setName(photo_name);
-                photo.setDescription(photo_descrp);
-                photo.setCategory(categoryService.findByName(category).get());
+                photo.setName(photoDtoIn.getName());
+                photo.setDescription(photoDtoIn.getDescription());
+                photo.setCategory(categoryService.findByName(photoDtoIn.getCategory()).get());
                 photoService.save(photo);
+
+                return "redirect:/upload";
             }
         } catch (IllegalStateException ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return photo.getId();
+        return "redirect:/error";
     }
 
     @DeleteMapping
@@ -128,41 +130,25 @@ public class PhotoController {
         return res;
     }
 
-    @RequestMapping("/category/{categoryId}")
-    public List<PhotoDtoOut> getPhotosFromCategory(@PathVariable Long categoryId) {
-        List<PhotoModel> photosInCategory = null;
-        ArrayList<PhotoDtoOut> photosInCategoryDTO = new ArrayList<>();
-
-        try {
-            Optional<CategoryModel> category = categoryService.findById(categoryId);
-            if(category.isPresent())
-            photosInCategory = photoService.findByCategory(category.get());
-            photosInCategoryDTO.addAll(photoService.toDto(photosInCategory));
-        } catch (Exception ex) {
-            Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return photosInCategoryDTO;
-    }
-
     @PostMapping("/like/{photoId}")
-    public HttpStatus likePhoto(@PathVariable Long photoId) {
+    public ResponseEntity likePhoto(@PathVariable Long photoId) {
         try {
             photoService.likePhoto(photoId);
-            return HttpStatus.OK;
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return HttpStatus.BAD_REQUEST;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/dislike/{photoId}")
-    public HttpStatus dislikePhoto(@PathVariable Long photoId) {
+    public ResponseEntity dislikePhoto(@PathVariable Long photoId) {
         try {
             photoService.dislikePhoto(photoId);
-            return HttpStatus.OK;
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return HttpStatus.BAD_REQUEST;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

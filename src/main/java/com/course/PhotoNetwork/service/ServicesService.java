@@ -13,6 +13,8 @@ import com.course.PhotoNetwork.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,15 +68,20 @@ public class ServicesService {
     }
 
     public void changeServices(UserServicesDtoIn services) {
-        Optional<UserModel> user = userRepository.findById(services.getUserId());
-        if(!user.isPresent()) {
+        Optional<UserModel> userOptional = userRepository.findById(services.getUserId());
+        if(!userOptional.isPresent()) {
             throw new IllegalArgumentException("User is not found");
         }
 
-        List<ServiceModel> res = toEntity(services.getServices(),user.get());
-
+        UserModel user = userOptional.get();
+        List<ServiceModel> res = toEntity(services.getServices(),user);
         serviceRepository.saveAll(res);
 
+        if(user.getServices() == null)
+            user.setServices(new ArrayList<>());
+
+        user.getServices().addAll(res);
+        userRepository.save(user);
     }
 
     private List<ServiceModel> toEntity(List<ServiceDto> services, UserModel userModel) {
@@ -84,6 +91,7 @@ public class ServicesService {
             ServiceModel service = new ServiceModel();
             service.setName(a.getName());
             service.setPrice(a.getPrice());
+            service.setMaster(userModel);
             res.add(service);
         });
 
@@ -92,10 +100,5 @@ public class ServicesService {
 
     public Optional<ServiceModel> findById(long serviceId) {
         return serviceRepository.findById(serviceId);
-    }
-
-    public BookingModel findByMasterAndDate(long masterId, Date date) {
-        Optional<UserModel> master = userRepository.findById(masterId);
-        return bookingRepository.findByMasterAndBookingDate(master.get(), date);
     }
 }

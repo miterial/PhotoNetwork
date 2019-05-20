@@ -5,53 +5,56 @@
 <nav th:replace="partials/header :: navigation"/>
 <main class="my-5">
     <div class="container">
-            <div class="row" id="account" th:data-id="${master.id}">
-                <div class="col-6">
-                    <h2>Информация профиля</h2>
-                    <img th:src="${master.avatar}" class="img-fluid mb-2" >
-                    <p th:text="${master.description}"></p>
-                    <button th:if="${isCurrent}" class="btn btn-primary" id="subscribeBtn">Подписаться</button>
+        <div class="row" id="account" th:data-id="${user.id}">
+            <div class="col-6">
+                <h2>Информация профиля</h2>
+                <img th:src="${user.avatar}" class="img-fluid mb-2" >
+                <p th:text="${user.description}"></p>
+                <button th:if="${isCurrent}" class="btn btn-primary" id="subscribeBtn">Подписаться</button>
 
-                    <div class="form-group">
-                        <h3><span th:if="${master.name}" th:text="${master.name}"></span><span th:if="${master.surname}" th:text="${master.surname}"></span></h3>
+                <div class="form-group">
+                    <h3><span th:if="${user.name}" th:text="${user.name}"></span><span th:if="${user.surname}" th:text="${' ' + user.surname}"></span></h3>
 
-                        <p th:if="${master.username}" th:text="${'@' + master.username}"></p>
+                    <p th:if="${user.username}" th:text="${'@' + user.username}"></p>
 
-                        <p th:text="${'Контактная почта: ' + master.email}"></p>
+                    <p th:text="${'Контактная почта: ' + user.email}"></p>
 
-                        <p th:if="${master.birthday}" th:text="${'День рождения: ' + master.birthday}"></p>
+                    <p th:if="${user.birthday}" th:text="${'День рождения: ' + user.birthday}"></p>
 
-                        <p th:text="${'Дата регистрации: ' + master.regdate}"></p>
+                    <p th:text="${'Дата регистрации: ' + user.regdate}"></p>
 
-                        <th:block th:if="${master.provideServices and master.services.size()>0}">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <td>Услуга</td>
-                                        <td>Цена</td>
-                                        <td></td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="services : ${master.services}" th:data-id="${service.id}">
-                                        <td class="serviceName" th:text="${services.name}"></td>
-                                        <td class="servicePrice" th:text="${services.price}"></td>
-                                        <td><button data-toggle="modal" data-target="#bookingModal" class="btn btn-primary booking">Записаться</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </th:block>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <h2>Загруженные фото</h2>
-                    <div class="row">
-                            <th:block  th:each="photo : ${master.photos}">
-                                <div th:replace="partials/photo_in_list_account :: photo"></div>
+                    <th:block th:if="${user.provideServices and user.services.size()>0}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td>Услуга</td>
+                                <td>Цена</td>
+                                <td></td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="service : ${user.services}" >
+                                <tr th:data-id="${service.id}">
+                                    <td class="serviceName" th:text="${service.name}"></td>
+                                    <td class="servicePrice" th:text="${service.price}"></td>
+                                    <td><button data-toggle="modal" data-target="#bookingModal" class="btn btn-primary booking">Записаться</button></td>
+                                </tr>
                             </th:block>
-                    </div>
+
+                            </tbody>
+                        </table>
+                    </th:block>
                 </div>
             </div>
+            <div class="col-6">
+                <h2>Загруженные фото</h2>
+                <div class="row">
+                    <th:block  th:each="photo : ${user.photos}">
+                        <div th:replace="partials/photo_in_list_account :: photo"></div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -68,7 +71,7 @@
                 <p>Услуга: <span id="serviceNameModal"></span></p>
                 <p>Цена: <span id="servicePriceModal"></span></p>
                 <span>Дата:</span>
-                <input type="date" class="form-control" name="bookingdate">
+                <input type="text" class="form-control datepicker-here" data-timepicker="true">
             </div>
             <div class="modal-footer">
                 <button id="bookingBtn" type="button" class="btn btn-primary">Подтвердить</button>

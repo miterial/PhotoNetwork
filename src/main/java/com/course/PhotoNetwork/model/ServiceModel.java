@@ -23,8 +23,7 @@ public class ServiceModel {
     @Column(nullable = false)
     private double price;
 
-    @OneToOne(optional = false)
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @ManyToOne
     private UserModel master;
 
     @OneToMany

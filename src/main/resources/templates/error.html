@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="partials/header :: header"/>
+<body class="d-flex flex-column h-100">
+<!-- Begin page content -->
+<main role="main" class="my-5 text-center">
+<h1>Ошибка!</h1>
+    <p th:text="${errorMessage}"></p>
+</main>
+<footer th:replace="partials/footer :: footer"/>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.course.PhotoNetwork.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class UserDtoOut {
     @JsonProperty
     private String surname;
     @JsonProperty
-    private Date birthday;
+    private String birthday;
     @JsonProperty
     private Date regdate;
     @JsonProperty
@@ -40,7 +41,6 @@ public class UserDtoOut {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.birthday = birthday;
         this.regdate = regdate;
         this.username = username;
         this.description = description;
@@ -50,6 +50,9 @@ public class UserDtoOut {
         this.password = "";
         this.avatar = avatar;
         this.services = services;
+
+        if(birthday != null)
+            this.birthday = birthday.toString();
     }
 
     public String getName() {
@@ -68,11 +71,11 @@ public class UserDtoOut {
         this.surname = surname;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 

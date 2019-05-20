@@ -7,43 +7,42 @@ import java.util.Date;
 
 public class BookingServiceDtoIn {
     @JsonProperty
-    private long masterId;
+    private String masterId;
     @JsonProperty
-    private long serviceId;
+    private String serviceId;
     @JsonProperty
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date;
+    private String date;
 
     public BookingServiceDtoIn() {
     }
 
-    public BookingServiceDtoIn(long masterId, long serviceId, Date date) {
+    public BookingServiceDtoIn(String masterId, String serviceId, String date) {
         this.masterId = masterId;
         this.serviceId = serviceId;
         this.date = date;
     }
 
-    public long getMasterId() {
+    public String getMasterId() {
         return masterId;
     }
 
-    public void setMasterId(long masterId) {
+    public void setMasterId(String masterId) {
         this.masterId = masterId;
     }
 
-    public long getServiceId() {
+    public String getServiceId() {
         return serviceId;
     }
 
-    public void setServiceId(long serviceId) {
+    public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }

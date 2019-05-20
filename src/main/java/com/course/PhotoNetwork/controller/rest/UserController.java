@@ -3,6 +3,7 @@ package com.course.PhotoNetwork.controller.rest;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
 import com.course.PhotoNetwork.model.dto.UserDtoIn;
 import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
+import com.course.PhotoNetwork.service.BookingService;
 import com.course.PhotoNetwork.service.ServicesService;
 import com.course.PhotoNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private ServicesService servicesService;
+    @Autowired
+    private BookingService bookingService;
 
     @PostMapping("/update")
     public void updateAccount(@ModelAttribute UserDtoIn newUser, HttpServletResponse response) throws IOException {
@@ -60,7 +63,7 @@ public class UserController {
     @PostMapping("/booking")
     public HttpStatus bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn) {
         try {
-            userService.bookService(bookingServiceDtoIn);
+            bookingService.bookService(bookingServiceDtoIn);
             return HttpStatus.OK;
         } catch (IllegalStateException e) {
             return HttpStatus.CONFLICT;

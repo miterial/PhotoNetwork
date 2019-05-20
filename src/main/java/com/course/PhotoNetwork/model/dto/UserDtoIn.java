@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -20,8 +21,7 @@ public class UserDtoIn {
     @JsonProperty
     private String username;
     @JsonProperty
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthday;
+    private String birthday;
     @JsonProperty
     private boolean provideServices;
     @JsonProperty
@@ -31,7 +31,7 @@ public class UserDtoIn {
 
     public UserDtoIn(){}
 
-    public UserDtoIn(String email, String password, String name, String surname, String username, Date birthday, MultipartFile avatar, String description) {
+    public UserDtoIn(String email, String password, String name, String surname, String username, String birthday, MultipartFile avatar, String description) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -82,11 +82,11 @@ public class UserDtoIn {
         this.username = username;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 

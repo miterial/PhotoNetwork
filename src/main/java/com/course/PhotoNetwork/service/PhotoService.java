@@ -16,10 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -34,8 +31,8 @@ public class PhotoService {
     @Autowired
     private LikeRepository likeRepository;
 
-    public void save(PhotoModel photo) {
-        photoRepository.save(photo);
+    public long save(PhotoModel photo) {
+        return photoRepository.save(photo).getId();
     }
 
     public Optional<PhotoModel> findById(long photo_id) {
@@ -47,8 +44,10 @@ public class PhotoService {
     }
 
     public List<PhotoModel> getPopularPhotos() {
-        //todo
-        return new ArrayList<>();
+        List<PhotoModel> res = photoRepository.findAll();
+        Comparator<PhotoModel> comp = Comparator.comparing(PhotoModel::getLikecount).reversed();
+        res.sort(comp);
+        return res;
     }
 
     @Transactional
