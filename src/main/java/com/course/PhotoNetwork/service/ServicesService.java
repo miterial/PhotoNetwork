@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,5 +85,14 @@ public class ServicesService {
         });
 
         return res;
+    }
+
+    public Optional<ServiceModel> findById(long serviceId) {
+        return serviceRepository.findById(serviceId);
+    }
+
+    public ServiceModel findByMasterAndDate(long masterId, Date date) {
+        Optional<UserModel> master = userRepository.findById(masterId);
+        return serviceRepository.findByUserAndBookedDate(master.get(), date);
     }
 }

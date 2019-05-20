@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class PhotoService {
@@ -52,8 +53,8 @@ public class PhotoService {
 
     @Transactional
     public List<PhotoModel> getNewPhotos() {
-        List<PhotoModel> res = photoRepository.findAll();
-        Collections.sort(res);
+        List<UserModel> subscribedTo = userService.findSubscribes();
+        List<PhotoModel> res = photoRepository.findAll().stream().filter(p -> subscribedTo.contains(p.getUser())).sorted().collect(Collectors.toList());
         return res;
     }
 

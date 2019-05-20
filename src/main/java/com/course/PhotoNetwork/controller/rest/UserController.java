@@ -1,5 +1,6 @@
 package com.course.PhotoNetwork.controller.rest;
 
+import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
 import com.course.PhotoNetwork.model.dto.UserDtoIn;
 import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
 import com.course.PhotoNetwork.service.ServicesService;
@@ -37,9 +38,32 @@ public class UserController {
     @ResponseBody
     public HttpStatus changeServices(@RequestBody UserServicesDtoIn services) {
         try {
-            System.out.println("saving services");
             servicesService.changeServices(services);
             return HttpStatus.OK;
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return HttpStatus.BAD_REQUEST;
+    }
+
+    @PostMapping("/subscribe/{userId}")
+    public HttpStatus subscribe(@PathVariable Long userId) {
+        try {
+            userService.subscribeToUser(userId);
+            return HttpStatus.OK;
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return HttpStatus.BAD_REQUEST;
+    }
+
+    @PostMapping
+    public HttpStatus bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn) {
+        try {
+            userService.bookService(bookingServiceDtoIn);
+            return HttpStatus.OK;
+        } catch (IllegalStateException e) {
+            return HttpStatus.CONFLICT;
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }

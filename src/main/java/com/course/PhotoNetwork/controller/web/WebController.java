@@ -155,6 +155,9 @@ public class WebController {
         try {
             model.addObject("user", userService.toDto(userService.findById(userId).get()));
 
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            model.addObject("isCurrent", userService.findByEmail(auth.getName()).getId() != userId);
+
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }

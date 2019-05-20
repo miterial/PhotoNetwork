@@ -42,4 +42,28 @@ $( document ).ready(function() {
     });
 
 
+    $("#subscribeBtn").on('click', function () {
+
+        var id = $("#subscribeBtn").parents(".row").attr("data-id");
+        $.ajax({
+            url: '/api/account/subscribe/' + id,
+            type: 'POST',
+            success: function () {
+                console.log("subscribed!");
+                //showSuccessToast("New blacklist created!");
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                //showDangerToast("Error creating blacklist");
+            }
+        });
+    });
+
+
+    $("#bookingBtn").on('click', function () {
+
+        var userId = $("#subscribeBtn").parents(".row").attr("data-id");
+        var serviceId = $(this).parents("tr").data("id");
+
+        console.log(serviceId);
+
+    });
 });

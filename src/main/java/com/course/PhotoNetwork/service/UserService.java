@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -33,6 +34,8 @@ public class UserService implements UserDetailsService {
     private RoleRepository roleRepository;
     @Autowired
     private PhotoService photoService;
+    @Autowired
+    private ServicesService servicesService;
 
     @Override
     @Transactional
@@ -122,5 +125,48 @@ public class UserService implements UserDetailsService {
 
     public Optional<UserModel> findById(Long userId) {
         return userRepository.findById(userId);
+    }
+
+    @Transactional
+    public void subscribeToUser(Long userId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserModel currentUser = findByEmail(auth.getName());
+        Optional<UserModel> usertoSubscribeOptional = findById(userId);
+        if(usertoSubscribeOptional.isPresent()) {
+
+            UserModel userToSubscribe = usertoSubscribeOptional.get();
+
+            if(currentUser.getSubscribers() == null) {
+                List<UserModel> subscribers = new ArrayList<>();
+                subscribers.add(currentUser);
+                userToSubscribe.setSubscribers(subscribers);
+            }
+            else
+                userToSubscribe.getSubscribers().add(currentUser);
+        }
+
+        else throw new IllegalArgumentException("Пользователь " + userId + " не найден");
+    }
+
+    public List<UserModel> findSubscribes() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserModel currentUser = findByEmail(auth.getName());
+        return userRepository.findAll().stream().filter(u -> u.getSubscribers().contains(currentUser)).collect(Collectors.toList());
+    }
+
+    public void bookService(BookingServiceDtoIn bookingServiceDtoIn) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserModel currentUser = findByEmail(auth.getName());
+
+        if(servicesService.findByMasterAndDate(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDate()) != null)
+            throw new IllegalStateException("Дата уже зарезервирована");
+
+        Optional<ServiceModel> service = servicesService.findById(bookingServiceDtoIn.getServiceId());
+
+        if(service.isPresent()) {
+            if()
+        }
+        else throw new IllegalArgumentException("Услуга не найдена");
+
     }
 }

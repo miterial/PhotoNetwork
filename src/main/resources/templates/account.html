@@ -10,6 +10,7 @@
                     <h2>Информация профиля</h2>
                     <img th:src="${user.avatar}" class="img-fluid mb-2" >
                     <p th:text="${user.description}"></p>
+                    <button th:if="${isCurrent}" class="btn btn-primary" id="subscribeBtn">Подписаться</button>
 
                     <div class="form-group">
                         <h3><span th:if="${user.name}" th:text="${user.name}"></span><span th:if="${user.surname}" th:text="${user.surname}"></span></h3>
@@ -32,10 +33,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="services : ${user.services}">
+                                    <tr th:each="services : ${user.services}" th:data-id="${service.id}">
                                         <td th:text="${services.name}"></td>
                                         <td th:text="${services.price}"></td>
-                                        <td><button id="bookingButton" class="btn btn-primary" th:data-id="${service.id}">Записаться</button></td>
+                                        <td><button id="bookingBtn" class="btn btn-primary">Записаться</button></td>
                                     </tr>
                                 </tbody>
                             </table>
