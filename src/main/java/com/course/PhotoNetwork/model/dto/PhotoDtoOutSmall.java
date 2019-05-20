@@ -1,6 +1,5 @@
 package com.course.PhotoNetwork.model.dto;
 
-import com.course.PhotoNetwork.model.PhotoLicense;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;

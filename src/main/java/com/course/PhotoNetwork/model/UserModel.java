@@ -50,12 +50,15 @@ public class UserModel {
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<RoleModel> roles;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ServiceModel> services;
 
     @OneToMany
     private List<UserModel> subscribers;
+
+    @OneToMany
+    private List<UserModel> customers;
 
     @OneToMany(mappedBy = "user")
     private List<PhotoModel> photos;
@@ -210,5 +213,13 @@ public class UserModel {
 
     public void setSubscribers(List<UserModel> subscribers) {
         this.subscribers = subscribers;
+    }
+
+    public List<UserModel> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<UserModel> customers) {
+        this.customers = customers;
     }
 }

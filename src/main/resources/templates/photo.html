@@ -13,8 +13,8 @@
             <a th:if="${photo.license != T(com.course.PhotoNetwork.model.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success">Скачать</a>
         </div>
         <div class="col-3">
-            <a th:href="@{'/user/' + ${photo.user.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}" alt="user"/></a>
-            <span th:if="${photo.user.name != null and photo.user.surname != null}" th:text="${photo.user.name + photo.user.surname}"></span>
+            <a th:href="@{'/master/' + ${photo.master.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.master.avatar}" alt="master"/></a>
+            <span th:if="${photo.master.name != null and photo.master.surname != null}" th:text="${photo.master.name + photo.master.surname}"></span>
             <p th:text="${photo.uploaddate}"></p>
             <p th:text="${photo.name}"></p>
             <p th:text="${photo.description}"></p>

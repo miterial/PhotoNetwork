@@ -1,9 +1,11 @@
 package com.course.PhotoNetwork.service;
 
+import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.dto.ServiceDto;
 import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
+import com.course.PhotoNetwork.repository.BookingRepository;
 import com.course.PhotoNetwork.repository.UserRepository;
-import com.course.PhotoNetwork.model.ServiceEnum;
+import com.course.PhotoNetwork.model.types.ServiceEnum;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.ServiceDtoSmall;
@@ -23,6 +25,8 @@ public class ServicesService {
     private ServiceRepository serviceRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     public List<ServiceModel> findAll() {
         return serviceRepository.findAll();
@@ -80,7 +84,6 @@ public class ServicesService {
             ServiceModel service = new ServiceModel();
             service.setName(a.getName());
             service.setPrice(a.getPrice());
-            service.setUser(userModel);
             res.add(service);
         });
 
@@ -91,8 +94,8 @@ public class ServicesService {
         return serviceRepository.findById(serviceId);
     }
 
-    public ServiceModel findByMasterAndDate(long masterId, Date date) {
+    public BookingModel findByMasterAndDate(long masterId, Date date) {
         Optional<UserModel> master = userRepository.findById(masterId);
-        return serviceRepository.findByUserAndBookedDate(master.get(), date);
+        return bookingRepository.findByMasterAndBookingDate(master.get(), date);
     }
 }

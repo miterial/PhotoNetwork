@@ -57,7 +57,7 @@ public class UserController {
         return HttpStatus.BAD_REQUEST;
     }
 
-    @PostMapping
+    @PostMapping("/booking")
     public HttpStatus bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn) {
         try {
             userService.bookService(bookingServiceDtoIn);

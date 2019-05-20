@@ -1,6 +1,7 @@
 package com.course.PhotoNetwork.model;
 
 
+import com.course.PhotoNetwork.model.types.PhotoLicense;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;

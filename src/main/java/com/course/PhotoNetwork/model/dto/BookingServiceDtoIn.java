@@ -1,6 +1,7 @@
 package com.course.PhotoNetwork.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -10,6 +11,7 @@ public class BookingServiceDtoIn {
     @JsonProperty
     private long serviceId;
     @JsonProperty
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
     public BookingServiceDtoIn() {

@@ -1,5 +1,6 @@
 package com.course.PhotoNetwork.model;
 
+import com.course.PhotoNetwork.model.types.ServiceEnum;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -22,24 +23,12 @@ public class ServiceModel {
     @Column(nullable = false)
     private double price;
 
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-    private UserModel user;
+    private UserModel master;
 
-    @ManyToOne(optional = false)
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-    private UserModel customer;
-
-    private Date bookedDate;
-
-    public ServiceModel() { }
-
-    public ServiceModel(long id, String name, double price, UserModel user) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.user = user;
-    }
+    @OneToMany
+    private List<BookingModel> booking;
 
     public long getId() {
         return id;
@@ -61,11 +50,19 @@ public class ServiceModel {
         this.price = price;
     }
 
-    public UserModel getUser() {
-        return user;
+    public UserModel getMaster() {
+        return master;
     }
 
-    public void setUser(UserModel user) {
-        this.user = user;
+    public void setMaster(UserModel master) {
+        this.master = master;
+    }
+
+    public List<BookingModel> getBooking() {
+        return booking;
+    }
+
+    public void setBooking(List<BookingModel> booking) {
+        this.booking = booking;
     }
 }

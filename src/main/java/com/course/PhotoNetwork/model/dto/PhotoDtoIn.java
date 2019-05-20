@@ -1,6 +1,6 @@
 package com.course.PhotoNetwork.model.dto;
 
-import com.course.PhotoNetwork.model.PhotoLicense;
+import com.course.PhotoNetwork.model.types.PhotoLicense;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.multipart.MultipartFile;
 

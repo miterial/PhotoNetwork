@@ -1,9 +1,11 @@
 package com.course.PhotoNetwork.service;
 
+import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.RoleModel;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.*;
+import com.course.PhotoNetwork.repository.BookingRepository;
 import com.course.PhotoNetwork.repository.RoleRepository;
 import com.course.PhotoNetwork.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class UserService implements UserDetailsService {
     private PhotoService photoService;
     @Autowired
     private ServicesService servicesService;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Override
     @Transactional
@@ -161,12 +165,15 @@ public class UserService implements UserDetailsService {
         if(servicesService.findByMasterAndDate(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDate()) != null)
             throw new IllegalStateException("Дата уже зарезервирована");
 
-        Optional<ServiceModel> service = servicesService.findById(bookingServiceDtoIn.getServiceId());
+        ServiceModel service = servicesService.findById(bookingServiceDtoIn.getServiceId()).get();
 
-        if(service.isPresent()) {
-            if()
-        }
-        else throw new IllegalArgumentException("Услуга не найдена");
+        BookingModel booking = new BookingModel();
+        booking.setCustomer(currentUser);
+        booking.setMaster(userRepository.findById(bookingServiceDtoIn.getMasterId()).get());
+        booking.setService(service);
+        booking.setBookingDate(bookingServiceDtoIn.getDate());
+
+        bookingRepository.save(booking);
 
     }
 }

@@ -13,6 +13,4 @@ public interface ServiceRepository extends JpaRepository<ServiceModel, Long> {
     Optional<ServiceModel> findByName(String serviceName);
 
     void deleteByName(String serviceName);
-
-    ServiceModel findByUserAndBookedDate(UserModel user, Date bookedDate);
 }

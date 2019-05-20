@@ -4,11 +4,11 @@ $( document ).ready(function() {
 
         var services = [];
 
-        $(".service").each(function () {
-            if($(".service").prop('checked')) {
+        $(".services").each(function () {
+            if($(".services").prop('checked')) {
                 var temp = {};
-                temp["name"] = $(".service").attr('name');
-                temp["price"] = $(".service").closest("div").find("input[name='price']").val();
+                temp["name"] = $(".services").attr('name');
+                temp["price"] = $(".services").closest("div").find("input[name='price']").val();
                 if(temp["price"] === "") {
                     console.log("fill in the price!")
                     return false;
@@ -58,12 +58,43 @@ $( document ).ready(function() {
     });
 
 
-    $("#bookingBtn").on('click', function () {
+    $(".booking").on('click', function () {
 
-        var userId = $("#subscribeBtn").parents(".row").attr("data-id");
+        var userId = $("#account").attr("data-id");
         var serviceId = $(this).parents("tr").data("id");
 
-        console.log(serviceId);
+        $(".modal").data("id-user", userId);
+        $(".modal").data("id-service", serviceId);
 
+        $("#serviceNameModal").text($(this).parents("tr").find(".serviceName"));
+        $("#servicePriceModal").text($(this).parents("tr").find(".servicePrice"));
+
+    });
+
+    $("#bookingBtn").on('click', function () {
+
+        var masterId = $("#bookingBtn").parents(".modal").attr("data-user-id");
+        var serviceId = $("#bookingBtn").parents(".modal").attr("data-service-id");
+        var date = $("input[name='bookingdate']").text();
+
+        var data = {};
+        data["masterId"] = masterId;
+        data["serviceId"] = serviceId;
+        data["date"] = date;
+
+        console.log(data);
+
+        $.ajax({
+            url: '/api/account/booking/' + id,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                console.log("subscribed!");
+                //showSuccessToast("New blacklist created!");
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
+            }
+        });
     });
 });

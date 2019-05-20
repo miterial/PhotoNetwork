@@ -1,4 +1,4 @@
-package com.course.PhotoNetwork.model;
+package com.course.PhotoNetwork.model.types;
 
 public enum ServiceEnum {
     SERVICE_ONE("сервис1"),

@@ -1,4 +1,4 @@
-package com.course.PhotoNetwork.model;
+package com.course.PhotoNetwork.model.types;
 
 public enum PhotoLicense {
     TRADITIONAL("Traditional Copyright"),
