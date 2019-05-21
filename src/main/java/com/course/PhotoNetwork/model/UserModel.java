@@ -179,6 +179,7 @@ public class UserModel {
     public void setProvideServices(boolean provideServices) {
         this.provideServices = provideServices;
     }
+
     @Override
     public int hashCode() {
         int hash = 7;

@@ -86,7 +86,9 @@ public class UserService implements UserDetailsService {
         user.setUsername(newUser.getUsername());
         user.setProvideServices(newUser.isProvideServices());
         user.setDescription(newUser.getDescription());
-        user.setAvatar("data:image/jpeg;base64," + Base64.getEncoder().
+
+        if(newUser.getAvatar() != null)
+            user.setAvatar("data:image/jpeg;base64," + Base64.getEncoder().
                 encodeToString(newUser.getAvatar().getBytes()));
 
 
@@ -153,9 +155,7 @@ public class UserService implements UserDetailsService {
         else throw new IllegalArgumentException("Пользователь " + userId + " не найден");
     }
 
-    public List<UserModel> findSubscribes() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserModel currentUser = findByEmail(auth.getName());
-        return userRepository.findAll().stream().filter(u -> u.getSubscribers().contains(currentUser)).collect(Collectors.toList());
+    public List<UserModel> findSubscribes(UserModel user) {
+        return userRepository.findAll().stream().filter(u -> u.getSubscribers().contains(user)).collect(Collectors.toList());
     }
 }

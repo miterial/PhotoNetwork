@@ -5,9 +5,10 @@
 <nav th:replace="partials/header :: navigation"/>
 
     <main class="my-5">
-        <h1 class="text-center" th:text="title"></h1>
+        <h1 class="text-center" th:text="${title}"></h1>
         <div class="container">
             <div class="card-columns" >
+                <p th:if="${photos.size() == 0}">Новых фото нет</p>
                 <th:block  th:each="photo : ${photos}">
                 <div th:replace="partials/photo_in_list :: photo"></div></th:block>
             </div>

@@ -7,8 +7,9 @@
         <p class="card-text" th:text="${photo.description}"></p>
     </div>
     <div class="card-footer">
-        <a th:href="@{'/user/' + ${photo.user.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}" alt="master"/></a>
-        <small class="text-muted float-right" th:text="${#dates.format(photo.uploaddate, 'dd MMM yyyy')}"/>
-        <div><a th:href="@{'/category/' + ${photo.category}}" class="text-muted" th:text="${'#' + photo.category}"/></div>
+        <a th:if="${photo.user.avatar}" th:href="@{'/user/' + ${photo.user.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}"/></a>
+
+        <div><a th:href="@{'/category/' + ${photo.category}}" class="text-muted" th:text="${'#' + photo.category}"/>
+            <small class="text-muted float-right" th:text="${#dates.format(photo.uploaddate, 'dd MMM yyyy')}"/></div>
     </div>
 </div>

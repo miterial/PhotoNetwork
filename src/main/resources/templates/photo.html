@@ -9,12 +9,12 @@
     <div class="row">
         <div class="col-9 text-center">
             <img id="photoFile" th:src="${photo.photofile}" class="img-thumbnail" alt="img" th:data-id="${photo.id}">
-            <button id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
+            <button th:unless="${isCurrentUser}" id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
+            <button th:if="${isCurrentUser}" id="modifyBtn" class="btn btn-primary">Изменить</button>
             <a th:if="${photo.license != T(com.course.PhotoNetwork.model.types.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success">Скачать</a>
         </div>
         <div class="col-3">
-            <a th:href="@{'/user/' + ${photo.user.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}" alt="master"/></a>
-            <span th:if="${photo.user.name != null and photo.user.surname != null}" th:text="${photo.user.name + photo.user.surname}"></span>
+            <a th:href="@{'/user/' + ${photo.user.id}}" th:text="${' @' + photo.user.username}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}"/></a>
             <p th:text="${photo.uploaddate}"></p>
             <p th:text="${photo.name}"></p>
             <p th:text="${photo.description}"></p>

@@ -88,6 +88,7 @@ public class WebController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             UserModel user = userService.findByEmail(auth.getName());
             model.addObject("liked", likeRepository.findByPhotoAndUser(photo, user) != null);
+            model.addObject("isCurrentUser", photo.getUser() == user);
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);

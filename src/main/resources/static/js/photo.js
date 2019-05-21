@@ -17,6 +17,20 @@ $( document ).ready(function() {
         });
     });
 
+    $("#modifyBtn").on('click', function () {
+        var id = $(this).parents(".row").find("img").data("id");
+
+        $.ajax({
+            url: '/upload',
+            type: 'GET',
+            success: function (resp) {
+                $("html").html(resp);
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                //showDangerToast("Error creating blacklist");
+            }
+        });
+    });
+
     /** формирование ссылки для скачивания */
     var link = $("#photoFile").attr("src");
     $("#downloadBtn").attr("href",link);

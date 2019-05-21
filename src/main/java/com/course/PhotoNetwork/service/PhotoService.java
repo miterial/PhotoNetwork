@@ -52,8 +52,11 @@ public class PhotoService {
 
     @Transactional
     public List<PhotoModel> getNewPhotos() {
-        List<UserModel> subscribedTo = userService.findSubscribes();
-        List<PhotoModel> res = photoRepository.findAll().stream().filter(p -> subscribedTo.contains(p.getUser())).sorted().collect(Collectors.toList());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserModel currentUser = userService.findByEmail(auth.getName());
+        List<UserModel> subscribedTo = userService.findSubscribes(currentUser);
+        List<PhotoModel> res = photoRepository.findAll().stream().filter(p -> subscribedTo.contains(p.getUser()) || p.getUser() == currentUser).sorted().collect(Collectors.toList());
         return res;
     }
 
