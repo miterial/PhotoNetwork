@@ -14,12 +14,12 @@ public class UserDtoIn {
     private String email;
     @JsonProperty(required = true)
     private String password;
+    @JsonProperty(required = true)
+    private String username;
     @JsonProperty
     private String name;
     @JsonProperty
     private String surname;
-    @JsonProperty
-    private String username;
     @JsonProperty
     private String birthday;
     @JsonProperty

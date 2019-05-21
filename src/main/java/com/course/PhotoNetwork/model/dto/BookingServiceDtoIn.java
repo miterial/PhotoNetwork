@@ -1,9 +1,6 @@
 package com.course.PhotoNetwork.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
 
 public class BookingServiceDtoIn {
     @JsonProperty
@@ -11,15 +8,15 @@ public class BookingServiceDtoIn {
     @JsonProperty
     private String serviceId;
     @JsonProperty
-    private String date;
+    private String datetime;
 
     public BookingServiceDtoIn() {
     }
 
-    public BookingServiceDtoIn(String masterId, String serviceId, String date) {
+    public BookingServiceDtoIn(String masterId, String serviceId, String datetime) {
         this.masterId = masterId;
         this.serviceId = serviceId;
-        this.date = date;
+        this.datetime = datetime;
     }
 
     public String getMasterId() {
@@ -38,11 +35,11 @@ public class BookingServiceDtoIn {
         this.serviceId = serviceId;
     }
 
-    public String getDate() {
-        return date;
+    public String getDatetime() {
+        return datetime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
     }
 }

@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <h3><span th:if="${user.name}" th:text="${user.name}"></span><span th:if="${user.surname}" th:text="${' ' + user.surname}"></span></h3>
 
-                    <p th:if="${user.username}" th:text="${'@' + user.username}"></p>
+                    <p th:text="${'@' + user.username}"></p>
 
                     <p th:text="${'Контактная почта: ' + user.email}"></p>
 
@@ -71,7 +71,7 @@
                 <p>Услуга: <span id="serviceNameModal"></span></p>
                 <p>Цена: <span id="servicePriceModal"></span></p>
                 <span>Дата:</span>
-                <input type="text" class="form-control datepicker-here" data-timepicker="true">
+                <input type="text" class="form-control bookingdate">
             </div>
             <div class="modal-footer">
                 <button id="bookingBtn" type="button" class="btn btn-primary">Подтвердить</button>
@@ -82,5 +82,6 @@
 
 <footer th:replace="partials/footer :: footer"/>
 <script th:src="@{/js/account.js}"></script>
+<script th:src="@{/js/datepicker.js}"></script>
 </body>
 </html>

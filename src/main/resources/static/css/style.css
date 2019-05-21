@@ -11,3 +11,6 @@ input[name="price"] {
 .img-thumbnail {
     margin-bottom: 10px;
 }
+.datepickers-container {
+    z-index: 1055;
+}

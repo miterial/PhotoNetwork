@@ -8,6 +8,7 @@ import com.course.PhotoNetwork.service.ServicesService;
 import com.course.PhotoNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -39,14 +40,14 @@ public class UserController {
 
     @PostMapping("/services")
     @ResponseBody
-    public HttpStatus changeServices(@RequestBody UserServicesDtoIn services) {
+    public ResponseEntity changeServices(@RequestBody UserServicesDtoIn services) {
         try {
             servicesService.changeServices(services);
-            return HttpStatus.OK;
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return HttpStatus.BAD_REQUEST;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/subscribe/{userId}")
@@ -61,16 +62,16 @@ public class UserController {
     }
 
     @PostMapping("/booking")
-    public HttpStatus bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn) {
+    public ResponseEntity bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn) {
         try {
             bookingService.bookService(bookingServiceDtoIn);
-            return HttpStatus.OK;
+            return new ResponseEntity(HttpStatus.OK);
         } catch (IllegalStateException e) {
-            return HttpStatus.CONFLICT;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return HttpStatus.BAD_REQUEST;
     }
 
     @PostMapping("/avatar")

@@ -30,7 +30,7 @@ public class UserModel {
 
     private Date regdate = Calendar.getInstance().getTime();
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)

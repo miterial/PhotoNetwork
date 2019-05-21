@@ -1,7 +1,5 @@
 $( document ).ready(function() {
 
-    $(".datepickers-container").css('z-index',1055);
-
     $("#saveServices").on('click', function () {
 
         var services = [];
@@ -77,13 +75,17 @@ $( document ).ready(function() {
 
         var masterId = $("#serviceNameModal").attr("data-id-user");
         var serviceId = $("#servicePriceModal").attr("data-id-service");;
-        var date = $(".datepicker-here").val();
+        var date = $(".bookingdate").val();
+
+        if(date === "") {
+            console.log("empty date, not booked");
+            return;
+        }
 
         var data = {};
         data["masterId"] = masterId;
         data["serviceId"] = serviceId;
-        data["date"] = date;
-
+        data["datetime"] = date;
         console.log(data);
 
         $.ajax({
@@ -95,6 +97,7 @@ $( document ).ready(function() {
                 console.log("booked!");
                 //showSuccessToast("New blacklist created!");
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("not booked")
                 //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
             }
         });

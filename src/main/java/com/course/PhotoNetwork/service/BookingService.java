@@ -10,8 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,11 +27,12 @@ public class BookingService {
     @Autowired
     private UserService userService;
 
+    @Transactional
     public void bookService(BookingServiceDtoIn bookingServiceDtoIn) throws ParseException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserModel currentUser = userService.findByEmail(auth.getName());
 
-        if(findByMasterAndDate(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDate()) != null)
+        if(findByMasterAndDate(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDatetime()))
             throw new IllegalStateException("Дата уже зарезервирована");
 
         BookingModel booking = toEntity(bookingServiceDtoIn, currentUser);
@@ -44,14 +49,25 @@ public class BookingService {
         ServiceModel service = servicesService.findById(Long.parseLong(dto.getServiceId())).get();
 
         booking.setService(service);
-        booking.setBookingDate(new SimpleDateFormat("dd.MM.yyyy").parse(dto.getDate().split(" ")[0]));
+        booking.setBookingDate(new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(dto.getDatetime()));
 
         return booking;
     }
 
-    public BookingModel findByMasterAndDate(String masterId, String date) throws ParseException {
+    /**
+     * Find if master is busy one hour before and one hour after the @param date
+     * @param masterId
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    private boolean findByMasterAndDate(String masterId, String date) throws ParseException {
         long id = Long.parseLong(masterId);
         Optional<UserModel> master = userService.findById(id);
-        return bookingRepository.findByMasterAndBookingDate(master.get(), new SimpleDateFormat("dd.MM.yyyy").parse(date.split(" ")[0]));
+
+        Date bookingDate = new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(date);
+
+        return bookingRepository.findByMasterAndBookingDate(master.get(), bookingDate) != null;
+
     }
 }
