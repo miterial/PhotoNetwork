@@ -2,17 +2,12 @@ package com.course.PhotoNetwork.controller.web;
 
 import com.course.PhotoNetwork.controller.rest.PhotoController;
 import com.course.PhotoNetwork.model.CategoryModel;
-import com.course.PhotoNetwork.model.dto.PhotoDtoOut;
-import com.course.PhotoNetwork.service.UserService;
+import com.course.PhotoNetwork.model.dto.*;
+import com.course.PhotoNetwork.service.*;
 import com.course.PhotoNetwork.controller.rest.AdminController;
 import com.course.PhotoNetwork.model.PhotoModel;
 import com.course.PhotoNetwork.model.UserModel;
-import com.course.PhotoNetwork.model.dto.PhotoDtoIn;
-import com.course.PhotoNetwork.model.dto.UserDtoIn;
 import com.course.PhotoNetwork.repository.LikeRepository;
-import com.course.PhotoNetwork.service.CategoryService;
-import com.course.PhotoNetwork.service.PhotoService;
-import com.course.PhotoNetwork.service.ServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -43,6 +38,8 @@ public class WebController {
     private CategoryService categoryService;
     @Autowired
     private LikeRepository likeRepository;
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping("/login")
     public ModelAndView loginPage(ModelAndView modelAndView, HttpServletResponse response) throws IOException {
@@ -162,7 +159,7 @@ public class WebController {
             model.addObject("user", userService.toDto(userService.findById(userId).get()));
 
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            model.addObject("isCurrent", userService.findByEmail(auth.getName()).getId() != userId);
+            model.addObject("isCurrent", userService.findByEmail(auth.getName()).getId() == userId);
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -184,6 +181,23 @@ public class WebController {
             model.addObject("photos",photosInCategoryDTO);
             model.addObject("title","Фото в категории " + categoryName);
             model.setViewName("index");
+        } catch (Exception ex) {
+            Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
+            model.setViewName("error");
+        }
+        return model;
+    }
+
+    @GetMapping("/services")
+    public ModelAndView getSchedule(ModelAndView model) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserModel user = userService.findByEmail(auth.getName());
+            List<BookingServiceDtoOut> booked = bookingService.toDto(bookingService.findUserBookedServices(user));
+            List<BookingServiceDtoOut> upcoming = bookingService.toDto(bookingService.findUserUpcomingServices(user));
+            BookingUserInfoDtoOut schedule = new BookingUserInfoDtoOut(user.getId(),booked,upcoming);
+            model.addObject("schedule",schedule);
+            model.setViewName("services");
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
             model.setViewName("error");

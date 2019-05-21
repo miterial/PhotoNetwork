@@ -5,40 +5,75 @@
 <nav th:replace="partials/header :: navigation"/>
 <main class="my-5">
     <div class="container">
-        <div class="row" id="account" th:data-id="${user.id}">
-            <div class="col-6">
+        <div class="row" id="account" th:data-id="${schedule.userId}">
+            <div class="col-12">
                 <h2>Ваши заказы</h2>
-                    <table class="table">
+                    <table class="table" id="client">
                         <thead>
                         <tr>
                             <td>Услуга</td>
                             <td>Цена</td>
                             <td>Дата</td>
                             <td>Исполнитель</td>
+                            <td>Статус</td>
                             <td></td>
                         </tr>
                         </thead>
                         <tbody>
-                        <th:block th:each="service : ${user.services}" >
-                            <tr th:data-id="${service.id}">
-                                <td class="serviceName" th:text="${service.name}"></td>
+                        <th:block th:each="service : ${schedule.booked}" >
+                            <tr th:data-id="${service.serviceId}">
+                                <td class="serviceName" th:text="${service.serviceName}"></td>
                                 <td class="servicePrice" th:text="${service.price}"></td>
-                                <td class="serviceDate" th:text="${service.date}"></td>
-                                <td><a th:href="@{'/user' + service.masterId}" th:text="@{'@' + service.masterUsername}"></a></td>
-                                <td><button data-toggle="modal" data-target="#paymentModal" class="btn btn-primary payment"></button></td>
+                                <td class="serviceDate" th:text="${service.datetime}"></td>
+                                <td><a th:href="${'/user/' + service.masterId}" th:text="${'@' + service.masterUsername}"></a></td>
+                                <td th:text="${service.status.getVal()}"></td>
+                                <td>
+                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).NEW}" data-toggle="modal" data-target="#paymentModal" class="btn btn-primary paymentClient">Оплатить</button>
+                                </td>
+                                <td>
+                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER}" data-toggle="modal" data-target="#confirmModal" class="btn btn-primary finishClient">Подтвердить завершение</button>
+                                </td>
                             </tr>
                         </th:block>
 
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="col-6">
-                <h2>Предстоящие мероприятия</h2>
-                <th:block th:if="${user.provideServices and user.services.size()>0}">
+            <th:block th:if="${schedule.upcoming.size()>0}">
+                <div class="col-12">
+                    <h2>Предстоящие мероприятия</h2>
+                    <table class="table" id="master">
+                        <thead>
+                        <tr>
+                            <td>Услуга</td>
+                            <td>Цена</td>
+                            <td>Дата</td>
+                            <td>Клиент</td>
+                            <td>Статус</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="service : ${schedule.upcoming}" >
+                            <tr th:data-id="${service.serviceId}">
+                                <td class="serviceName" th:text="${service.serviceName}"></td>
+                                <td class="servicePrice" th:text="${service.price}"></td>
+                                <td class="serviceDate" th:text="${service.datetime}"></td>
+                                <td><a th:href="${'/user/' + service.clientId}" th:text="${'@' + service.clientUsername}"></a></td>
+                                <td th:text="${service.status.getVal()}"></td>
+                                <td>
+                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_CLIENT}" data-toggle="modal" data-target="#paymentModal" class="btn btn-primary paymentMaster">Подтвердить оплату</button>
+                                </td>
+                                <td>
+                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER}" data-toggle="modal" data-target="#confirmModal" class="btn btn-primary finishMaster">Подтвердить завершение</button>
+                                </td>
+                            </tr>
+                        </th:block>
 
-                </th:block>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            </th:block>
         </div>
     </div>
 </main>
@@ -47,7 +82,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Оплатить</h5>
+                <h5 class="modal-title">Оплата</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -58,7 +93,7 @@
                 <p>Дата: <span id="serviceDate"></span></p>
             </div>
             <div class="modal-footer">
-                <button id="bookingBtn" type="button" class="btn btn-primary">Подтвердить</button>
+                <button id="paymentConfirmBtn" type="button" class="btn btn-primary">Подтвердить</button>
             </div>
         </div>
     </div>

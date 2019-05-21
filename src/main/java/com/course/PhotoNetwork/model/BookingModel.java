@@ -1,5 +1,6 @@
 package com.course.PhotoNetwork.model;
 
+import com.course.PhotoNetwork.model.types.BookingEnum;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -25,11 +26,7 @@ public class BookingModel {
 
     private Date bookingDate;
 
-    private boolean confirmPaymentClient;
-    private boolean confirmPaymentMaster;
-
-    private boolean confirmEndingClient;
-    private boolean confirmEndingMaster;
+    private BookingEnum status;
 
     public BookingModel() {
     }
@@ -66,35 +63,11 @@ public class BookingModel {
         this.bookingDate = bookingDate;
     }
 
-    public boolean isConfirmPaymentClient() {
-        return confirmPaymentClient;
+    public BookingEnum getStatus() {
+        return status;
     }
 
-    public void setConfirmPaymentClient(boolean confirmPaymentClient) {
-        this.confirmPaymentClient = confirmPaymentClient;
-    }
-
-    public boolean isConfirmPaymentMaster() {
-        return confirmPaymentMaster;
-    }
-
-    public void setConfirmPaymentMaster(boolean confirmPaymentMaster) {
-        this.confirmPaymentMaster = confirmPaymentMaster;
-    }
-
-    public boolean isConfirmEndingClient() {
-        return confirmEndingClient;
-    }
-
-    public void setConfirmEndingClient(boolean confirmEndingClient) {
-        this.confirmEndingClient = confirmEndingClient;
-    }
-
-    public boolean isConfirmEndingMaster() {
-        return confirmEndingMaster;
-    }
-
-    public void setConfirmEndingMaster(boolean confirmEndingMaster) {
-        this.confirmEndingMaster = confirmEndingMaster;
+    public void setStatus(BookingEnum status) {
+        this.status = status;
     }
 }

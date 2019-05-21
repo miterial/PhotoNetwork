@@ -61,19 +61,6 @@ public class UserController {
         return HttpStatus.BAD_REQUEST;
     }
 
-    @PostMapping("/booking")
-    public ResponseEntity bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn) {
-        try {
-            bookingService.bookService(bookingServiceDtoIn);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        } catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PostMapping("/avatar")
     public String uploadAvatar(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         try {

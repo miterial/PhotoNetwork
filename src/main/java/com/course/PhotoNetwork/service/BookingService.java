@@ -4,6 +4,9 @@ import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
+import com.course.PhotoNetwork.model.dto.BookingServiceDtoOut;
+import com.course.PhotoNetwork.model.dto.BookingUserInfoDtoOut;
+import com.course.PhotoNetwork.model.types.BookingEnum;
 import com.course.PhotoNetwork.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,10 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BookingService {
@@ -36,6 +36,7 @@ public class BookingService {
             throw new IllegalStateException("Дата уже зарезервирована");
 
         BookingModel booking = toEntity(bookingServiceDtoIn, currentUser);
+        booking.setStatus(BookingEnum.NEW);
 
         bookingRepository.save(booking);
 
@@ -69,5 +70,37 @@ public class BookingService {
 
         return bookingRepository.findByMasterAndBookingDate(master.get(), bookingDate) != null;
 
+    }
+
+    /**
+     * Find bookings that @param user made
+     */
+    public List<BookingModel> findUserBookedServices(UserModel user) {
+
+        return bookingRepository.findByCustomer(user);
+    }
+
+    /**
+     * Find bookings that @param user has as provided services
+     */
+    public List<BookingModel> findUserUpcomingServices(UserModel user) {
+        return bookingRepository.findByMaster(user);
+    }
+
+    public List<BookingServiceDtoOut> toDto(List<BookingModel> userBookedServices) {
+        List<BookingServiceDtoOut> res = new ArrayList<>();
+
+        for (BookingModel b : userBookedServices) {
+            BookingServiceDtoOut service = new BookingServiceDtoOut(b.getMaster().getId(), b.getMaster().getUsername(),
+                    b.getCustomer().getId(), b.getCustomer().getUsername(),
+                    b.getService().getId(), b.getService().getName(),
+                    b.getService().getPrice(),
+                    b.getBookingDate().toString(),
+                    b.getStatus()
+            );
+            res.add(service);
+        }
+
+        return res;
     }
 }

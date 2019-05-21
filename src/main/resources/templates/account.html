@@ -10,7 +10,7 @@
                 <h2>Информация профиля</h2>
                 <img th:src="${user.avatar}" class="img-fluid mb-2" >
                 <p th:text="${user.description}"></p>
-                <button th:if="${isCurrent}" class="btn btn-primary" id="subscribeBtn">Подписаться</button>
+                <button th:unless="${isCurrent}" class="btn btn-primary" id="subscribeBtn">Подписаться</button>
 
                 <div class="form-group">
                     <h3><span th:if="${user.name}" th:text="${user.name}"></span><span th:if="${user.surname}" th:text="${' ' + user.surname}"></span></h3>
@@ -23,7 +23,7 @@
 
                     <p th:text="${'Дата регистрации: ' + user.regdate}"></p>
 
-                    <th:block th:if="${user.provideServices and user.services.size()>0}">
+                    <th:block th:if="${user.provideServices and user.services.size()>0 and !isCurrent}">
                         <table class="table">
                             <thead>
                             <tr>
@@ -83,5 +83,6 @@
 <footer th:replace="partials/footer :: footer"/>
 <script th:src="@{/js/account.js}"></script>
 <script th:src="@{/js/datepicker.js}"></script>
+<script th:src="@{/js/booking.js}"></script>
 </body>
 </html>

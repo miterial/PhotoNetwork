@@ -12,4 +12,6 @@ public interface BookingRepository extends JpaRepository<BookingModel, Long> {
     BookingModel findByMasterAndBookingDate(UserModel user, Date bookedDate);
 
     List<BookingModel> findByMaster(UserModel userModel);
+
+    List<BookingModel> findByCustomer(UserModel user);
 }
