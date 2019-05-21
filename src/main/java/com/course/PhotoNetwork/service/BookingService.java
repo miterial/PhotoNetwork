@@ -5,6 +5,7 @@ import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoOut;
+import com.course.PhotoNetwork.model.dto.BookingUserInfoDtoIn;
 import com.course.PhotoNetwork.model.dto.BookingUserInfoDtoOut;
 import com.course.PhotoNetwork.model.types.BookingEnum;
 import com.course.PhotoNetwork.repository.BookingRepository;
@@ -87,11 +88,34 @@ public class BookingService {
         return bookingRepository.findByMaster(user);
     }
 
+    @Transactional
+    public void changeStatus(BookingUserInfoDtoIn dtoIn) {
+        Optional<BookingModel> bookingOptional = bookingRepository.findById(Long.parseLong(dtoIn.getBookingId()));
+
+        BookingModel booking = bookingOptional.orElseThrow(IllegalArgumentException::new);
+
+        switch (dtoIn.getPrevStatusId()) {
+            case "1":
+                booking.setStatus(BookingEnum.PAID_CLIENT);
+                break;
+            case "2":
+                booking.setStatus(BookingEnum.PAID_MASTER);
+                break;
+            case "3":
+                booking.setStatus(BookingEnum.AWAITS_FINISH);
+                break;
+            case "4":
+                booking.setStatus(BookingEnum.FINISHED);
+                break;
+        }
+        bookingRepository.save(booking);
+    }
+
     public List<BookingServiceDtoOut> toDto(List<BookingModel> userBookedServices) {
         List<BookingServiceDtoOut> res = new ArrayList<>();
 
         for (BookingModel b : userBookedServices) {
-            BookingServiceDtoOut service = new BookingServiceDtoOut(b.getMaster().getId(), b.getMaster().getUsername(),
+            BookingServiceDtoOut service = new BookingServiceDtoOut(b.getId(), b.getMaster().getId(), b.getMaster().getUsername(),
                     b.getCustomer().getId(), b.getCustomer().getUsername(),
                     b.getService().getId(), b.getService().getName(),
                     b.getService().getPrice(),

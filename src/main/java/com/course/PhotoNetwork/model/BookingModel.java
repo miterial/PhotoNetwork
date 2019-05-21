@@ -70,4 +70,8 @@ public class BookingModel {
     public void setStatus(BookingEnum status) {
         this.status = status;
     }
+
+    public long getId() {
+        return id;
+    }
 }

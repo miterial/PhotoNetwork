@@ -13,11 +13,32 @@ $( document ).ready(function() {
 
     });
 
-    $("#client .paymentClient").on('click', function () {
+    $(".confirm").on('click', function () {
+
+        var bookingId = $(this).parents("tr").attr("data-id");
+        var statusId = $(this).parents("tr").find(".serviceStatus").attr("data-id");
+
+        var data = {};
+        data["bookingId"] = bookingId;
+        data["prevStatusId"] = statusId;
+        console.log(data);
+
+        $.ajax({
+            url: '/api/booking/status',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                console.log("changes status!");
+                //showSuccessToast("New blacklist created!");
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("not booked")
+                //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
+            }
+        });
+
     });
 
-    $("#master .paymentClient").on('click', function () {
-    });
 
     function fillPaymentModal(context) {
 

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BookingServiceDtoOut {
     @JsonProperty
+    private Long bookingId;
+    @JsonProperty
     private Long masterId;
     @JsonProperty
     private String masterUsername;
@@ -23,7 +25,8 @@ public class BookingServiceDtoOut {
     @JsonProperty
     private BookingEnum status;
 
-    public BookingServiceDtoOut(Long masterId, String masterUsername, Long clientId, String clientUsername, Long serviceId, String serviceName, Double price, String datetime, BookingEnum status) {
+    public BookingServiceDtoOut(Long bookingId, Long masterId, String masterUsername, Long clientId, String clientUsername, Long serviceId, String serviceName, Double price, String datetime, BookingEnum status) {
+        this.bookingId = bookingId;
         this.masterId = masterId;
         this.masterUsername = masterUsername;
         this.clientId = clientId;
@@ -69,5 +72,13 @@ public class BookingServiceDtoOut {
 
     public BookingEnum getStatus() {
         return status;
+    }
+
+    public Long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
     }
 }

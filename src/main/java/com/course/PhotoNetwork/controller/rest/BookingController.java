@@ -1,6 +1,7 @@
 package com.course.PhotoNetwork.controller.rest;
 
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
+import com.course.PhotoNetwork.model.dto.BookingUserInfoDtoIn;
 import com.course.PhotoNetwork.model.dto.UserDtoIn;
 import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
 import com.course.PhotoNetwork.service.BookingService;
@@ -35,6 +36,17 @@ public class BookingController {
             return new ResponseEntity(HttpStatus.OK);
         } catch (IllegalStateException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/status")
+    public ResponseEntity changeStatus(@RequestBody BookingUserInfoDtoIn dtoIn) {
+        try {
+            bookingService.changeStatus(dtoIn);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
