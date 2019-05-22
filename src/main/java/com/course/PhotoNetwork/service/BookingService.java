@@ -104,21 +104,13 @@ public class BookingService {
                 booking.setStatus(BookingEnum.PAID_MASTER);
                 break;
             case "3":
-                if(booking.getMaster() == currentUser) {
-                    booking.setLastChangeByMaster(true);
-                    booking.setStatus(BookingEnum.FINISH_MASTER);
-                }
-                else {
-                    booking.setLastChangeByMaster(false);
-                    booking.setStatus(BookingEnum.FINISH_CLIENT);
-                }
+                booking.setStatus(BookingEnum.FINISH_AWAITS);
+                if(booking.getMaster() == currentUser)
+                    booking.setFinishedByMaster(true);
+                else
+                    booking.setFinishedByClient(true);
                 break;
             case "4":
-                if(booking.isLastChangeByMaster() && booking.getMaster() != currentUser)
-                    booking.setStatus(BookingEnum.FINISHED);
-                break;
-            case "5":
-                if(!booking.isLastChangeByMaster() && booking.getCustomer() != currentUser)
                     booking.setStatus(BookingEnum.FINISHED);
                 break;
         }
@@ -129,16 +121,38 @@ public class BookingService {
         List<BookingServiceDtoOut> res = new ArrayList<>();
 
         for (BookingModel b : userBookedServices) {
-            BookingServiceDtoOut service = new BookingServiceDtoOut(b.getId(), b.getMaster().getId(), b.getMaster().getUsername(),
+            BookingServiceDtoOut service = new BookingServiceDtoOut(b.getId(),
+                    b.getMaster().getId(), b.getMaster().getUsername(),
                     b.getCustomer().getId(), b.getCustomer().getUsername(),
-                    b.getService().getId(), b.getService().getName(),
-                    b.getService().getPrice(),
+                    b.getService().getId(), b.getService().getName(), b.getService().getPrice(),
                     b.getBookingDate().toString(),
-                    b.getStatus()
-            );
+                    b.getStatus(),
+                    b.isFinishedByMaster(), b.isFinishedByClient(), b.isDeletedByMaster(), b.isDeletedByClient());
             res.add(service);
         }
 
         return res;
+    }
+
+    @Transactional
+    public void removeBooking(Long bookingId, Authentication auth) {
+
+        Optional<BookingModel> bookingOptional = bookingRepository.findById(bookingId);
+        BookingModel booking = bookingOptional.orElseThrow(IllegalArgumentException::new);
+
+        if(booking.getStatus() != BookingEnum.DELETE_AWAITS)
+            booking.setStatus(BookingEnum.DELETE_AWAITS);
+
+        UserModel currentUser = userService.findByEmail(auth.getName());
+
+        if(booking.getMaster() == currentUser)
+            booking.setDeletedByMaster(true);
+        else if(booking.getCustomer() == currentUser)
+            booking.setDeletedByClient(true);
+
+        if(booking.isDeletedByClient() && booking.isDeletedByMaster())
+            booking.setStatus(BookingEnum.DELETED);
+
+        bookingRepository.save(booking);
     }
 }

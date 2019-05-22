@@ -32,7 +32,8 @@
                                     <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).NEW}" class="btn btn-primary confirm">Оплатить</button>
                                 </td>
                                 <td>
-                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).FINISH_MASTER}" class="btn btn-primary confirm">Подтвердить завершение</button>
+                                    <button th:if="${(service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).FINISH_AWAITS) && !service.finishedByClient && !service.deletedByMaster && !service.deletedByClient}" class="btn btn-primary confirm">Подтвердить завершение</button>
+                                    <button th:if="${!service.deletedByClient && service.status != T(com.course.PhotoNetwork.model.types.BookingEnum).FINISHED}" class="btn btn-primary delete">Отменить запись</button>
                                 </td>
                             </tr>
                         </th:block>
@@ -66,7 +67,8 @@
                                     <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_CLIENT}" class="btn btn-primary confirm">Подтвердить оплату</button>
                                 </td>
                                 <td>
-                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).FINISH_CLIENT}" class="btn btn-primary confirm">Подтвердить завершение</button>
+                                    <button th:if="${(service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).FINISH_AWAITS) && !service.finishedByMaster && !service.deletedByMaster && !service.deletedByClient}" class="btn btn-primary confirm">Подтвердить завершение</button>
+                                    <button th:if="${!service.deletedByMaster && service.status != T(com.course.PhotoNetwork.model.types.BookingEnum).FINISHED}" class="btn btn-primary delete">Отменить запись</button>
                                 </td>
                             </tr>
                         </th:block>

@@ -41,9 +41,14 @@ public class WebController {
     @Autowired
     private BookingService bookingService;
 
+    @GetMapping("/error")
+    public ModelAndView error(ModelAndView modelAndView) throws IOException {
+        modelAndView.setViewName("error");
+        return modelAndView;
+    }
+
     @GetMapping("/login")
-    public ModelAndView loginPage(ModelAndView modelAndView, HttpServletResponse response) throws IOException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public ModelAndView loginPage(ModelAndView modelAndView, HttpServletResponse response, Authentication auth) throws IOException {
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             response.sendRedirect("/");
         } else {
@@ -53,8 +58,7 @@ public class WebController {
     }
 
     @GetMapping("/registration")
-    public ModelAndView registrationPage(ModelAndView modelAndView, HttpServletResponse response) throws IOException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public ModelAndView registrationPage(ModelAndView modelAndView, HttpServletResponse response,Authentication auth) throws IOException {
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             response.sendRedirect("/");
         } else {

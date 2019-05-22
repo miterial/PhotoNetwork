@@ -13,6 +13,25 @@ $( document ).ready(function() {
 
     });
 
+    $(".delete").on('click', function () {
+
+        var bookingId = $(this).parents("tr").attr("data-id");
+
+        $.ajax({
+            url: '/api/booking/remove/' + bookingId,
+            type: 'POST',
+            success: function () {
+                console.log("changed status!");
+                document.location.reload(true);
+                //showSuccessToast("New blacklist created!");
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("not changed status")
+                //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
+            }
+        });
+
+    });
+
     $(".confirm").on('click', function () {
 
         var bookingId = $(this).parents("tr").attr("data-id");
@@ -30,9 +49,10 @@ $( document ).ready(function() {
             data: JSON.stringify(data),
             success: function () {
                 console.log("changes status!");
+                document.location.reload(true);
                 //showSuccessToast("New blacklist created!");
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log("not booked")
+                console.log("not changed status")
                 //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
             }
         });

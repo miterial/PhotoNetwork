@@ -28,7 +28,10 @@ public class BookingModel {
 
     private BookingEnum status;
 
-    private boolean lastChangeByMaster;
+    private boolean finishedByMaster;
+    private boolean finishedByClient;
+    private boolean deletedByMaster;
+    private boolean deletedByClient;
 
     public BookingModel() {
     }
@@ -77,11 +80,39 @@ public class BookingModel {
         return id;
     }
 
-    public boolean isLastChangeByMaster() {
-        return lastChangeByMaster;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public void setLastChangeByMaster(boolean lastChangeByMaster) {
-        this.lastChangeByMaster = lastChangeByMaster;
+    public boolean isFinishedByMaster() {
+        return finishedByMaster;
+    }
+
+    public void setFinishedByMaster(boolean finishedByMaster) {
+        this.finishedByMaster = finishedByMaster;
+    }
+
+    public boolean isFinishedByClient() {
+        return finishedByClient;
+    }
+
+    public void setFinishedByClient(boolean finishedByClient) {
+        this.finishedByClient = finishedByClient;
+    }
+
+    public boolean isDeletedByMaster() {
+        return deletedByMaster;
+    }
+
+    public void setDeletedByMaster(boolean deletedByMaster) {
+        this.deletedByMaster = deletedByMaster;
+    }
+
+    public boolean isDeletedByClient() {
+        return deletedByClient;
+    }
+
+    public void setDeletedByClient(boolean deletedByClient) {
+        this.deletedByClient = deletedByClient;
     }
 }

@@ -25,7 +25,16 @@ public class BookingServiceDtoOut {
     @JsonProperty
     private BookingEnum status;
 
-    public BookingServiceDtoOut(Long bookingId, Long masterId, String masterUsername, Long clientId, String clientUsername, Long serviceId, String serviceName, Double price, String datetime, BookingEnum status) {
+    @JsonProperty
+    private boolean finishedByMaster;
+    @JsonProperty
+    private boolean finishedByClient;
+    @JsonProperty
+    private boolean deletedByMaster;
+    @JsonProperty
+    private boolean deletedByClient;
+
+    public BookingServiceDtoOut(Long bookingId, Long masterId, String masterUsername, Long clientId, String clientUsername, Long serviceId, String serviceName, Double price, String datetime, BookingEnum status, boolean finishedByMaster, boolean finishedByClient, boolean deletedByMaster, boolean deletedByClient) {
         this.bookingId = bookingId;
         this.masterId = masterId;
         this.masterUsername = masterUsername;
@@ -36,6 +45,15 @@ public class BookingServiceDtoOut {
         this.price = price;
         this.datetime = datetime;
         this.status = status;
+        this.finishedByMaster = finishedByMaster;
+        this.finishedByClient = finishedByClient;
+        this.deletedByMaster = deletedByMaster;
+        this.deletedByClient = deletedByClient;
+    }
+
+
+    public Long getBookingId() {
+        return bookingId;
     }
 
     public Long getMasterId() {
@@ -74,11 +92,19 @@ public class BookingServiceDtoOut {
         return status;
     }
 
-    public Long getBookingId() {
-        return bookingId;
+    public boolean isFinishedByMaster() {
+        return finishedByMaster;
     }
 
-    public void setBookingId(Long bookingId) {
-        this.bookingId = bookingId;
+    public boolean isFinishedByClient() {
+        return finishedByClient;
+    }
+
+    public boolean isDeletedByMaster() {
+        return deletedByMaster;
+    }
+
+    public boolean isDeletedByClient() {
+        return deletedByClient;
     }
 }

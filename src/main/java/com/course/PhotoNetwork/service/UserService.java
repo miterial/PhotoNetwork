@@ -148,8 +148,10 @@ public class UserService implements UserDetailsService {
                 subscribers.add(currentUser);
                 userToSubscribe.setSubscribers(subscribers);
             }
-            else
+            else if(!currentUser.getSubscribers().contains(currentUser)) {
                 userToSubscribe.getSubscribers().add(currentUser);
+            }
+            else throw new IllegalArgumentException("Текущий пользователь уже подписан");
         }
 
         else throw new IllegalArgumentException("Пользователь " + userId + " не найден");
