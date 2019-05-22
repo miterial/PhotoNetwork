@@ -6,7 +6,6 @@ import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoOut;
 import com.course.PhotoNetwork.model.dto.BookingUserInfoDtoIn;
-import com.course.PhotoNetwork.model.dto.BookingUserInfoDtoOut;
 import com.course.PhotoNetwork.model.types.BookingEnum;
 import com.course.PhotoNetwork.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +93,9 @@ public class BookingService {
 
         BookingModel booking = bookingOptional.orElseThrow(IllegalArgumentException::new);
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserModel currentUser = userService.findByEmail(auth.getName());
+
         switch (dtoIn.getPrevStatusId()) {
             case "1":
                 booking.setStatus(BookingEnum.PAID_CLIENT);
@@ -102,10 +104,22 @@ public class BookingService {
                 booking.setStatus(BookingEnum.PAID_MASTER);
                 break;
             case "3":
-                booking.setStatus(BookingEnum.AWAITS_FINISH);
+                if(booking.getMaster() == currentUser) {
+                    booking.setLastChangeByMaster(true);
+                    booking.setStatus(BookingEnum.FINISH_MASTER);
+                }
+                else {
+                    booking.setLastChangeByMaster(false);
+                    booking.setStatus(BookingEnum.FINISH_CLIENT);
+                }
                 break;
             case "4":
-                booking.setStatus(BookingEnum.FINISHED);
+                if(booking.isLastChangeByMaster() && booking.getMaster() != currentUser)
+                    booking.setStatus(BookingEnum.FINISHED);
+                break;
+            case "5":
+                if(!booking.isLastChangeByMaster() && booking.getCustomer() != currentUser)
+                    booking.setStatus(BookingEnum.FINISHED);
                 break;
         }
         bookingRepository.save(booking);

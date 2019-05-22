@@ -4,8 +4,9 @@ public enum BookingEnum {
     NEW(1,"ожидает оплаты"),
     PAID_CLIENT(2,"оплачено"),
     PAID_MASTER(3,"оплата подтверждена"),
-    AWAITS_FINISH(4,"завершено (не закрыто)"),
-    FINISHED(5,"завершено");
+    FINISH_MASTER(4,"завершено (ожидает подтверждения)"),
+    FINISH_CLIENT(5,"завершено (ожидает подтверждения)"),
+    FINISHED(6,"завершено");
 
     private String val;
     private long id;

@@ -32,7 +32,7 @@
                                     <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).NEW}" class="btn btn-primary confirm">Оплатить</button>
                                 </td>
                                 <td>
-                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).AWAITS_FINISH}" class="btn btn-primary confirm">Подтвердить завершение</button>
+                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).FINISH_MASTER}" class="btn btn-primary confirm">Подтвердить завершение</button>
                                 </td>
                             </tr>
                         </th:block>
@@ -66,7 +66,7 @@
                                     <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_CLIENT}" class="btn btn-primary confirm">Подтвердить оплату</button>
                                 </td>
                                 <td>
-                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).AWAITS_FINISH}" class="btn btn-primary confirm">Подтвердить завершение</button>
+                                    <button th:if="${service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).PAID_MASTER || service.status == T(com.course.PhotoNetwork.model.types.BookingEnum).FINISH_CLIENT}" class="btn btn-primary confirm">Подтвердить завершение</button>
                                 </td>
                             </tr>
                         </th:block>

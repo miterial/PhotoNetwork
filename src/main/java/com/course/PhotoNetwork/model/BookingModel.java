@@ -28,6 +28,8 @@ public class BookingModel {
 
     private BookingEnum status;
 
+    private boolean lastChangeByMaster;
+
     public BookingModel() {
     }
 
@@ -73,5 +75,13 @@ public class BookingModel {
 
     public long getId() {
         return id;
+    }
+
+    public boolean isLastChangeByMaster() {
+        return lastChangeByMaster;
+    }
+
+    public void setLastChangeByMaster(boolean lastChangeByMaster) {
+        this.lastChangeByMaster = lastChangeByMaster;
     }
 }
