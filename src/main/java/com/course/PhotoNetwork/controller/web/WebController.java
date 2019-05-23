@@ -3,6 +3,7 @@ package com.course.PhotoNetwork.controller.web;
 import com.course.PhotoNetwork.controller.rest.PhotoController;
 import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.dto.*;
+import com.course.PhotoNetwork.model.types.BookingEnum;
 import com.course.PhotoNetwork.service.*;
 import com.course.PhotoNetwork.controller.rest.AdminController;
 import com.course.PhotoNetwork.model.PhotoModel;
@@ -40,6 +41,8 @@ public class WebController {
     private LikeRepository likeRepository;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("/error")
     public ModelAndView error(ModelAndView modelAndView) throws IOException {
@@ -126,29 +129,16 @@ public class WebController {
     }
 
     @GetMapping("/account")
-    public ModelAndView account(ModelAndView model) {
+    public ModelAndView account(ModelAndView model,Authentication auth) {
         model.setViewName("account_form");
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             UserModel user = userService.findByEmail(auth.getName());
+
             model.addObject("currentUser", userService.toDto(user));
 
-            if(user.isProvideServices())
+            if(user.isProvideServices()) {
                 model.addObject("services", servicesService.getDefaultServices());
-
-        } catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return model;
-    }
-
-    @GetMapping("/upload")
-    public ModelAndView upload(ModelAndView model) {
-        model.setViewName("upload");
-        try {
-            model.addObject("newPhoto", new PhotoDtoIn());
-
-            model.addObject("categories", categoryService.findAll());
+            }
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,13 +147,26 @@ public class WebController {
     }
 
     @GetMapping("/user/{userId}")
-    public ModelAndView user(@PathVariable Long userId, ModelAndView model) {
+    public ModelAndView user(@PathVariable Long userId, ModelAndView model, Authentication auth) {
         model.setViewName("account");
         try {
-            model.addObject("user", userService.toDto(userService.findById(userId).get()));
+            UserModel user = userService.findById(userId).get();
+            model.addObject("user", userService.toDto(user));
 
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            model.addObject("isCurrent", userService.findByEmail(auth.getName()).getId() == userId);
+            if(user.isProvideServices()) {
+                model.addObject("services", servicesService.getDefaultServices());
+                model.addObject("reviews", reviewService.toDto(reviewService.findAll()));
+            }
+
+            UserModel currentUser = userService.findByEmail(auth.getName());
+            model.addObject("isCurrent", currentUser.getId() == userId);
+
+            if(!bookingService.findByClientAndStatus(currentUser, BookingEnum.FINISHED).isEmpty() &&
+                    userId != currentUser.getId()){
+                model.addObject("canWriteReview",true);
+                model.addObject("newReview",new ReviewDtoIn());
+                model.addObject("curId",currentUser.getId());
+            }
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,6 +208,20 @@ public class WebController {
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
             model.setViewName("error");
+        }
+        return model;
+    }
+
+    @GetMapping("/upload")
+    public ModelAndView upload(ModelAndView model) {
+        model.setViewName("upload");
+        try {
+            model.addObject("newPhoto", new PhotoDtoIn());
+
+            model.addObject("categories", categoryService.findAll());
+
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return model;
     }

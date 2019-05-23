@@ -155,4 +155,8 @@ public class BookingService {
 
         bookingRepository.save(booking);
     }
+
+    public List<BookingModel> findByClientAndStatus(UserModel user, BookingEnum status) {
+        return bookingRepository.findByCustomerAndStatus(user, status);
+    }
 }

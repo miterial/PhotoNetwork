@@ -51,6 +51,8 @@ public class UserModel {
 
     private boolean provideServices = true;
 
+    private double avgRate;
+
     @ManyToMany
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<RoleModel> roles;
@@ -60,16 +62,20 @@ public class UserModel {
     private List<ServiceModel> services;
 
     @OneToMany
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<UserModel> subscribers;
 
-    @OneToMany
-    private List<UserModel> customers;
-
     @OneToMany(mappedBy = "user")
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<PhotoModel> photos;
 
     @OneToMany(mappedBy = "user")
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<LikeModel> likes;
+
+    @OneToMany(mappedBy = "user")
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    private List<ReviewModel> reviews;  //if user provides services
 
     public void setName(String name) {
         this.name = name;
@@ -196,8 +202,10 @@ public class UserModel {
         hash = 79 * hash + (this.enabled ? 1 : 0);
         hash = 79 * hash + (this.provideServices ? 1 : 0);
         hash = 79 * hash + Objects.hashCode(this.services);
+        hash = 79 * hash + Objects.hashCode(this.reviews);
         hash = 79 * hash + Objects.hashCode(this.roles);
         hash = 79 * hash + Objects.hashCode(this.photos);
+        hash = 79 * hash + Objects.hashCode(this.avgRate);
         return hash;
     }
 
@@ -217,19 +225,27 @@ public class UserModel {
         this.subscribers = subscribers;
     }
 
-    public List<UserModel> getCustomers() {
-        return customers;
-    }
-
-    public void setCustomers(List<UserModel> customers) {
-        this.customers = customers;
-    }
-
     public List<LikeModel> getLikes() {
         return likes;
     }
 
     public void setLikes(List<LikeModel> likes) {
         this.likes = likes;
+    }
+
+    public List<ReviewModel> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ReviewModel> reviews) {
+        this.reviews = reviews;
+    }
+
+    public double getAvgRate() {
+        return avgRate;
+    }
+
+    public void setAvgRate(double avgRate) {
+        this.avgRate = avgRate;
     }
 }
