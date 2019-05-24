@@ -1,11 +1,9 @@
 package com.course.PhotoNetwork.service;
 
-import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.RoleModel;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.*;
-import com.course.PhotoNetwork.repository.BookingRepository;
 import com.course.PhotoNetwork.repository.RoleRepository;
 import com.course.PhotoNetwork.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +35,8 @@ public class UserService implements UserDetailsService {
     private RoleRepository roleRepository;
     @Autowired
     private PhotoService photoService;
+    @Autowired
+    private ReviewService reviewService;
 
     @Override
     @Transactional
@@ -117,7 +116,7 @@ public class UserService implements UserDetailsService {
         return new UserDtoOut(usr.getId(), usr.getName(), usr.getSurname(),
                 usr.getBirthday(), usr.getRegdate(),
                 usr.getUsername(), usr.getDescription(), usr.getEmail(),
-                usr.getAvatar(), services, usr.isProvideServices(), photoService.toDtoSmall(usr.getPhotos()));
+                usr.getAvatar(), services, usr.isProvideServices(), reviewService.toDto(usr.getReviews()), photoService.toDtoSmall(usr.getPhotos()));
     }
 
     @Deprecated

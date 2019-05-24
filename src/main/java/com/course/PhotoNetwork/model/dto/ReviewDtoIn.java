@@ -4,13 +4,13 @@ public class ReviewDtoIn {
 
     private Long authorId;
     private Long masterId;
-    private int rate;
+    private Integer rate;
     private String content;
 
     public ReviewDtoIn() {
     }
 
-    public ReviewDtoIn(Long authorId, Long masterId, int rate, String content) {
+    public ReviewDtoIn(Long authorId, Long masterId, Integer rate, String content) {
         this.authorId = authorId;
         this.masterId = masterId;
         this.rate = rate;
@@ -25,11 +25,11 @@ public class ReviewDtoIn {
         this.authorId = authorId;
     }
 
-    public int getRate() {
+    public Integer getRate() {
         return rate;
     }
 
-    public void setRate(int rate) {
+    public void setRate(Integer rate) {
         this.rate = rate;
     }
 

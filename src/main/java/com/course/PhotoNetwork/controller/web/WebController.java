@@ -160,6 +160,7 @@ public class WebController {
 
             UserModel currentUser = userService.findByEmail(auth.getName());
             model.addObject("isCurrent", currentUser.getId() == userId);
+            model.addObject("canWriteReview",false);
 
             if(!bookingService.findByClientAndStatus(currentUser, BookingEnum.FINISHED).isEmpty() &&
                     userId != currentUser.getId()){

@@ -33,11 +33,13 @@ public class UserDtoOut {
     @JsonProperty
     private boolean provideServices;
     @JsonProperty
+    private List<ReviewDtoOut> reviews;
+    @JsonProperty
     private List<PhotoDtoOutSmall> photos;
 
     public UserDtoOut() { }
 
-    public UserDtoOut(long id, String name, String surname, Date birthday, Date regdate, String username, String description, String email, String avatar, List<ServiceDto> services, boolean provideServices, List<PhotoDtoOutSmall> photos) {
+    public UserDtoOut(long id, String name, String surname, Date birthday, Date regdate, String username, String description, String email, String avatar, List<ServiceDto> services, boolean provideServices, List<ReviewDtoOut> reviews, List<PhotoDtoOutSmall> photos) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -46,6 +48,7 @@ public class UserDtoOut {
         this.description = description;
         this.email = email;
         this.provideServices = provideServices;
+        this.reviews = reviews;
         this.photos = photos;
         this.password = "";
         this.avatar = avatar;
@@ -157,5 +160,13 @@ public class UserDtoOut {
 
     public void setPhotos(List<PhotoDtoOutSmall> photos) {
         this.photos = photos;
+    }
+
+    public List<ReviewDtoOut> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ReviewDtoOut> reviews) {
+        this.reviews = reviews;
     }
 }

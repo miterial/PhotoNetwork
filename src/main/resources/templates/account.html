@@ -49,13 +49,14 @@
                     <h5>Оставить отзыв</h5>
                     <form th:action="@{/api/review}" method="post" th:object="${newReview}">
                         <div class="form-group">
-                            <input type="number" min="1" max="5" th:value="*{rate}" th:field="*{rate}" class="form-control" name="rate" placeholder="оценка 1-5"/>
+                            <input type="number" min="1" max="5" th:field="*{rate}" class="form-control" name="rate" placeholder="оценка 1-5"/>
                         </div>
                         <div class="form-group">
-                            <textarea th:value="*{content}" th:field="*{content}" class="form-control" name="content" placeholder="ваш отзыв"/>
+                            <textarea th:field="*{content}" class="form-control" name="content" placeholder="ваш отзыв"/>
                         </div>
-                        <input type="hidden" name="masterId" th:value="${user.id}" th:field="*{masterId}"/>
-                        <input type="hidden" name="authorId" th:value="${curId}" th:field="*{authorId}"/>
+                        <input type="hidden" name="masterId" th:value="${user.id}"/>
+                        <input type="hidden" name="authorId" th:value="${curId}"/>
+                        <input type="submit" class="btn btn-success">
                     </form>
                 </div>
                 <div class="form-group" th:if="${user.reviews}">

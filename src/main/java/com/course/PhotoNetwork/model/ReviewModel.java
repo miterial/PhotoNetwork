@@ -16,6 +16,9 @@ public class ReviewModel {
     @ManyToOne
     private UserModel author;
 
+    public ReviewModel() {
+    }
+
     public ReviewModel(String content, int rate, UserModel author) {
         this.content = content;
         this.rate = rate;
