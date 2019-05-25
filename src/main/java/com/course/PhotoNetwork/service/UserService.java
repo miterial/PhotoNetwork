@@ -18,9 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,9 +40,25 @@ public class UserService implements UserDetailsService {
     @Autowired
     private ReviewService reviewService;
 
+    @PostConstruct
+    public void init() {
+        if(findByEmail("admin@adm.com") == null) {
+            UserDtoIn admin = new UserDtoIn();
+            admin.setEmail("admin@adm.com");
+            admin.setPassword("verystrongpass");
+            admin.setUsername("admin");
+
+            UserModel userModel = registerUser(admin);
+            List<RoleModel> roles = roleRepository.findAll();
+            userModel.setRoles(roles);
+            userRepository.save(userModel);
+        }
+    }
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
 
         UserModel user = userRepository.findByEmail(email);
         if(user != null) {
@@ -65,17 +83,19 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 
-    public void registerUser(UserDtoIn newUser) {
+    public UserModel registerUser(UserDtoIn newUser) {
         UserModel user = new UserModel();
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        user.setUsername(newUser.getUsername());
         List<RoleModel> roles = new ArrayList<>();
         roles.add(roleRepository.findByRolename("USER"));
         user.setRoles(roles);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
+    @Transactional
     public void updateUser(UserDtoIn newUser) throws IOException, ParseException {
         UserModel user = userRepository.findByEmail(newUser.getEmail());
         user.setEmail(newUser.getEmail());
@@ -83,20 +103,18 @@ public class UserService implements UserDetailsService {
         user.setName(newUser.getName());
         user.setSurname(newUser.getSurname());
         user.setUsername(newUser.getUsername());
-        user.setProvideServices(newUser.isProvideServices());
         user.setDescription(newUser.getDescription());
 
         if(newUser.getAvatar() != null)
             user.setAvatar("data:image/jpeg;base64," + Base64.getEncoder().
                 encodeToString(newUser.getAvatar().getBytes()));
 
-
-        //if(newUser.getBirthday() != null)
-            //user.setBirthday(new SimpleDateFormat("dd-MM-yyyy").parse(newUser.getBirthday()));
+        if(newUser.getBirthday() != null && !newUser.getBirthday().isEmpty())
+            user.setBirthday(new SimpleDateFormat("dd.MM.yyyy").parse(newUser.getBirthday().split( " ")[0]));
 
         List<RoleModel> roles = new ArrayList<>();
         roles.add(roleRepository.findByRolename("USER"));
-        if(user.isProvideServices())
+        if(newUser.isProvideServices())
             roles.add(roleRepository.findByRolename("MASTER"));
 
         user.setRoles(roles);
@@ -108,7 +126,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public UserDtoOut toDto(UserModel usr) {
+    public UserDtoOut toDto(UserModel usr) throws ParseException {
         ArrayList<ServiceDto> services = new ArrayList<>();
         for (ServiceModel r : usr.getServices()) {
             services.add(new ServiceDto(r.getId(), r.getName(), r.getPrice()));
@@ -116,7 +134,7 @@ public class UserService implements UserDetailsService {
         return new UserDtoOut(usr.getId(), usr.getName(), usr.getSurname(),
                 usr.getBirthday(), usr.getRegdate(),
                 usr.getUsername(), usr.getDescription(), usr.getEmail(),
-                usr.getAvatar(), services, usr.isProvideServices(), reviewService.toDto(usr.getReviews()), photoService.toDtoSmall(usr.getPhotos()));
+                usr.getAvatar(), usr.getAvgRate(), services, isMaster(usr), reviewService.toDto(usr.getReviews()), photoService.toDtoSmall(usr.getPhotos()));
     }
 
     @Deprecated
@@ -134,29 +152,58 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void subscribeToUser(Long userId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserModel currentUser = findByEmail(auth.getName());
-        Optional<UserModel> usertoSubscribeOptional = findById(userId);
+    public void subscribeToUser(UserModel newSubscriber, Long userIdToSubscribe) {
+        Optional<UserModel> usertoSubscribeOptional = findById(userIdToSubscribe);
         if(usertoSubscribeOptional.isPresent()) {
 
             UserModel userToSubscribe = usertoSubscribeOptional.get();
 
-            if(currentUser.getSubscribers() == null) {
+            if(newSubscriber.getSubscribers() == null) {
                 List<UserModel> subscribers = new ArrayList<>();
-                subscribers.add(currentUser);
+                subscribers.add(newSubscriber);
                 userToSubscribe.setSubscribers(subscribers);
             }
-            else if(!currentUser.getSubscribers().contains(currentUser)) {
-                userToSubscribe.getSubscribers().add(currentUser);
+            else if(!newSubscriber.getSubscribers().contains(newSubscriber)) {
+                userToSubscribe.getSubscribers().add(newSubscriber);
             }
             else throw new IllegalArgumentException("Текущий пользователь уже подписан");
+            userRepository.save(userToSubscribe);
         }
 
-        else throw new IllegalArgumentException("Пользователь " + userId + " не найден");
+        else throw new IllegalArgumentException("Пользователь " + userIdToSubscribe + " не найден");
+    }
+
+    public void unsubscribeFromUser(UserModel subscriber, Long userIdToUnsubscribe) {
+        Optional<UserModel> usertoUnsubscribeOptional = findById(userIdToUnsubscribe);
+        if(usertoUnsubscribeOptional.isPresent()) {
+
+            UserModel userToUnsbscribe = usertoUnsubscribeOptional.get();
+
+            userToUnsbscribe.getSubscribers().removeIf(s -> s.getId() == subscriber.getId());
+            userRepository.save(userToUnsbscribe);
+
+        }
+
+        else throw new IllegalArgumentException("Пользователь " + userIdToUnsubscribe + " не найден");
     }
 
     public List<UserModel> findSubscribes(UserModel user) {
         return userRepository.findAll().stream().filter(u -> u.getSubscribers().contains(user)).collect(Collectors.toList());
+    }
+
+    public boolean isAdmin(UserModel user) {
+        for(RoleModel userRole : user.getRoles()) {
+            if(userRole.getRolename().equals("ADMIN"))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isMaster(UserModel user) {
+        for(RoleModel userRole : user.getRoles()) {
+            if(userRole.getRolename().equals("MASTER"))
+                return true;
+        }
+        return false;
     }
 }

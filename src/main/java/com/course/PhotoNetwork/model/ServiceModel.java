@@ -1,10 +1,6 @@
 package com.course.PhotoNetwork.model;
 
-import com.course.PhotoNetwork.model.types.ServiceEnum;
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,9 +10,6 @@ public class ServiceModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    /**
-     * @see ServiceEnum
-     */
     @Column(nullable = false)
     private String name;
 

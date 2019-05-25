@@ -14,3 +14,7 @@ input[name="price"] {
 .datepickers-container {
     z-index: 1055;
 }
+[class*="iconicfill-"]:before {
+    font-family: 'IconicFill', sans-serif;
+    font-style:normal;
+}

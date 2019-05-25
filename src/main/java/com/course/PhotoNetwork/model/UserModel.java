@@ -49,32 +49,31 @@ public class UserModel {
 
     private boolean enabled = true;
 
-    private boolean provideServices = true;
-
+    @Column
     private double avgRate;
 
     @ManyToMany
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<RoleModel> roles;
 
     @OneToMany
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
     private List<ServiceModel> services;
 
     @OneToMany
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
     private List<UserModel> subscribers;
 
     @OneToMany(mappedBy = "user")
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
     private List<PhotoModel> photos;
 
     @OneToMany(mappedBy = "user")
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
     private List<LikeModel> likes;
 
     @OneToMany
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
     private List<ReviewModel> reviews;  //if user provides services
 
     public void setName(String name) {
@@ -178,14 +177,6 @@ public class UserModel {
         this.services = services;
     }
 
-    public boolean isProvideServices() {
-        return provideServices;
-    }
-
-    public void setProvideServices(boolean provideServices) {
-        this.provideServices = provideServices;
-    }
-
     @Override
     public int hashCode() {
         int hash = 7;
@@ -200,7 +191,6 @@ public class UserModel {
         hash = 79 * hash + Objects.hashCode(this.email);
         hash = 79 * hash + Objects.hashCode(this.avatar);
         hash = 79 * hash + (this.enabled ? 1 : 0);
-        hash = 79 * hash + (this.provideServices ? 1 : 0);
         hash = 79 * hash + Objects.hashCode(this.services);
         hash = 79 * hash + Objects.hashCode(this.reviews);
         hash = 79 * hash + Objects.hashCode(this.roles);
@@ -248,4 +238,5 @@ public class UserModel {
     public void setAvgRate(double avgRate) {
         this.avgRate = avgRate;
     }
+
 }

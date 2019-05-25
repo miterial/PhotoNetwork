@@ -3,11 +3,10 @@ package com.course.PhotoNetwork.controller.rest;
 import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping
-    public CategoryModel addCategory(@RequestParam String category_name){
+    public ResponseEntity addCategory(@RequestParam String category_name){
 
         CategoryModel category = new CategoryModel();
 
@@ -30,11 +29,23 @@ public class CategoryController {
 
         try {
             categoryService.save(category);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(CategoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return category;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity deleteCategory(@PathVariable Long categoryId) {
+        try {
+            categoryService.deleteById(categoryId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception ex) {
+            Logger.getLogger(ServicesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/all")

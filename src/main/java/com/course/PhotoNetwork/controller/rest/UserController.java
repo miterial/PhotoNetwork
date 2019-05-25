@@ -1,5 +1,6 @@
 package com.course.PhotoNetwork.controller.rest;
 
+import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
 import com.course.PhotoNetwork.model.dto.UserDtoIn;
 import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
@@ -9,6 +10,8 @@ import com.course.PhotoNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -38,22 +41,23 @@ public class UserController {
         response.sendRedirect("/account");
     }
 
-    @PostMapping("/services")
-    @ResponseBody
-    public ResponseEntity changeServices(@RequestBody UserServicesDtoIn services) {
+    @PostMapping("/subscribe/{userId}")
+    public HttpStatus subscribe(@PathVariable Long userId,Authentication auth) {
         try {
-            servicesService.changeServices(services);
-            return new ResponseEntity(HttpStatus.OK);
+            UserModel currentUser = userService.findByEmail(auth.getName());
+            userService.subscribeToUser(currentUser,userId);
+            return HttpStatus.OK;
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return HttpStatus.BAD_REQUEST;
     }
 
-    @PostMapping("/subscribe/{userId}")
-    public HttpStatus subscribe(@PathVariable Long userId) {
+    @PostMapping("/unsubscribe/{userId}")
+    public HttpStatus unsubscribe(@PathVariable Long userId,Authentication auth) {
         try {
-            userService.subscribeToUser(userId);
+            UserModel currentUser = userService.findByEmail(auth.getName());
+            userService.unsubscribeFromUser(currentUser,userId);
             return HttpStatus.OK;
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -62,6 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/avatar")
+    @Deprecated
     public String uploadAvatar(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         try {
             userService.changeAvatar(file);

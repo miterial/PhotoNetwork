@@ -3,11 +3,10 @@ package com.course.PhotoNetwork.controller.rest;
 import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.service.CategoryService;
-import com.course.PhotoNetwork.service.RoleService;
 import com.course.PhotoNetwork.service.ServicesService;
-import com.course.PhotoNetwork.model.RoleModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,58 +19,28 @@ import java.util.logging.Logger;
 public class AdminController {
 
     @Autowired
-    RoleService roleService;
-    @Autowired
     private CategoryService categoryService;
     @Autowired
     private ServicesService servicesService;
 
-    @PostMapping("/role")
-    public HttpStatus addRole(@RequestParam String roleName) {
-        RoleModel role = new RoleModel();
-
-        role.setRolename(roleName);
-
-        try {
-            roleService.addRole(role);
-        } catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-
-        }
-
-        return HttpStatus.OK;
-    }
-
-    @DeleteMapping("/role")
-    public HttpStatus deleteRole(@RequestParam String roleName) {
-        try {
-            roleService.deleteRole(roleName);
-        } catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-
-        }
-
-        return HttpStatus.OK;
-    }
-
     @PostMapping("/category")
-    public HttpStatus addCategory(@RequestParam String categoryName) {
+    public ResponseEntity addCategory(@RequestParam String categoryName) {
         CategoryModel category = new CategoryModel();
 
         category.setName(categoryName);
 
         try {
             categoryService.save(category);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
 
         }
-
-        return HttpStatus.OK;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/category")
-    public HttpStatus updateCategory(@RequestParam String categoryName) {
+    public ResponseEntity updateCategory(@RequestParam String categoryName) {
         Optional<CategoryModel> category = categoryService.findByName(categoryName);
 
         if(category.isPresent()) {
@@ -79,18 +48,18 @@ public class AdminController {
 
             try {
                 categoryService.save(category.get());
+                return new ResponseEntity(HttpStatus.OK);
             } catch (Exception ex) {
                 Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
 
             }
-
-            return HttpStatus.OK;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return HttpStatus.NOT_FOUND;
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/category")
-    public HttpStatus deleteCategory(@RequestParam String categoryName) {
+    public ResponseEntity deleteCategory(@RequestParam String categoryName) {
         try {
             categoryService.deleteByName(categoryName);
         } catch (Exception ex) {
@@ -98,28 +67,29 @@ public class AdminController {
 
         }
 
-        return HttpStatus.OK;
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
     @PostMapping("/service")
-    public HttpStatus addService(@RequestParam String serviceName) {
+    public ResponseEntity addService(@RequestParam String serviceName) {
         ServiceModel service = new ServiceModel();
 
         service.setName(serviceName);
 
         try {
             servicesService.save(service);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
 
         }
 
-        return HttpStatus.OK;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/service")
-    public HttpStatus updateService(@RequestParam String serviceName) {
+    public ResponseEntity updateService(@RequestParam String serviceName) {
         Optional<ServiceModel> service = servicesService.findByName(serviceName);
 
         if(service.isPresent()) {
@@ -127,25 +97,25 @@ public class AdminController {
 
             try {
                 servicesService.save(service.get());
+                return new ResponseEntity(HttpStatus.OK);
             } catch (Exception ex) {
                 Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
 
             }
-
-            return HttpStatus.OK;
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        return HttpStatus.NOT_FOUND;
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/service")
-    public HttpStatus deleteService(@RequestParam String serviceName) {
+    public ResponseEntity deleteService(@RequestParam String serviceName) {
         try {
             servicesService.deleteByName(serviceName);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
 
         }
-
-        return HttpStatus.OK;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }

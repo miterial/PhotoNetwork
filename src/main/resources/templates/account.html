@@ -10,7 +10,7 @@
                 <h2>Информация профиля</h2>
                 <img th:src="${user.avatar}" class="img-fluid mb-2" >
                 <p th:text="${user.description}"></p>
-                <button th:unless="${isCurrent}" class="btn btn-primary" id="subscribeBtn">Подписаться</button>
+                <button th:unless="${isCurrent}" id="subscribeBtn" class="btn btn-primary" th:text="${subscribed ? 'Отписаться' : 'Подписаться'}"></button>
 
                 <div class="form-group">
                     <h3><span th:if="${user.name}" th:text="${user.name}"></span><span th:if="${user.surname}" th:text="${' ' + user.surname}"></span></h3>
@@ -59,12 +59,13 @@
                         <input type="submit" class="btn btn-success">
                     </form>
                 </div>
-                <div class="form-group" th:if="${user.reviews}">
+                <div class="form-group" th:if="${user.reviews.size()>0}">
                     <h3>Последние отзывы</h3>
+                    <p th:text="${'Средняя оценка: '+ user.avgRate}"></p>
                     <th:block th:each="review : ${user.reviews}">
                         <div class="card">
                             <div class="card-header">
-                                <span th:text="${'Оценка: ' + review.rate}"></span>
+                                <span th:text="${'Оценка: ' + review.rate + ' Автор: '}"></span>
                                 <a th:href="@{'/user/' + review.authorId}" th:text="${review.authorUsername}"></a>
                             </div>
                             <div class="card-body">

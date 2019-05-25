@@ -24,6 +24,9 @@
 
                 <div class="col-6">
                     <h3>Изменить информацию профиля</h3>
+                    <div class="form-group">
+                        <a th:href="*{'/user/' + id}">Ссылка на страницу</a>
+                    </div>
                         <div class="form-group">
                             <div class="form-group">
                                 <input type="email" th:value="*{email}" th:field="*{email}" class="form-control" name="email" placeholder="email"/>
@@ -42,23 +45,24 @@
                             </div>
                             <div class="form-group">
                                 <input type="text" id="account_birthday" th:value="*{birthday}" th:field="*{birthday}" class="form-control datepicker-here" name="birthday" placeholder="дата рождения"/>
-                                <span hidden></span>
                             </div>
                             <div class="form-group ml-4">
                                 <input type="checkbox" th:value="*{provideServices}" th:field="*{provideServices}" class="form-check-input" name="provideServices"/> Я хочу предоставлять услуги
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="submit" class="btn btn-primary" value="Сохранить" />
+                            <input type="submit" class="btn btn-primary" value="Сохранить профиль" />
                         </div>
                     <h3 th:if="${services}">Выбрать предоставляемые услуги</h3>
-                    <th:block th:each="services : ${services}">
+                    <p th:if="${services.size() == 0}">Выбор услуг недоступен. Обратитесь к администратору.</p>
+                    <!-- Услуги, которые пользователь может выбрать/убрать, чтобы предоставлять-->
+                    <th:block th:each="service : ${services}">
                         <div class="form-inline form-group justify-content-between">
-                            <span><input type="checkbox" class="form-check-input services" th:name="${services.name}" th:text="${services.name}"></span>
-                            <input type="number" class="form-control" name="price" placeholder="цена"/>
+                            <span><input type="checkbox" class="form-check-input services" th:name="${service.name}" th:text="${service.name}" th:checked="${#lists.contains(currentUser.services,service)}" ></span>
+                            <input type="number" class="form-control" name="price" th:value="${service.price}" placeholder="цена"/>
                         </div>
                     </th:block>
-                    <input th:if="${services}" type="button" id="saveServices" class="btn btn-primary" value="Сохранить" />
+                    <input th:if="${services.size() > 0}" type="button" id="saveServices" class="btn btn-primary" value="Сохранить услуги" />
                 </div>
             </div>
         </form>

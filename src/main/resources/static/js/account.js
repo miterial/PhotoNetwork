@@ -2,39 +2,36 @@ $( document ).ready(function() {
 
     $("#saveServices").on('click', function () {
 
-        var services = [];
+        var newServices = [];
 
         $(".services").each(function () {
-            if($(".services").prop('checked')) {
+            if($(this).is(":checked")) {
                 var temp = {};
                 temp["name"] = $(this).attr('name');
                 temp["price"] = $(this).closest("div").find("input[name='price']").val();
-                if(temp["price"] === "") {
+                console
+                    .log(temp["price"]);
+                if(temp["price"] === "0,0") {
                     console.log("fill in the price!")
                     return false;
                 }
-                services.push(temp);
+                newServices.push(temp);
             }
         });
 
-        if(services.length === 0) {
-            console.log("choose at least one service")
-            return false;
-        }
-
         var data = {};
-        data["services"] = services;
+        data["services"] = newServices;
         data["userId"] = $("#saveServices").parents(".row").attr("data-id");
         console.log(data);
 
         $.ajax({
-            url: '/api/account/services',
+            url: '/api/service/services',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function () {
                 console.log("changed services of user!");
-                //showSuccessToast("New blacklist created!");
+                //document.location.reload(true);
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
                 //showDangerToast("Error creating blacklist");
             }
@@ -45,12 +42,13 @@ $( document ).ready(function() {
     $("#subscribeBtn").on('click', function () {
 
         var id = $("#subscribeBtn").parents(".row").attr("data-id");
+        var action = $(this).text() === "Подписаться" ? "subscribe" : "unsubscribe";
         $.ajax({
-            url: '/api/account/subscribe/' + id,
+            url: '/api/account/' + action + '/' + id,
             type: 'POST',
             success: function () {
                 console.log("subscribed!");
-                //showSuccessToast("New blacklist created!");
+                document.location.reload(true);
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
                 //showDangerToast("Error creating blacklist");
             }

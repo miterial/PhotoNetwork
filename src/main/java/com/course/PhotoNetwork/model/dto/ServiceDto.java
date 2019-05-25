@@ -43,13 +43,12 @@ public class ServiceDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServiceDto that = (ServiceDto) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(price, that.price);
+        return Objects.equals(that.name, name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price);
+        return Objects.hash(name);
     }
 
     public long getId() {
@@ -59,4 +58,6 @@ public class ServiceDto {
     public void setId(long id) {
         this.id = id;
     }
+
+
 }

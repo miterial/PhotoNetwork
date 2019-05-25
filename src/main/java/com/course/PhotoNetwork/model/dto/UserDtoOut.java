@@ -2,9 +2,12 @@ package com.course.PhotoNetwork.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class UserDtoOut {
 
@@ -17,7 +20,7 @@ public class UserDtoOut {
     @JsonProperty
     private String birthday;
     @JsonProperty
-    private Date regdate;
+    private String regdate;
     @JsonProperty
     private String username;
     @JsonProperty
@@ -29,6 +32,8 @@ public class UserDtoOut {
     @JsonProperty
     private String avatar;
     @JsonProperty
+    private double avgRate;
+    @JsonProperty
     private List<ServiceDto> services;
     @JsonProperty
     private boolean provideServices;
@@ -39,14 +44,15 @@ public class UserDtoOut {
 
     public UserDtoOut() { }
 
-    public UserDtoOut(long id, String name, String surname, Date birthday, Date regdate, String username, String description, String email, String avatar, List<ServiceDto> services, boolean provideServices, List<ReviewDtoOut> reviews, List<PhotoDtoOutSmall> photos) {
+    public UserDtoOut(long id, String name, String surname, Date birthday, Date regdate, String username, String description, String email, String avatar, double avgRate, List<ServiceDto> services, boolean provideServices, List<ReviewDtoOut> reviews, List<PhotoDtoOutSmall> photos) throws ParseException {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.regdate = regdate;
+        this.regdate = regdate.toString().split(" ")[0].replace("-",".");
         this.username = username;
         this.description = description;
         this.email = email;
+        this.avgRate = avgRate;
         this.provideServices = provideServices;
         this.reviews = reviews;
         this.photos = photos;
@@ -55,7 +61,7 @@ public class UserDtoOut {
         this.services = services;
 
         if(birthday != null)
-            this.birthday = birthday.toString();
+            this.birthday = birthday.toString().split(" ")[0].replace("-",".");
     }
 
     public String getName() {
@@ -82,11 +88,11 @@ public class UserDtoOut {
         this.birthday = birthday;
     }
 
-    public Date getRegdate() {
+    public String getRegdate() {
         return regdate;
     }
 
-    public void setRegdate(Date regdate) {
+    public void setRegdate(String regdate) {
         this.regdate = regdate;
     }
 
@@ -168,5 +174,40 @@ public class UserDtoOut {
 
     public void setReviews(List<ReviewDtoOut> reviews) {
         this.reviews = reviews;
+    }
+
+    public double getAvgRate() {
+        return avgRate;
+    }
+
+    public void setAvgRate(double avgRate) {
+        this.avgRate = avgRate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDtoOut that = (UserDtoOut) o;
+        return id == that.id &&
+                Double.compare(that.avgRate, avgRate) == 0 &&
+                provideServices == that.provideServices &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(surname, that.surname) &&
+                Objects.equals(birthday, that.birthday) &&
+                regdate.equals(that.regdate) &&
+                username.equals(that.username) &&
+                Objects.equals(description, that.description) &&
+                email.equals(that.email) &&
+                password.equals(that.password) &&
+                Objects.equals(avatar, that.avatar) &&
+                Objects.equals(services, that.services) &&
+                Objects.equals(reviews, that.reviews) &&
+                Objects.equals(photos, that.photos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, birthday, regdate, username, description, email, password, avatar, avgRate, services, provideServices, reviews, photos);
     }
 }

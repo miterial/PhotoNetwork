@@ -5,25 +5,25 @@
 <nav th:replace="partials/header :: navigation"/>
 
 <main class="my-5">
-<div class="container">
-    <div class="row">
-        <div class="col-9 text-center">
-            <img id="photoFile" th:src="${photo.photofile}" class="img-thumbnail" alt="img" th:data-id="${photo.id}">
-            <button th:unless="${isCurrentUser}" id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
-            <button th:if="${isCurrentUser}" id="modifyBtn" class="btn btn-primary">Изменить</button>
-            <a th:if="${photo.license != T(com.course.PhotoNetwork.model.types.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success">Скачать</a>
-        </div>
-        <div class="col-3">
-            <a th:href="@{'/user/' + ${photo.user.id}}" th:text="${' @' + photo.user.username}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}"/></a>
-            <p th:text="${photo.uploaddate}"></p>
-            <p th:text="${photo.name}"></p>
-            <p th:text="${photo.description}"></p>
-            <p><span th:text="${photo.likecount}"></span>
-                <span th:text="${photo.viewcount}"></span></p>
-            <a th:href="@{'/category/' + ${photo.category}}" class="text-muted" th:text="${'#' + photo.category}"></a>
+    <div class="container">
+        <div class="row">
+            <div class="col-9 text-center">
+                <img id="photoFile" th:src="${photo.photofile}" class="img-thumbnail" alt="img" th:data-id="${photo.id}">
+                <button th:unless="${isCurrentUser}" id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
+                <a th:if="${photo.license != T(com.course.PhotoNetwork.model.types.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success">Скачать</a>
+            </div>
+            <div class="col-3">
+                <a th:href="@{'/user/' + ${photo.user.id}}" th:text="${' @' + photo.user.username}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}"/></a>
+                <p th:if="${isCurrentUser}">(ваше фото)</p>
+                <p th:text="${photo.uploaddate}"></p>
+                <p th:text="${photo.name}"></p>
+                <p th:text="${photo.description}"></p>
+                <p><span th:text="${photo.likecount}"></span><i class="iconicfill-heart-fill"></i>
+                    <span th:text="${photo.viewcount}"></span><i class="iconicfill-eye"></i></p>
+                <a th:href="@{'/category/' + ${photo.category}}" class="text-muted" th:text="${'#' + photo.category}"></a>
+            </div>
         </div>
     </div>
-</div>
 </main>
 <footer th:replace="partials/footer :: footer"/>
 <script th:src="@{/js/photo.js}"></script>

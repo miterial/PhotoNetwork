@@ -7,6 +7,7 @@
     <div class="container">
         <div class="row" id="account" th:data-id="${schedule.userId}">
             <div class="col-12">
+                <p th:if="${schedule.booked.size()==0}">У вас нет заказанных и предстоящих услуг</p>
                 <th:block th:if="${schedule.booked.size()>0}">
                 <h2>Ваши заказы</h2>
                     <table class="table" id="client">

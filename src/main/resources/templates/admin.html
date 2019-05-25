@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="partials/header :: header"/>
+<body>
+<nav th:replace="partials/header :: navigation"/>
+
+<main class="my-5">
+    <div class="container">
+        <h1 class="mb-5">Администраторская панель</h1>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <h5>Категории</h5>
+                    <table class="table table-responsive">
+                        <th:block th:each="category: ${categories}">
+                            <tr th:data-id="${category.id}">
+                                <td th:text="${category.name}"></td>
+                            </tr>
+                        </th:block>
+                        <tr>
+                            <td>
+                                <input type="text" name="catName" th:class="new-category">
+                            </td>
+                            <td>
+                                <button class="btn btn-success addCategory">Добавить</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <h5>Возможные услуги</h5>
+                    <table class="table table-responsive">
+                        <th:block th:each="service: ${services}">
+                            <tr th:data-id="${service.id}">
+                                <td th:text="${service.name}"></td>
+                            </tr>
+                        </th:block>
+                        <tr>
+                            <td>
+                                <input type="text" name="servName" class="new-service">
+                            </td>
+                            <td>
+                                <button class="btn btn-success addService">Добавить</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="partials/footer :: footer"/>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

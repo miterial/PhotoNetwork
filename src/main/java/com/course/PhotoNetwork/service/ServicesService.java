@@ -5,7 +5,6 @@ import com.course.PhotoNetwork.model.dto.ServiceDto;
 import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
 import com.course.PhotoNetwork.repository.BookingRepository;
 import com.course.PhotoNetwork.repository.UserRepository;
-import com.course.PhotoNetwork.model.types.ServiceEnum;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.ServiceDtoSmall;
@@ -13,12 +12,10 @@ import com.course.PhotoNetwork.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ServicesService {
@@ -34,11 +31,22 @@ public class ServicesService {
         return serviceRepository.findAll();
     }
 
-    public List<ServiceDtoSmall> toDto(List<ServiceModel> all) {
+    public List<ServiceDtoSmall> toDtoSmall(List<ServiceModel> all) {
         List<ServiceDtoSmall> res = new ArrayList<>();
 
         all.forEach(a ->{
             ServiceDtoSmall out = new ServiceDtoSmall(a.getName());
+            res.add(out);
+        });
+
+        return res;
+    }
+
+    public Set<ServiceDto> toDto(List<ServiceModel> all) {
+        Set<ServiceDto> res = new HashSet<>();
+
+        all.forEach(a ->{
+            ServiceDto out = new ServiceDto(a.getId(),a.getName(),a.getPrice());
             res.add(out);
         });
 
@@ -57,16 +65,21 @@ public class ServicesService {
         serviceRepository.deleteByName(serviceName);
     }
 
-    public List<ServiceDtoSmall> getDefaultServices() {
-        List<ServiceDtoSmall> res = new ArrayList<>();
-        ServiceEnum[] defaults = ServiceEnum.values();
+    /**
+     * Default service is a service where price == 0
+     * @return list
+     */
+    public Set<ServiceDto> getDefaultServices() {
+        Set<ServiceDto> res = new HashSet<>();
+        List<ServiceModel> defaults = serviceRepository.findByPrice(0);
 
-        for(ServiceEnum d : defaults) {
-            res.add(new ServiceDtoSmall(d.getVal()));
+        for(ServiceModel d : defaults) {
+            res.add(new ServiceDto(d.getId(),d.getName(),d.getPrice()));
         }
         return res;
     }
 
+    @Transactional
     public void changeServices(UserServicesDtoIn services) {
         Optional<UserModel> userOptional = userRepository.findById(services.getUserId());
         if(!userOptional.isPresent()) {
@@ -75,13 +88,25 @@ public class ServicesService {
 
         UserModel user = userOptional.get();
         List<ServiceModel> res = toEntity(services.getServices(),user);
+
+        serviceRepository.deleteByMaster(user);
         serviceRepository.saveAll(res);
 
-        if(user.getServices() == null)
-            user.setServices(new ArrayList<>());
+        user.setServices(res);
 
-        user.getServices().addAll(res);
         userRepository.save(user);
+    }
+
+    public Optional<ServiceModel> findById(long serviceId) {
+        return serviceRepository.findById(serviceId);
+    }
+
+    public void deleteById(Long serviceId) {
+        serviceRepository.deleteById(serviceId);
+    }
+
+    public List<ServiceModel> findByMaster(UserModel user) {
+        return serviceRepository.findByMaster(user);
     }
 
     private List<ServiceModel> toEntity(List<ServiceDto> services, UserModel userModel) {
@@ -98,7 +123,8 @@ public class ServicesService {
         return res;
     }
 
-    public Optional<ServiceModel> findById(long serviceId) {
-        return serviceRepository.findById(serviceId);
+    public Set<ServiceDto> excludeDefaultExisting(List<ServiceDto> services) {
+
+        return null;
     }
 }

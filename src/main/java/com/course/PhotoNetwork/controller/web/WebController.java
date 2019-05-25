@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,12 +44,6 @@ public class WebController {
     private BookingService bookingService;
     @Autowired
     private ReviewService reviewService;
-
-    @GetMapping("/error")
-    public ModelAndView error(ModelAndView modelAndView) throws IOException {
-        modelAndView.setViewName("error");
-        return modelAndView;
-    }
 
     @GetMapping("/login")
     public ModelAndView loginPage(ModelAndView modelAndView, HttpServletResponse response, Authentication auth) throws IOException {
@@ -136,8 +131,11 @@ public class WebController {
 
             model.addObject("currentUser", userService.toDto(user));
 
-            if(user.isProvideServices()) {
-                model.addObject("services", servicesService.getDefaultServices());
+            if(userService.isMaster(user)) {
+                Set<ServiceDto> services = servicesService.toDto(servicesService.findByMaster(user));        // default services
+                services.addAll(servicesService.getDefaultServices()); // + services that user provides
+                //services = servicesService.excludeDefaultExisting(services);
+                model.addObject("services",services);
             }
 
         } catch (Exception ex) {
@@ -150,15 +148,15 @@ public class WebController {
     public ModelAndView user(@PathVariable Long userId, ModelAndView model, Authentication auth) {
         model.setViewName("account");
         try {
-            UserModel user = userService.findById(userId).get();
+            UserModel user = userService.findById(userId).orElseThrow(IllegalArgumentException::new);
             model.addObject("user", userService.toDto(user));
-
-            if(user.isProvideServices()) {
+            if(userService.isMaster(user)) {
                 model.addObject("services", servicesService.getDefaultServices());
                 model.addObject("reviews", reviewService.toDto(reviewService.findAll()));
             }
 
             UserModel currentUser = userService.findByEmail(auth.getName());
+            model.addObject("subscribed", user.getSubscribers().contains(currentUser));
             model.addObject("isCurrent", currentUser.getId() == userId);
             model.addObject("canWriteReview",false);
 
@@ -209,6 +207,7 @@ public class WebController {
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
             model.setViewName("error");
+            model.addObject("errorMessage","Не удалось загрузить страницу");
         }
         return model;
     }
@@ -221,6 +220,25 @@ public class WebController {
 
             model.addObject("categories", categoryService.findAll());
 
+        } catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
+    @GetMapping("/administrator")
+    public ModelAndView admin(ModelAndView model, Authentication auth) {
+        try {
+            UserModel currentUser = userService.findByEmail(auth.getName());
+            if(userService.isAdmin(currentUser)) {
+                model.setViewName("admin");
+                model.addObject("categories",categoryService.toDto(categoryService.findAll()));
+                model.addObject("services", servicesService.getDefaultServices());
+            }
+            else {
+                model.setViewName("error");
+                model.addObject("errorMessage","Недостаточно прав для доступа к странице администратора");
+            }
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -1,6 +1,6 @@
 package com.course.PhotoNetwork.model.types;
 
-public enum ServiceEnum {
+/*public enum ServiceEnum {
     SERVICE_ONE("сервис1"),
     SERVICE_TWO("сервис2");
 
@@ -12,4 +12,4 @@ public enum ServiceEnum {
     public String getVal() {
         return val;
     }
-}
+}*/

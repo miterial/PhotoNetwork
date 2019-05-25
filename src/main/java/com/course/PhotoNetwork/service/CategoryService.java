@@ -1,10 +1,12 @@
 package com.course.PhotoNetwork.service;
 
 import com.course.PhotoNetwork.model.CategoryModel;
+import com.course.PhotoNetwork.model.dto.CategoryDto;
 import com.course.PhotoNetwork.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +34,17 @@ public class CategoryService {
 
     public List<CategoryModel> findAll() {
         return categoryRepository.findAll();
+    }
+
+    public List<CategoryDto> toDto(List<CategoryModel> all) {
+        List<CategoryDto> res = new ArrayList<>();
+        for(CategoryModel cat : all) {
+            res.add(new CategoryDto(cat.getName(),cat.getId()));
+        }
+        return res;
+    }
+
+    public void deleteById(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
     }
 }
