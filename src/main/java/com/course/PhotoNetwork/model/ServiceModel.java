@@ -1,5 +1,7 @@
 package com.course.PhotoNetwork.model;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -19,8 +21,9 @@ public class ServiceModel {
     @ManyToOne
     private UserModel master;
 
-    @OneToMany
-    private List<BookingModel> booking;
+    @OneToMany(fetch = FetchType.LAZY)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<BookingModel> bookings;
 
     public long getId() {
         return id;
@@ -50,11 +53,11 @@ public class ServiceModel {
         this.master = master;
     }
 
-    public List<BookingModel> getBooking() {
-        return booking;
+    public List<BookingModel> getBookings() {
+        return bookings;
     }
 
-    public void setBooking(List<BookingModel> booking) {
-        this.booking = booking;
+    public void setBookings(List<BookingModel> bookings) {
+        this.bookings = bookings;
     }
 }

@@ -28,18 +28,27 @@ public class BookingService {
     private UserService userService;
 
     @Transactional
-    public void bookService(BookingServiceDtoIn bookingServiceDtoIn) throws ParseException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserModel currentUser = userService.findByEmail(auth.getName());
+    public BookingModel bookService(UserModel customer, BookingServiceDtoIn bookingServiceDtoIn) throws ParseException {
 
         if(findByMasterAndDate(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDatetime()))
             throw new IllegalStateException("Дата уже зарезервирована");
 
-        BookingModel booking = toEntity(bookingServiceDtoIn, currentUser);
+        if(servicesService.findByMasterAndName(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getServiceId()) == null)
+            throw new IllegalStateException("Мастер не предоставляет такую услугу");
+
+        BookingModel booking = toEntity(bookingServiceDtoIn, customer);
         booking.setStatus(BookingEnum.NEW);
+        booking = bookingRepository.save(booking);
 
-        bookingRepository.save(booking);
+        ServiceModel service = servicesService.findById(Long.parseLong(bookingServiceDtoIn.getServiceId())).get();
 
+        if(service.getBookings() == null)
+            service.setBookings(new ArrayList<>());
+
+        service.getBookings().add(booking);
+        servicesService.save(service);
+
+        return booking;
     }
 
     private BookingModel toEntity(BookingServiceDtoIn dto, UserModel currentUser) throws ParseException {
@@ -88,7 +97,7 @@ public class BookingService {
     }
 
     @Transactional
-    public void changeStatus(BookingUserInfoDtoIn dtoIn) {
+    public BookingModel changeStatus(BookingUserInfoDtoIn dtoIn) {
         Optional<BookingModel> bookingOptional = bookingRepository.findById(Long.parseLong(dtoIn.getBookingId()));
 
         BookingModel booking = bookingOptional.orElseThrow(IllegalArgumentException::new);
@@ -114,7 +123,7 @@ public class BookingService {
                     booking.setStatus(BookingEnum.FINISHED);
                 break;
         }
-        bookingRepository.save(booking);
+        return bookingRepository.save(booking);
     }
 
     public List<BookingServiceDtoOut> toDto(List<BookingModel> userBookedServices) {
@@ -158,5 +167,25 @@ public class BookingService {
 
     public List<BookingModel> findByClientAndStatus(UserModel user, BookingEnum status) {
         return bookingRepository.findByCustomerAndStatus(user, status);
+    }
+
+
+    public BookingModel findByClientAndMasterAndStatus(UserModel author, UserModel master, BookingEnum status) {
+        return bookingRepository.findByCustomerAndMasterAndStatus(author,master,status);
+    }
+
+        @Transactional
+    public void deleteById(Long booking) {
+        bookingRepository.deleteById(booking);
+    }
+
+    public BookingServiceDtoOut toDto(BookingModel entity) {
+        return new BookingServiceDtoOut(entity.getId(),
+            entity.getMaster().getId(), entity.getMaster().getUsername(),
+            entity.getCustomer().getId(), entity.getCustomer().getUsername(),
+            entity.getService().getId(), entity.getService().getName(), entity.getService().getPrice(),
+            entity.getBookingDate().toString(),
+            entity.getStatus(),
+            entity.isFinishedByMaster(), entity.isFinishedByClient(), entity.isDeletedByMaster(), entity.isDeletedByClient());
     }
 }

@@ -1,18 +1,19 @@
 package com.course.PhotoNetwork.controller.rest;
 
-import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.ServiceModel;
-import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
-import com.course.PhotoNetwork.service.CategoryService;
+import com.course.PhotoNetwork.model.UserModel;
+import com.course.PhotoNetwork.model.dto.UserServicesDto;
 import com.course.PhotoNetwork.service.ServicesService;
+import com.course.PhotoNetwork.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +23,8 @@ public class ServicesController {
 
     @Autowired
     private ServicesService servicesService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity addService(@RequestParam String service_name){
@@ -32,8 +35,7 @@ public class ServicesController {
         service.setPrice(0);
 
         try {
-            servicesService.save(service);
-            return new ResponseEntity(HttpStatus.OK);
+            return ResponseEntity.ok(servicesService.toDto(servicesService.save(service)));
         } catch (Exception ex) {
             Logger.getLogger(ServicesController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,10 +45,14 @@ public class ServicesController {
 
     @PostMapping("/services")
     @ResponseBody
-    public ResponseEntity changeServices(@RequestBody UserServicesDtoIn services) {
+    public ResponseEntity changeServices(@RequestBody UserServicesDto services, Authentication auth) {
         try {
-            servicesService.changeServices(services);
-            return new ResponseEntity(HttpStatus.OK);
+            UserModel user = userService.findByEmail(auth.getName());
+            if(!userService.isMaster(user) && user.getId() != services.getUserId())
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Данный пользователь не может добавлять услуги в профиль пользователя с id=" + services.getUserId());
+
+            Set<ServiceModel> res = servicesService.changeServices(services);
+            return ResponseEntity.ok(servicesService.toListDto(res,services.getUserId()));
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -54,8 +60,11 @@ public class ServicesController {
     }
 
     @DeleteMapping("/{serviceId}")
-    public ResponseEntity deleteService(@PathVariable Long serviceId) {
+    public ResponseEntity deleteService(@PathVariable Long serviceId, Authentication auth) {
         try {
+            UserModel curUser = userService.findByEmail(auth.getName());
+            if(!userService.isAdmin(curUser))
+                throw new IllegalArgumentException("Для данного действия нужны права администратора");
             servicesService.deleteById(serviceId);
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {

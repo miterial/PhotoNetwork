@@ -3,34 +3,35 @@ package com.course.PhotoNetwork.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Set;
 
-public class UserServicesDtoIn {
+public class UserServicesDto {
     @JsonProperty
-    List<ServiceDto> services;
+    Set<ServiceDto> services;
     @JsonProperty
-    long userId;
+    Long userId;
 
-    public UserServicesDtoIn() {
+    public UserServicesDto() {
     }
 
-    public UserServicesDtoIn(List<ServiceDto> services, long userId) {
+    public UserServicesDto(Set<ServiceDto> services, Long userId) {
         this.services = services;
         this.userId = userId;
     }
 
-    public List<ServiceDto> getServices() {
+    public Set<ServiceDto> getServices() {
         return services;
     }
 
-    public void setServices(List<ServiceDto> services) {
+    public void setServices(Set<ServiceDto> services) {
         this.services = services;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

@@ -1,6 +1,7 @@
 package com.course.PhotoNetwork.controller.web;
 
 import com.course.PhotoNetwork.controller.rest.PhotoController;
+import com.course.PhotoNetwork.controller.rest.UserController;
 import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.dto.*;
 import com.course.PhotoNetwork.model.types.BookingEnum;
@@ -10,7 +11,6 @@ import com.course.PhotoNetwork.model.PhotoModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.repository.LikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,17 +64,6 @@ public class WebController {
             modelAndView.setViewName("registration");
         }
         return modelAndView;
-    }
-
-    @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public void registration(UserDtoIn newUser, HttpServletResponse response) throws IOException {
-
-        try {
-            userService.registerUser(newUser);
-        } catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        response.sendRedirect("/");
     }
 
     @GetMapping("/photo/{photoId}")
@@ -243,5 +232,21 @@ public class WebController {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return model;
+    }
+
+    /**
+     * Form submission
+     * @param newUser
+     * @param response
+     */
+    @PostMapping(value = "/registration")
+    public void registrationForm(@ModelAttribute UserDtoIn newUser, HttpServletResponse response) {
+
+        try {
+            userService.registerUser(newUser);
+            response.sendRedirect("/");
+        } catch (Exception ex) {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

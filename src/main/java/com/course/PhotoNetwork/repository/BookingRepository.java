@@ -17,4 +17,8 @@ public interface BookingRepository extends JpaRepository<BookingModel, Long> {
     List<BookingModel> findByCustomer(UserModel user);
 
     List<BookingModel> findByCustomerAndStatus(UserModel user, BookingEnum status);
+
+    void deleteById(Long id);
+
+    BookingModel findByCustomerAndMasterAndStatus(UserModel author, UserModel master, BookingEnum status);
 }

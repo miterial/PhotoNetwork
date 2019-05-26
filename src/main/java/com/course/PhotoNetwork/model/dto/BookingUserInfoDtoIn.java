@@ -3,9 +3,9 @@ package com.course.PhotoNetwork.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BookingUserInfoDtoIn {
-    @JsonProperty
+    @JsonProperty(required = true)
     private String bookingId;
-    @JsonProperty
+    @JsonProperty(required = true)
     private String prevStatusId;
 
     public BookingUserInfoDtoIn() {

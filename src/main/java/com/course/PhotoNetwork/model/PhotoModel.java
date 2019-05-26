@@ -38,6 +38,7 @@ public class PhotoModel implements Comparable<PhotoModel>{
     private CategoryModel category;
 
     @OneToMany
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<LikeModel> likes = new ArrayList<>();
 
     public PhotoModel() {

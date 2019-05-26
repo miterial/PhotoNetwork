@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<ServiceModel, Long> {
@@ -19,8 +20,9 @@ public interface ServiceRepository extends JpaRepository<ServiceModel, Long> {
 
     List<ServiceModel> findByPrice(double price);
 
-    List<ServiceModel> findByMaster(UserModel master);
+    Set<ServiceModel> findByMaster(UserModel master);
 
     void deleteByMaster(UserModel user);
 
+    ServiceModel findByMasterAndName(UserModel master, String name);
 }

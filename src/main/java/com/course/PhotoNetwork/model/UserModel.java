@@ -9,10 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "user")
@@ -58,10 +55,10 @@ public class UserModel {
 
     @OneToMany
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
-    private List<ServiceModel> services;
+    private Set<ServiceModel> services;
 
     @OneToMany
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<UserModel> subscribers;
 
     @OneToMany(mappedBy = "user")
@@ -169,11 +166,11 @@ public class UserModel {
     }
 
 
-    public List<ServiceModel> getServices() {
+    public Set<ServiceModel> getServices() {
         return services;
     }
 
-    public void setServices(List<ServiceModel> services) {
+    public void setServices(Set<ServiceModel> services) {
         this.services = services;
     }
 

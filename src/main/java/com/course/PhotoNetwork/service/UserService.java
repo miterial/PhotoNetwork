@@ -50,6 +50,20 @@ public class UserService implements UserDetailsService {
 
             UserModel userModel = registerUser(admin);
             List<RoleModel> roles = roleRepository.findAll();
+            if(roles.isEmpty()) {
+                RoleModel role = new RoleModel();
+                role.setRolename("USER");
+                roles.add(role);
+
+                role = new RoleModel();
+                role.setRolename("MASTER");
+                roles.add(role);
+
+                role = new RoleModel();
+                role.setRolename("ADMIN");
+                roles.add(role);
+                roleRepository.saveAll(roles);
+            }
             userModel.setRoles(roles);
             userRepository.save(userModel);
         }
@@ -128,9 +142,10 @@ public class UserService implements UserDetailsService {
 
     public UserDtoOut toDto(UserModel usr) throws ParseException {
         ArrayList<ServiceDto> services = new ArrayList<>();
-        for (ServiceModel r : usr.getServices()) {
-            services.add(new ServiceDto(r.getId(), r.getName(), r.getPrice()));
-        }
+        if(usr.getServices() != null)
+            for (ServiceModel r : usr.getServices()) {
+                services.add(new ServiceDto(r.getId(), r.getName(), r.getPrice()));
+            }
         return new UserDtoOut(usr.getId(), usr.getName(), usr.getSurname(),
                 usr.getBirthday(), usr.getRegdate(),
                 usr.getUsername(), usr.getDescription(), usr.getEmail(),
@@ -205,5 +220,13 @@ public class UserService implements UserDetailsService {
                 return true;
         }
         return false;
+    }
+
+    public UserModel save(UserModel user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteById(Long userId) {
+        userRepository.deleteById(userId);
     }
 }

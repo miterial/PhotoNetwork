@@ -119,14 +119,15 @@ public class PhotoService {
         PhotoDtoOutSmall photoDTO;
 
         try {
-            for (PhotoModel photo : entities) {
+            if(entities != null)
+                for (PhotoModel photo : entities) {
 
-                photoDTO = new PhotoDtoOutSmall(String.valueOf(photo.getId()),
-                        photo.getUploaddate(),
-                        photo.getPhotofile());
+                    photoDTO = new PhotoDtoOutSmall(String.valueOf(photo.getId()),
+                            photo.getUploaddate(),
+                            photo.getPhotofile());
 
-                res.add(photoDTO);
-            }
+                    res.add(photoDTO);
+                }
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }

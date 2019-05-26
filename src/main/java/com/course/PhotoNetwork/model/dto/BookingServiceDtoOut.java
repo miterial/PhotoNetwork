@@ -34,6 +34,9 @@ public class BookingServiceDtoOut {
     @JsonProperty
     private boolean deletedByClient;
 
+    public BookingServiceDtoOut() {
+    }
+
     public BookingServiceDtoOut(Long bookingId, Long masterId, String masterUsername, Long clientId, String clientUsername, Long serviceId, String serviceName, Double price, String datetime, BookingEnum status, boolean finishedByMaster, boolean finishedByClient, boolean deletedByMaster, boolean deletedByClient) {
         this.bookingId = bookingId;
         this.masterId = masterId;

@@ -1,5 +1,7 @@
 package com.course.PhotoNetwork.model;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +17,7 @@ public class CategoryModel {
     private String name;
 
     @OneToMany(mappedBy = "category")
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<PhotoModel> photos;
 
     public CategoryModel() {

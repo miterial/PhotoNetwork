@@ -1,9 +1,9 @@
 package com.course.PhotoNetwork.controller.rest;
 
+import com.course.PhotoNetwork.model.BookingModel;
+import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.BookingServiceDtoIn;
 import com.course.PhotoNetwork.model.dto.BookingUserInfoDtoIn;
-import com.course.PhotoNetwork.model.dto.UserDtoIn;
-import com.course.PhotoNetwork.model.dto.UserServicesDtoIn;
 import com.course.PhotoNetwork.service.BookingService;
 import com.course.PhotoNetwork.service.ServicesService;
 import com.course.PhotoNetwork.service.UserService;
@@ -13,9 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,10 +30,11 @@ public class BookingController {
     private BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn) {
+    public ResponseEntity bookService(@RequestBody BookingServiceDtoIn bookingServiceDtoIn, Authentication auth) {
         try {
-            bookingService.bookService(bookingServiceDtoIn);
-            return new ResponseEntity(HttpStatus.OK);
+            UserModel currentUser = userService.findByEmail(auth.getName());
+            BookingModel booking = bookingService.bookService(currentUser, bookingServiceDtoIn);
+            return ResponseEntity.ok(bookingService.toDto(booking));
         } catch (IllegalStateException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
@@ -46,18 +44,18 @@ public class BookingController {
     }
 
     @PostMapping("/status")
-    public String changeStatus(@RequestBody BookingUserInfoDtoIn dtoIn) {
+    public ResponseEntity changeStatus(@RequestBody BookingUserInfoDtoIn dtoIn) {
         try {
-            bookingService.changeStatus(dtoIn);
-            return "redirect:/services";
+            BookingModel booking = bookingService.changeStatus(dtoIn);
+            return ResponseEntity.ok(bookingService.toDto(booking));
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-            return "redirect:/error";
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/remove/{bookingId}")
-    public ResponseEntity removeBooking(@PathVariable Long bookingId, HttpServletResponse response, Authentication auth) throws IOException {
+    public ResponseEntity removeBooking(@PathVariable Long bookingId, Authentication auth) throws IOException {
         try {
             bookingService.removeBooking(bookingId, auth);
             return new ResponseEntity(HttpStatus.OK);
@@ -65,5 +63,19 @@ public class BookingController {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @DeleteMapping("/{bookingId}")
+    public ResponseEntity deleteService(@PathVariable Long bookingId, Authentication auth) {
+        try {
+            UserModel curUser = userService.findByEmail(auth.getName());
+            if(!userService.isAdmin(curUser))
+                throw new IllegalArgumentException("Для данного действия нужны права администратора");
+            bookingService.deleteById(bookingId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception ex) {
+            Logger.getLogger(ServicesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }
