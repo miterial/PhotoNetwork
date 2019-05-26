@@ -31,7 +31,6 @@ public class PhotoModel implements Comparable<PhotoModel>{
     private String photofile;
 
     @ManyToOne
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private UserModel user;
 
     @ManyToOne

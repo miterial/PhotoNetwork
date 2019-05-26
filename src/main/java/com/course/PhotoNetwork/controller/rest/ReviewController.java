@@ -38,6 +38,21 @@ public class ReviewController {
         }
     }
 
+    @PostMapping("/form")
+    public String addReviewForm(@ModelAttribute ReviewDtoIn dtoIn) {
+        try {
+            ReviewModel review = reviewService.addReview(dtoIn);
+            return "redirect:/user/" + dtoIn.getMasterId();
+        } catch (IllegalAccessError ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            return "/error";
+        }
+        catch (Exception ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            return "/error";
+        }
+    }
+
     @DeleteMapping("/{authorId}")
     public ResponseEntity deleteMasterReviews(@PathVariable Long authorId, Authentication auth) {
         try {

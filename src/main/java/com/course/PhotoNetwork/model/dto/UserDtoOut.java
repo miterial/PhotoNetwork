@@ -2,6 +2,7 @@ package com.course.PhotoNetwork.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,8 +29,6 @@ public class UserDtoOut {
     @JsonProperty
     private String email;
     @JsonProperty
-    private String password;
-    @JsonProperty
     private String avatar;
     @JsonProperty
     private double avgRate;
@@ -48,7 +47,6 @@ public class UserDtoOut {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.regdate = regdate.toString().split(" ")[0].replace("-",".");
         this.username = username;
         this.description = description;
         this.email = email;
@@ -56,12 +54,14 @@ public class UserDtoOut {
         this.provideServices = provideServices;
         this.reviews = reviews;
         this.photos = photos;
-        this.password = "";
         this.avatar = avatar;
         this.services = services;
 
-        if(birthday != null)
-            this.birthday = birthday.toString().split(" ")[0].replace("-",".");
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        this.regdate = df.format(regdate);
+        if(birthday != null) {
+            this.birthday = df.format(birthday);
+        }
     }
 
     public String getName() {
@@ -135,15 +135,6 @@ public class UserDtoOut {
     public void setId(long id) {
         this.id = id;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public boolean isProvideServices() {
         return provideServices;
     }
@@ -199,7 +190,6 @@ public class UserDtoOut {
                 username.equals(that.username) &&
                 Objects.equals(description, that.description) &&
                 email.equals(that.email) &&
-                password.equals(that.password) &&
                 Objects.equals(avatar, that.avatar) &&
                 Objects.equals(services, that.services) &&
                 Objects.equals(reviews, that.reviews) &&
@@ -208,6 +198,6 @@ public class UserDtoOut {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, birthday, regdate, username, description, email, password, avatar, avgRate, services, provideServices, reviews, photos);
+        return Objects.hash(id, name, surname, birthday, regdate, username, description, email, avatar, avgRate, services, provideServices, reviews, photos);
     }
 }

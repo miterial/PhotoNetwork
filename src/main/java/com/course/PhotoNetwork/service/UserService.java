@@ -100,6 +100,9 @@ public class UserService implements UserDetailsService {
     public UserModel registerUser(UserDtoIn newUser) {
         UserModel user = new UserModel();
         user.setEmail(newUser.getEmail());
+        if(newUser.getPassword().isEmpty() || newUser.getPassword().length() < 6)
+            throw new IllegalArgumentException("Пароль должен быть длиннее 6 символов");
+
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setUsername(newUser.getUsername());
         List<RoleModel> roles = new ArrayList<>();
@@ -113,13 +116,12 @@ public class UserService implements UserDetailsService {
     public void updateUser(UserDtoIn newUser) throws IOException, ParseException {
         UserModel user = userRepository.findByEmail(newUser.getEmail());
         user.setEmail(newUser.getEmail());
-        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setName(newUser.getName());
         user.setSurname(newUser.getSurname());
         user.setUsername(newUser.getUsername());
         user.setDescription(newUser.getDescription());
 
-        if(newUser.getAvatar() != null)
+        if(newUser.getAvatar() != null && !newUser.getAvatar().isEmpty())
             user.setAvatar("data:image/jpeg;base64," + Base64.getEncoder().
                 encodeToString(newUser.getAvatar().getBytes()));
 

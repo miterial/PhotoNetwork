@@ -50,6 +50,7 @@ public class PhotoController {
                     encodeToString(newPhoto.getPhotofile().getBytes()));
             long catId = Long.parseLong(newPhoto.getCategory());
             photo.setCategory(categoryService.findById(catId).get());
+            photo.setLicense(newPhoto.getLicense());
 
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             UserModel user = userService.findByEmail(auth.getName());

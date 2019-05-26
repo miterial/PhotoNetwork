@@ -10,7 +10,7 @@ $( document ).ready(function() {
                 console.log("liked/disliked photo!");
                 document.location.reload(true);
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                //showDangerToast("Error creating blacklist");
+                showDangerToast("Не удалось лайкнуть/дизлайкнуть фото");
             }
         });
     });
@@ -21,5 +21,17 @@ $( document ).ready(function() {
     var name = $("#photoFile").attr("data-id");
     var ext = $("#photoFile").attr("src").split(';')[0].split('/')[1];
     $("#downloadBtn").attr("download",name+"."+ext);
+
+    showSuccessToast = function(text) {
+        'use strict';
+        $.toast({
+            heading: 'Success',
+            text: text,
+            showHideTransition: 'slide',
+            icon: 'success',
+            loaderBg: '#f96868',
+            position: 'top-right'
+        })
+    };
 
 });

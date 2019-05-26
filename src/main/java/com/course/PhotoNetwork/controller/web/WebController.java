@@ -20,10 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,6 +102,7 @@ public class WebController {
 
         try {
             model.addObject("photos", photoService.toDto(photoService.getPopularPhotos()));
+            model.addObject("title","Популярное");
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -120,12 +118,12 @@ public class WebController {
 
             model.addObject("currentUser", userService.toDto(user));
 
+            Set<ServiceDto> services = new HashSet<>();
             if(userService.isMaster(user)) {
-                Set<ServiceDto> services = servicesService.toDto(servicesService.findByMaster(user));        // default services
-                services.addAll(servicesService.getDefaultServices()); // + services that user provides
-                //services = servicesService.excludeDefaultExisting(services);
-                model.addObject("services",services);
+                services = servicesService.toDto(servicesService.findByMaster(user));// + services that user provides
+                services.addAll(servicesService.getDefaultServices());   // +default services
             }
+            model.addObject("services",services);
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -202,12 +200,13 @@ public class WebController {
     }
 
     @GetMapping("/upload")
-    public ModelAndView upload(ModelAndView model) {
+    public ModelAndView upload(ModelAndView model, Authentication auth) {
         model.setViewName("upload");
         try {
             model.addObject("newPhoto", new PhotoDtoIn());
 
             model.addObject("categories", categoryService.findAll());
+            model.addObject("userPhotos", photoService.findByUser(auth.getName()));
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -240,13 +239,14 @@ public class WebController {
      * @param response
      */
     @PostMapping(value = "/registration")
-    public void registrationForm(@ModelAttribute UserDtoIn newUser, HttpServletResponse response) {
+    public void registrationForm(@ModelAttribute UserDtoIn newUser, HttpServletResponse response) throws IOException {
 
         try {
             userService.registerUser(newUser);
             response.sendRedirect("/");
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+            response.sendRedirect("/error");
         }
     }
 }

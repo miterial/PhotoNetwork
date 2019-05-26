@@ -45,11 +45,11 @@ public class BookingTests {
 	@Order(1)
 	public void test1init() {
 
-		UserDtoOut customer = registerUsers("testcustomer@text.com", "testcustomer", "test");
+		UserDtoOut customer = registerUsers("testcustomer@text.com", "testcustomer", "testing");
 		this.customerEmail = customer.getEmail();
 		this.customerId = customer.getId();
 
-		UserDtoOut master = registerUsers("testmaster@text.com", "testmaster", "test");
+		UserDtoOut master = registerUsers("testmaster@text.com", "testmaster", "testing");
 		this.masterEmail = master.getEmail();
 		this.masterId = master.getId();
 
@@ -67,7 +67,7 @@ public class BookingTests {
 		BookingServiceDtoIn booking = new BookingServiceDtoIn(String.valueOf(this.masterId), String.valueOf(this.serviceId), "31.05.2020 12:00");
 
 		HttpEntity<BookingServiceDtoIn> request = new HttpEntity(booking);
-		ResponseEntity<BookingServiceDtoOut> result = template.withBasicAuth(this.customerEmail, "test")
+		ResponseEntity<BookingServiceDtoOut> result = template.withBasicAuth(this.customerEmail, "testing")
 				.postForEntity("/api/booking", request, BookingServiceDtoOut.class);
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertNotNull(result.getBody());
@@ -91,41 +91,41 @@ public class BookingTests {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
 		// try to add comment
-		ResponseEntity<ReviewDtoOut> response = template.withBasicAuth(this.customerEmail, "test").postForEntity("/api/review", request, ReviewDtoOut.class);
+		ResponseEntity<ReviewDtoOut> response = template.withBasicAuth(this.customerEmail, "testing").postForEntity("/api/review", request, ReviewDtoOut.class);
 		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());        // 400 т.к. статус заказа != FINISHED
 
 		// change booking status to FINISHED
 		BookingUserInfoDtoIn booking = new BookingUserInfoDtoIn(String.valueOf(this.bookingId), String.valueOf(BookingEnum.NEW.getId()));
 
 
-		ResponseEntity<BookingServiceDtoOut> statusResponse = template.withBasicAuth(this.customerEmail, "test").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
+		ResponseEntity<BookingServiceDtoOut> statusResponse = template.withBasicAuth(this.customerEmail, "testing").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
 		assertEquals(HttpStatus.OK, statusResponse.getStatusCode());
 		assertNotNull(statusResponse.getBody());
 		assertEquals(BookingEnum.PAID_CLIENT,statusResponse.getBody().getStatus());
 
 		booking.setPrevStatusId(String.valueOf(statusResponse.getBody().getStatus().getId()));
 
-		statusResponse = template.withBasicAuth(this.masterEmail, "test").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
+		statusResponse = template.withBasicAuth(this.masterEmail, "testing").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
 		assertEquals(HttpStatus.OK, statusResponse.getStatusCode());
 		assertNotNull(statusResponse.getBody());
 		assertEquals(BookingEnum.PAID_MASTER,statusResponse.getBody().getStatus());
 
 		booking.setPrevStatusId(String.valueOf(statusResponse.getBody().getStatus().getId()));
 
-		statusResponse = template.withBasicAuth(this.masterEmail, "test").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
+		statusResponse = template.withBasicAuth(this.masterEmail, "testing").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
 		assertEquals(HttpStatus.OK, statusResponse.getStatusCode());
 		assertNotNull(statusResponse.getBody());
 		assertEquals(BookingEnum.FINISH_AWAITS,statusResponse.getBody().getStatus());
 
 		booking.setPrevStatusId(String.valueOf(statusResponse.getBody().getStatus().getId()));
 
-		statusResponse = template.withBasicAuth(this.customerEmail, "test").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
+		statusResponse = template.withBasicAuth(this.customerEmail, "testing").postForEntity("/api/booking/status", new HttpEntity<>(booking), BookingServiceDtoOut.class);
 		assertEquals(HttpStatus.OK, statusResponse.getStatusCode());
 		assertNotNull(statusResponse.getBody());
 		assertEquals(BookingEnum.FINISHED,statusResponse.getBody().getStatus());
 
 		//try to write comment again
-		response = template.withBasicAuth(this.customerEmail, "test").postForEntity("/api/review", request, ReviewDtoOut.class);
+		response = template.withBasicAuth(this.customerEmail, "testing").postForEntity("/api/review", request, ReviewDtoOut.class);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
@@ -178,7 +178,7 @@ public class BookingTests {
 		dto.setServices(masterServices);
 		dto.setUserId(masterId);
 
-		ResponseEntity<UserServicesDto> res = template.withBasicAuth(this.masterEmail, "test").postForEntity("/api/service/services", new HttpEntity(dto), UserServicesDto.class);
+		ResponseEntity<UserServicesDto> res = template.withBasicAuth(this.masterEmail, "testing").postForEntity("/api/service/services", new HttpEntity(dto), UserServicesDto.class);
 		assertEquals(HttpStatus.OK, res.getStatusCode());
 		assertNotNull(res.getBody());
 

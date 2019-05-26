@@ -23,10 +23,9 @@ $( document ).ready(function() {
             success: function () {
                 console.log("changed status!");
                 document.location.reload(true);
-                //showSuccessToast("New blacklist created!");
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log("not changed status")
-                //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
+                console.log("not changed status");
+                showDangerToast("Не удалось отменить услугу!");
             }
         });
 
@@ -50,10 +49,9 @@ $( document ).ready(function() {
             success: function () {
                 console.log("changes status!");
                 document.location.reload(true);
-                //showSuccessToast("New blacklist created!");
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log("not changed status")
-                //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
+                console.log("not changed status");
+                showDangerToast("Не удалось обновить статус услуги");
             }
         });
 
@@ -98,11 +96,34 @@ $( document ).ready(function() {
             success: function () {
                 console.log("booked!");
                 $(".modal").modal("toggle");
-                //showSuccessToast("New blacklist created!");
+                showSuccessToast("Услуга забронирована!");
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log("not booked")
-                //showDangerToast("Error creating blacklist"); todo отследить ошибку 400 и 409
+                console.log("not booked");
+                showDangerToast("Не удалось забронировать услугу! Возможно, такое время уже занято");
             }
         });
     });
+
+    showDangerToast = function(text) {
+        'use strict';
+        $.toast({
+            heading: 'Error',
+            text: text,
+            showHideTransition: 'slide',
+            icon: 'error',
+            loaderBg: '#f2a654',
+            position: 'top-right'
+        })
+    };
+    showSuccessToast = function(text) {
+        'use strict';
+        $.toast({
+            heading: 'Success',
+            text: text,
+            showHideTransition: 'slide',
+            icon: 'success',
+            loaderBg: '#f96868',
+            position: 'top-right'
+        })
+    };
 });

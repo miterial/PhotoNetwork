@@ -26,10 +26,21 @@ $( document ).ready(function() {
                 console.log("success!");
                 document.location.reload(true);
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                //showDangerToast("");
+                showDangerToast("Не удалось добавить данные");
             }
         });
     }
+    showSuccessToast = function(text) {
+        'use strict';
+        $.toast({
+            heading: 'Success',
+            text: text,
+            showHideTransition: 'slide',
+            icon: 'success',
+            loaderBg: '#f96868',
+            position: 'top-right'
+        })
+    };
 
 
 });

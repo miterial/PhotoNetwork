@@ -189,4 +189,7 @@ public class PhotoService {
         else throw new IllegalArgumentException("Фотография недоступна");
     }
 
+    public List<PhotoDtoOut> findByUser(String email) {
+        return toDto(photoRepository.findByUser(userService.findByEmail(email)));
+    }
 }

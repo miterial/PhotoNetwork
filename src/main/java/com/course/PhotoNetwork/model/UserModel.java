@@ -2,6 +2,7 @@ package com.course.PhotoNetwork.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -31,7 +32,7 @@ public class UserModel {
     private String username;
 
     @Column(nullable = false)
-    @Size(min=6)
+    @Length(min=6)
     private String password;
 
     @Column(nullable = false, unique = true)
@@ -47,7 +48,7 @@ public class UserModel {
     private boolean enabled = true;
 
     @Column
-    private double avgRate;
+    private double avgRate = 5;
 
     @ManyToMany
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})

@@ -11,9 +11,10 @@ $( document ).ready(function() {
                 temp["price"] = $(this).closest("div").find("input[name='price']").val();
                 console
                     .log(temp["price"]);
-                if(temp["price"] === "0,0") {
-                    console.log("fill in the price!")
-                    return false;
+                if(temp["price"] === "0.0") {
+                    console.log("fill in the price!");
+                    showDangerToast("Услуги без цены не будут добавлены");
+                    return;
                 }
                 newServices.push(temp);
             }
@@ -31,9 +32,9 @@ $( document ).ready(function() {
             data: JSON.stringify(data),
             success: function () {
                 console.log("changed services of user!");
-                //document.location.reload(true);
+                showSuccessToast("Сервисы пользователя обновлены!")
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                //showDangerToast("Error creating blacklist");
+                showDangerToast("Не удалось обновить услуги");
             }
         });
     });
@@ -50,10 +51,32 @@ $( document ).ready(function() {
                 console.log("subscribed!");
                 document.location.reload(true);
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                //showDangerToast("Error creating blacklist");
+                showDangerToast("Не удалось подписаться");
             }
         });
     });
 
+    showDangerToast = function(text) {
+        'use strict';
+        $.toast({
+            heading: 'Error',
+            text: text,
+            showHideTransition: 'slide',
+            icon: 'error',
+            loaderBg: '#f2a654',
+            position: 'top-right'
+        })
+    };
+    showSuccessToast = function(text) {
+        'use strict';
+        $.toast({
+            heading: 'Success',
+            text: text,
+            showHideTransition: 'slide',
+            icon: 'success',
+            loaderBg: '#f96868',
+            position: 'top-right'
+        })
+    };
 
 });

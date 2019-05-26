@@ -32,9 +32,6 @@
                                 <input type="email" th:value="*{email}" th:field="*{email}" class="form-control" name="email" placeholder="email"/>
                             </div>
                             <div class="form-group">
-                                <input type="password" th:value="*{password}" th:field="*{password}" class="form-control" name="password" placeholder="пароль"/>
-                            </div>
-                            <div class="form-group">
                                 <input type="text" th:value="*{username}" th:field="*{username}" class="form-control" name="username" placeholder="логин"/>
                             </div>
                             <div class="form-group">
@@ -53,8 +50,8 @@
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary" value="Сохранить профиль" />
                         </div>
-                    <h3 th:if="${services}">Выбрать предоставляемые услуги</h3>
-                    <p th:if="${services.size() == 0}">Выбор услуг недоступен. Обратитесь к администратору.</p>
+                    <h3 th:if="${services.size() != 0 && currentUser.provideServices}">Выбрать предоставляемые услуги</h3>
+                    <p th:if="${services.size() == 0 && currentUser.provideServices}">Выбор услуг недоступен. Обратитесь к администратору.</p>
                     <!-- Услуги, которые пользователь может выбрать/убрать, чтобы предоставлять-->
                     <th:block th:each="service : ${services}">
                         <div class="form-inline form-group justify-content-between">
@@ -62,7 +59,7 @@
                             <input type="number" class="form-control" name="price" th:value="${service.price}" placeholder="цена"/>
                         </div>
                     </th:block>
-                    <input th:if="${services.size() > 0}" type="button" id="saveServices" class="btn btn-primary" value="Сохранить услуги" />
+                    <input th:if="${services.size() != 0}" type="button" id="saveServices" class="btn btn-primary" value="Сохранить услуги" />
                 </div>
             </div>
         </form>
