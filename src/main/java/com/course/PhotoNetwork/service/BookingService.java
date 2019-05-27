@@ -188,4 +188,12 @@ public class BookingService {
             entity.getStatus(),
             entity.isFinishedByMaster(), entity.isFinishedByClient(), entity.isDeletedByMaster(), entity.isDeletedByClient());
     }
+
+    public Optional<BookingModel> findById(Long bookingId) {
+        return bookingRepository.findById(bookingId);
+    }
+
+    public void save(BookingModel b) {
+        bookingRepository.save(b);
+    }
 }

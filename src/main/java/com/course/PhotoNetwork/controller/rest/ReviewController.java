@@ -29,11 +29,11 @@ public class ReviewController {
             ReviewModel review = reviewService.addReview(dtoIn);
             return ResponseEntity.ok(reviewService.toDto(review));
         } catch (IllegalAccessError ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReviewController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReviewController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
@@ -41,14 +41,13 @@ public class ReviewController {
     @PostMapping("/form")
     public String addReviewForm(@ModelAttribute ReviewDtoIn dtoIn) {
         try {
-            ReviewModel review = reviewService.addReview(dtoIn);
+            reviewService.addReview(dtoIn);
             return "redirect:/user/" + dtoIn.getMasterId();
         } catch (IllegalAccessError ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReviewController.class.getName()).log(Level.SEVERE, null, ex);
             return "/error";
-        }
-        catch (Exception ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ReviewController.class.getName()).log(Level.SEVERE, null, ex);
             return "/error";
         }
     }
@@ -59,10 +58,11 @@ public class ReviewController {
             UserModel curUser = userService.findByEmail(auth.getName());
             if (!userService.isAdmin(curUser))
                 throw new IllegalArgumentException("Для данного действия нужны права администратора");
+
             reviewService.deleteByAuthor(authorId);
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception ex) {
-            Logger.getLogger(ServicesController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReviewController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }

@@ -45,11 +45,14 @@
                         </table>
                     </th:block>
                 </div>
-                <div class="form-group" th:if="${user.provideServices && canWriteReview}">
+                <div class="form-group" th:if="${currentUserBookings.size() > 0 && !isCurrent}">
                     <h5>Оставить отзыв</h5>
                     <form th:action="@{/api/review/form}" method="post" th:object="${newReview}">
-                        <div class="form-group">
+                        <div class="form-inline">
                             <input type="number" min="1" max="5" th:field="*{rate}" class="form-control" name="rate" placeholder="оценка 1-5"/>
+                            <select th:field="*{bookingId}" class="form-control">
+                                <option th:each="booking : ${currentUserBookings}" th:value="${booking.bookingId}" th:text="${booking.serviceName}"></option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <textarea th:field="*{content}" class="form-control" name="content" placeholder="ваш отзыв"/>
@@ -66,7 +69,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <span th:text="${'Оценка: ' + review.rate + ' Автор: '}"></span>
-                                <a th:href="@{'/user/' + review.authorId}" th:text="${review.authorUsername}"></a>
+                                <a th:href="@{'/user/' + ${review.authorId}}" th:text="${review.authorUsername}"></a>
                             </div>
                             <div class="card-body">
                                 <p th:text="${review.content}"></p>

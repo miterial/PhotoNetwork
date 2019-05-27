@@ -90,7 +90,7 @@ public class UserController {
     }
 
     @GetMapping
-    public UserDtoOut getUserByUsername(@PathParam(value = "email") String email) throws ParseException {
+    public UserDtoOut getUserByEmail(@PathParam(value = "email") String email) throws ParseException {
         return userService.toDto(userService.findByEmail(email));
     }
 

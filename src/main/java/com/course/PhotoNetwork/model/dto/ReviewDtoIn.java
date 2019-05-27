@@ -2,6 +2,7 @@ package com.course.PhotoNetwork.model.dto;
 
 public class ReviewDtoIn {
 
+    private Long bookingId;
     private Long authorId;
     private Long masterId;
     private Integer rate;
@@ -10,7 +11,8 @@ public class ReviewDtoIn {
     public ReviewDtoIn() {
     }
 
-    public ReviewDtoIn(Long authorId, Long masterId, Integer rate, String content) {
+    public ReviewDtoIn(Long bookingId, Long authorId, Long masterId, Integer rate, String content) {
+        this.bookingId = bookingId;
         this.authorId = authorId;
         this.masterId = masterId;
         this.rate = rate;
@@ -47,5 +49,13 @@ public class ReviewDtoIn {
 
     public void setMasterId(Long masterId) {
         this.masterId = masterId;
+    }
+
+    public Long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Long bookingId) {
+        this.bookingId = bookingId;
     }
 }

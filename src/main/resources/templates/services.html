@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row" id="account" th:data-id="${schedule.userId}">
             <div class="col-12">
-                <p th:if="${schedule.booked.size()==0}">У вас нет заказанных и предстоящих услуг</p>
+                <p th:if="${schedule.booked.size()==0}">У вас нет заказанных услуг</p>
                 <th:block th:if="${schedule.booked.size()>0}">
                 <h2>Ваши заказы</h2>
                     <table class="table" id="client">
@@ -42,7 +42,8 @@
                         </tbody>
                     </table>
                 </th:block>
-            <th:block th:if="${schedule.upcoming.size()>0}">
+                <p th:if="${schedule.upcoming.size()==0}">У вас нет предстоящих мероприятий</p>
+                <th:block th:if="${schedule.upcoming.size()>0}">
                 <div class="col-12">
                     <h2>Предстоящие мероприятия</h2>
                     <table class="table" id="master">

@@ -2,6 +2,7 @@ package com.course.PhotoNetwork.controller.web;
 
 import com.course.PhotoNetwork.controller.rest.PhotoController;
 import com.course.PhotoNetwork.controller.rest.UserController;
+import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.dto.*;
 import com.course.PhotoNetwork.model.types.BookingEnum;
@@ -147,9 +148,9 @@ public class WebController {
             model.addObject("isCurrent", currentUser.getId() == userId);
             model.addObject("canWriteReview",false);
 
-            if(!bookingService.findByClientAndStatus(currentUser, BookingEnum.FINISHED).isEmpty() &&
-                    userId != currentUser.getId()){
-                model.addObject("canWriteReview",true);
+            List<BookingModel> currentUserBookings = bookingService.findByClientAndStatus(currentUser, BookingEnum.FINISHED);
+            model.addObject("currentUserBookings", bookingService.toDto(currentUserBookings));
+            if(!currentUserBookings.isEmpty() && userId != currentUser.getId()){
                 model.addObject("newReview",new ReviewDtoIn());
                 model.addObject("curId",currentUser.getId());
             }

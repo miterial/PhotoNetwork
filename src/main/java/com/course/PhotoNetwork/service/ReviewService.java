@@ -1,5 +1,6 @@
 package com.course.PhotoNetwork.service;
 
+import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.ReviewModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.ReviewDtoIn;
@@ -32,6 +33,11 @@ public class ReviewService {
 
         if(bookingService.findByClientAndMasterAndStatus(author, master, BookingEnum.FINISHED) == null)
             throw new IllegalArgumentException("Данный пользователь не может добавлять комментарии исполнителю с id=" + dtoIn.getMasterId());
+
+        bookingService.findById(dtoIn.getBookingId()).ifPresent(b->{
+            b.setStatus(BookingEnum.HAS_REVIEW);
+            bookingService.save(b);
+        });
 
         ReviewModel review = new ReviewModel(dtoIn.getContent(), dtoIn.getRate(), author);
         review = reviewRepository.save(review);

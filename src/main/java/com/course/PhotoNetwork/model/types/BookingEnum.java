@@ -7,7 +7,8 @@ public enum BookingEnum {
     FINISH_AWAITS(4,"завершено (ожидает подтверждения)"),
     FINISHED(100,"завершено"),
     DELETE_AWAITS(101,"отменено (ожидает подтверждения)"),
-    DELETED(102,"отменено");
+    DELETED(102,"отменено"),
+    HAS_REVIEW(200,"завершено");
 
     private String val;
     private long id;
