@@ -3,6 +3,8 @@ package com.course.PhotoNetwork.model.dto;
 import com.course.PhotoNetwork.model.types.PhotoLicense;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PhotoDtoOut {
@@ -18,7 +20,7 @@ public class PhotoDtoOut {
     @JsonProperty
     private long viewcount;
     @JsonProperty
-    private Date uploaddate;
+    private String uploaddate;
     @JsonProperty
     private UserDtoOut user;
     @JsonProperty
@@ -36,7 +38,8 @@ public class PhotoDtoOut {
         this.description = description;
         this.likecount = likecount;
         this.viewcount = viewcount;
-        this.uploaddate = uploaddate;
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        this.uploaddate = df.format(uploaddate);
         this.user = user;
         this.category = category;
         this.photofile = photofile;
@@ -75,11 +78,11 @@ public class PhotoDtoOut {
         this.viewcount = viewcount;
     }
 
-    public Date getUploaddate() {
+    public String getUploaddate() {
         return uploaddate;
     }
 
-    public void setUploaddate(Date uploaddate) {
+    public void setUploaddate(String uploaddate) {
         this.uploaddate = uploaddate;
     }
 

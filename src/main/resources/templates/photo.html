@@ -18,6 +18,7 @@
                 <p th:text="${photo.uploaddate}"></p>
                 <p th:text="${photo.name}"></p>
                 <p th:text="${photo.description}"></p>
+                <p th:text="${'Лицензия: ' + photo.license.val}"></p>
                 <p><span th:text="${photo.likecount}"></span><i class="iconicfill-heart-fill"></i>
                     <span th:text="${photo.viewcount}"></span><i class="iconicfill-eye"></i></p>
                 <a th:href="@{'/category/' + ${photo.category}}" class="text-muted" th:text="${'#' + photo.category}"></a>
