@@ -14,7 +14,9 @@
                     <table class="table table-responsive">
                         <th:block th:each="category: ${categories}">
                             <tr th:data-id="${category.id}">
-                                <td th:text="${category.name}"></td>
+                                <td th:text="${category.name}" class="existing-category"></td>
+                                <button class="btn btn-success updateCategory">Изменить</button>
+                                <button class="btn btn-success deleteCategory">Удалить</button>
                             </tr>
                         </th:block>
                         <tr>
@@ -34,7 +36,9 @@
                     <table class="table table-responsive">
                         <th:block th:each="service: ${services}">
                             <tr th:data-id="${service.id}">
-                                <td th:text="${service.name}"></td>
+                                <td th:text="${service.name}" class="existing-service"></td>
+                                <button class="btn btn-success updateService">Изменить</button>
+                                <button class="btn btn-success deleteService">Удалить</button>
                             </tr>
                         </th:block>
                         <tr>

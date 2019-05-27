@@ -192,4 +192,8 @@ public class PhotoService {
     public List<PhotoDtoOut> findByUser(String email) {
         return toDto(photoRepository.findByUser(userService.findByEmail(email)));
     }
+
+    public void saveAll(List<PhotoModel> photos) {
+        photoRepository.saveAll(photos);
+    }
 }

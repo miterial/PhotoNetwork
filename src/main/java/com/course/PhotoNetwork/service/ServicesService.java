@@ -1,5 +1,6 @@
 package com.course.PhotoNetwork.service;
 
+import com.course.PhotoNetwork.exceptions.ServiceIsInUseException;
 import com.course.PhotoNetwork.model.RoleModel;
 import com.course.PhotoNetwork.model.dto.ServiceDto;
 import com.course.PhotoNetwork.model.dto.UserServicesDto;
@@ -68,7 +69,14 @@ public class ServicesService {
         return serviceRepository.findByName(serviceName);
     }
 
+    /**
+     * Delete service only if no master provides it
+     * @param serviceName
+     */
     public void deleteByName(String serviceName) {
+        if(!serviceRepository.findByNameAndMaster(serviceName, null).isEmpty())
+            throw new ServiceIsInUseException();
+
         serviceRepository.deleteByName(serviceName);
     }
 
@@ -78,7 +86,7 @@ public class ServicesService {
      */
     public Set<ServiceDto> getDefaultServices() {
         Set<ServiceDto> res = new HashSet<>();
-        List<ServiceModel> defaults = serviceRepository.findByPrice(0);
+        Set<ServiceModel> defaults = serviceRepository.findByMaster(null);
 
         for(ServiceModel d : defaults) {
             res.add(new ServiceDto(d.getId(),d.getName(),d.getPrice()));

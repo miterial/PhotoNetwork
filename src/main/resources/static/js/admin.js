@@ -1,46 +1,81 @@
 $( document ).ready(function() {
 
     var requestType,
-        id,
         url;
+
 
     $(".addCategory").on('click', function () {
         requestType = 'POST';
-        let name = $(this).parents("tr").find(".new-category").val();
-        url = "/api/category?category_name=" + name;
+        var data = {};
+        data["name"] = $(this).parents("tr").find(".new-category").val();
+        url = "/api/category";
         sendRequest();
     });
 
     $(".addService").on('click', function () {
         requestType = 'POST';
-        let name = $(this).parents("tr").find(".new-service").val();
-        url = "/api/service?service_name=" + name;
+        data["name"] = $(this).parents("tr").find(".new-service").val();
+        url = "/api/service";
         sendRequest();
     });
 
-    function sendRequest() {
+    $(".updateCategory").on('click', function () {
+        requestType = 'PUT';
+        var data = {};
+        data["name"] = $(this).parents("tr").find(".existing-category").text();
+        data["id"] = $(this).parents("tr").attr("data-id");
+        url = "/api/category";
+        sendRequest();
+    });
+
+    $(".updateService").on('click', function () {
+        requestType = 'PUT';
+        data["name"] = $(this).parents("tr").find(".existing-service").text();
+        data["id"] = $(this).parents("tr").attr("data-id");
+        url = "/api/service";
+        sendRequest();
+    });
+
+    $(".deleteCategory").on('click', function () {
+        requestType = 'DELETE';
+        var data = {};
+        data["name"] = $(this).parents("tr").find(".existing-category").text();
+        url = "/api/category";
+        sendRequest();
+    });
+
+    $(".deleteService").on('click', function () {
+        requestType = 'DELETE';
+        data["name"] = $(this).parents("tr").find(".existing-service").text();
+        url = "/api/service";
+        sendRequest();
+    });
+
+    function sendRequest(data) {
         $.ajax({
             url: url,
             type: requestType,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
             success: function () {
                 console.log("success!");
                 document.location.reload(true);
-            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                showDangerToast("Не удалось добавить данные");
+            }, error: function (XMLHttpRequest) {
+                showDangerToast(XMLHttpRequest.responseText);
             }
         });
     }
-    showSuccessToast = function(text) {
+
+    showDangerToast = function(text) {
         'use strict';
         $.toast({
-            heading: 'Success',
+            heading: 'Error',
             text: text,
             showHideTransition: 'slide',
-            icon: 'success',
-            loaderBg: '#f96868',
+            icon: 'error',
+            loaderBg: '#f2a654',
             position: 'top-right'
         })
     };
-
 
 });

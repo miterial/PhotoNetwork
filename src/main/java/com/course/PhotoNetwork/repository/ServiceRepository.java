@@ -18,11 +18,11 @@ public interface ServiceRepository extends JpaRepository<ServiceModel, Long> {
 
     void deleteByName(String serviceName);
 
-    List<ServiceModel> findByPrice(double price);
-
     Set<ServiceModel> findByMaster(UserModel master);
 
     void deleteByMaster(UserModel user);
 
     ServiceModel findByMasterAndName(UserModel master, String name);
+
+    List<ServiceModel> findByNameAndMaster(String serviceName, UserModel master);
 }
