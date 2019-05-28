@@ -8,8 +8,9 @@
     </div>
     <div class="card-footer">
         <a th:if="${photo.user.avatar}" th:href="@{'/user/' + ${photo.user.id}}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}"/></a>
+        <a th:unless="${photo.user.avatar}" th:href="@{'/user/' + ${photo.user.id}}" th:text="${'@' + photo.user.username}"></a>
 
         <div><a th:href="@{'/category/' + ${photo.category}}" class="text-muted" th:text="${'#' + photo.category}"/>
-            <small class="text-muted float-right" th:text="${#dates.format(photo.uploaddate, 'dd MMM yyyy')}"/></div>
+            <small class="text-muted float-right" th:text="${photo.uploaddate}"/></div>
     </div>
 </div>

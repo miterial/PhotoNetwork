@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="partials/header :: header"/>
 <body>
 <nav th:replace="partials/header :: navigation"/>
@@ -7,10 +7,10 @@
     <div class="container">
         <div class="row" id="account" th:data-id="${user.id}">
             <div class="col-6">
-                <h2>Информация профиля</h2>
-                <img th:src="${user.avatar}" class="img-fluid mb-2" >
+                <h2>Информация профиля <span th:if="${isCurrent}">(ваш профиль)</span></h2>
+                <img th:src="${user.avatar}" class="img-fluid mb-2 rounded-circle avatar-photo-big" >
                 <p th:text="${user.description}"></p>
-                <button th:unless="${isCurrent}" id="subscribeBtn" class="btn btn-primary" th:text="${subscribed ? 'Отписаться' : 'Подписаться'}"></button>
+                <button sec:authorize="hasAuthority('USER')" th:unless="${isCurrent}" id="subscribeBtn" class="btn btn-primary" th:text="${subscribed ? 'Отписаться' : 'Подписаться'}"></button>
 
                 <div class="form-group">
                     <h3><span th:if="${user.name}" th:text="${user.name}"></span><span th:if="${user.surname}" th:text="${' ' + user.surname}"></span></h3>
@@ -23,7 +23,7 @@
 
                     <p th:text="${'Дата регистрации: ' + user.regdate}"></p>
 
-                    <th:block th:if="${user.provideServices and user.services.size()>0 and !isCurrent}">
+                    <th:block sec:authorize="hasAuthority('USER')" th:if="${user.provideServices and user.services.size()>0 and !isCurrent}">
                         <table class="table">
                             <thead>
                             <tr>
@@ -45,7 +45,7 @@
                         </table>
                     </th:block>
                 </div>
-                <div class="form-group" th:if="${currentUserBookings.size() > 0 && !isCurrent}">
+                <div sec:authorize="hasAuthority('USER')" class="form-group" th:if="${currentUserBookings.size() > 0 && !isCurrent}">
                     <h5>Оставить отзыв</h5>
                     <form th:action="@{/api/review/form}" method="post" th:object="${newReview}">
                         <div class="form-inline">
@@ -80,7 +80,7 @@
             </div>
             <div class="col-6">
                 <h2>Загруженные фото</h2>
-                <a  th:if="${user.photos.size() == 0}" th:href="@{/upload}">Загрузить первое фото</a>
+                <a sec:authorize="hasAuthority('USER')" th:if="${user.photos.size() == 0 && isCurrent}" th:href="@{/upload}">Загрузить первое фото</a>
                 <div class="row">
                     <th:block  th:each="photo : ${user.photos}">
                         <div th:replace="partials/photo_in_list_account :: photo"></div>

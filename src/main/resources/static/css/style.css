@@ -5,6 +5,9 @@ input[name="price"] {
 .avatar-photo {
     width: 40px;
 }
+.avatar-photo-big {
+    width: 150px;
+}
 .custom-file {
     margin-bottom: 1em;
 }

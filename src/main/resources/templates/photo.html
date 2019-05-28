@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-9 text-center">
                 <img id="photoFile" th:src="${photo.photofile}" class="img-thumbnail" alt="img" th:data-id="${photo.id}">
-                <button th:unless="${isCurrentUser}" id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
+                <button sec:authorize="hasAuthority('USER')" th:unless="${isCurrentUser}" id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
                 <a th:if="${photo.license != T(com.course.PhotoNetwork.model.types.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success">Скачать</a>
             </div>
             <div class="col-3">
