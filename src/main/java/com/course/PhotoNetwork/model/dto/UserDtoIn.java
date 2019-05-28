@@ -1,6 +1,7 @@
 package com.course.PhotoNetwork.model.dto;
 
 
+import com.course.PhotoNetwork.controller.validation.Birthday;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +14,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class UserDtoIn {
 
@@ -31,6 +34,7 @@ public class UserDtoIn {
 
     @JsonProperty
     @NotBlank(message = "Заполните поле Login")
+    @Pattern(regexp = "[a-zA-Z0-9]+", message = "Только цифры и латинские буквы")
     private String username;
 
     @JsonProperty
@@ -39,14 +43,20 @@ public class UserDtoIn {
     @JsonProperty
     @Pattern(regexp = "[a-zA-Z]*", message = "Только буквы")
     private String surname;
+
     @JsonProperty
+    @Birthday
     private String birthday;
+
     @JsonProperty
     private boolean provideServices;
     @JsonProperty
     private MultipartFile avatar;
     @JsonProperty
     private String description;
+
+    @JsonProperty
+    private Set<ServiceDto> services;
 
     public UserDtoIn(){}
 
@@ -157,5 +167,13 @@ public class UserDtoIn {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<ServiceDto> getServices() {
+        return services;
+    }
+
+    public void setServices(Set<ServiceDto> services) {
+        this.services = services;
     }
 }

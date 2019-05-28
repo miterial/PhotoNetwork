@@ -62,6 +62,12 @@ $( document ).ready(function() {
     });
 
     function sendRequest(data) {
+
+        if(data["name"] === '' && requestType !== 'DELETE') {
+            showDangerToast("Название не может быть пустым");
+            return;
+        }
+
         $.ajax({
             url: url,
             type: requestType,

@@ -1,5 +1,7 @@
 $( document ).ready(function() {
 
+    var prevServiceCount = $('.services:checked').length;
+
     $("#saveServices").on('click', function () {
 
         var newServices = [];
@@ -9,16 +11,22 @@ $( document ).ready(function() {
                 var temp = {};
                 temp["name"] = $(this).attr('name');
                 temp["price"] = $(this).closest("div").find("input[name='price']").val();
-                console
-                    .log(temp["price"]);
                 if(temp["price"] === "0.0") {
-                    console.log("fill in the price!");
                     showDangerToast("Услуги без цены не будут добавлены");
+                    return;
+                }
+                if(temp["price"] <= "0.0") {
+                    showDangerToast("Цена должна быть > 0");
                     return;
                 }
                 newServices.push(temp);
             }
         });
+
+        if(prevServiceCount <= newServices.length && newServices.length === 0){
+            showDangerToast("Внесите корректные изменения в список сервисов");
+            return;
+        }
 
         var data = {};
         data["services"] = newServices;

@@ -61,9 +61,11 @@ public class UserController {
                 Set<ServiceDto> services = new HashSet<>();
                 if(userService.isMaster(user)) {
                     services = servicesService.toDto(servicesService.findByMaster(user));// + services that user provides
+                    newUser.setServices(new HashSet<>(services));
                     services.addAll(servicesService.getDefaultServices());   // +default services
                 }
                 model.addAttribute("services",services);
+
                 return "account_form";
             }
 

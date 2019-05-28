@@ -2,15 +2,20 @@ package com.course.PhotoNetwork.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class ServiceDto {
 
     @JsonProperty
     private long id;
-    @JsonProperty(required = true)
+    @JsonProperty
+    @NotBlank(message = "Название услуги не может быть пустым")
     private String name;
-    @JsonProperty(required = true)
+    @JsonProperty
+    @Min(1)
+    @NotBlank(message = "Укажите стоимость")
     private double price;
 
     public ServiceDto() {
