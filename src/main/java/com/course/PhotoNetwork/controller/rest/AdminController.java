@@ -1,6 +1,5 @@
 package com.course.PhotoNetwork.controller.rest;
 
-import com.course.PhotoNetwork.exceptions.ServiceIsInUseException;
 import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.dto.CategoryDto;
@@ -66,8 +65,8 @@ public class AdminController {
     @DeleteMapping("/category")
     public ResponseEntity deleteCategory(@RequestBody CategoryDto dto) {
         try {
-            categoryService.deleteByName(dto.getName());
-            return ResponseEntity.status(HttpStatus.OK).body("категория удалена");
+            categoryService.delete(dto.getName());
+            return ResponseEntity.status(HttpStatus.OK).body("Категория удалена");
         } catch (EntityNotFoundException ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

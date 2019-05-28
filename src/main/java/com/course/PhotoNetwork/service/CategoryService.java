@@ -32,20 +32,18 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public void deleteByName(String categoryName) {
+    public void delete(String categoryName) {
         CategoryModel category = categoryRepository.findByName(categoryName).orElseThrow(()->new EntityNotFoundException("Категория с таким именем не найдена"));
 
         CategoryModel defaultCategory = categoryRepository.findByName("default").orElseThrow(()->new EntityNotFoundException("Отсутствует дефолтная категория!"));
 
         List<PhotoModel> photos = photoService.findByCategory(category);
-
         for(PhotoModel photo : photos) {
             photo.setCategory(defaultCategory);
         }
-
         photoService.saveAll(photos);
 
-        categoryRepository.deleteByName(categoryName);
+        categoryRepository.delete(category);
     }
 
     public List<CategoryModel> findAll() {
