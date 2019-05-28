@@ -6,7 +6,9 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -28,15 +30,17 @@ public class UserModel {
 
     private Date regdate = Calendar.getInstance().getTime();
 
+    @NotBlank(message = "Заполните поле Login")
     @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)
-    @Length(min=6)
-    private String password;
+    @Transient
+    @Length(min=6, message = "Пароль должен быть не короче 6 символов")
+    transient private String password;
 
     @Column(nullable = false, unique = true)
-    @Email
+    @Email(message = "Некорректный Email")
     private String email;
 
     @Lob
@@ -45,10 +49,8 @@ public class UserModel {
 
     private String description;
 
-    private boolean enabled = true;
-
     @Column
-    private double avgRate = 5;
+    private double avgRate;
 
     @ManyToMany
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -106,10 +108,6 @@ public class UserModel {
         this.avatar = avatar;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public void setRoles(List<RoleModel> roles) {
         this.roles = roles;
     }
@@ -154,10 +152,6 @@ public class UserModel {
         return avatar;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
     public List<RoleModel> getRoles() {
         return roles;
     }
@@ -188,7 +182,6 @@ public class UserModel {
         hash = 79 * hash + Objects.hashCode(this.description);
         hash = 79 * hash + Objects.hashCode(this.email);
         hash = 79 * hash + Objects.hashCode(this.avatar);
-        hash = 79 * hash + (this.enabled ? 1 : 0);
         hash = 79 * hash + Objects.hashCode(this.services);
         hash = 79 * hash + Objects.hashCode(this.reviews);
         hash = 79 * hash + Objects.hashCode(this.roles);

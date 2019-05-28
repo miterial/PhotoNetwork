@@ -43,7 +43,8 @@ public class ReviewService {
         review = reviewRepository.save(review);
 
         master.getReviews().add(review);
-        master.setAvgRate((master.getAvgRate()+dtoIn.getRate())/2);
+        double rate = master.getAvgRate() == 0 ? dtoIn.getRate() : (master.getAvgRate()+dtoIn.getRate())/2;
+        master.setAvgRate(rate);
         userRepository.save(master);
 
         return review;

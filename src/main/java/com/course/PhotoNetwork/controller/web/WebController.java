@@ -2,6 +2,7 @@ package com.course.PhotoNetwork.controller.web;
 
 import com.course.PhotoNetwork.controller.rest.PhotoController;
 import com.course.PhotoNetwork.controller.rest.UserController;
+import com.course.PhotoNetwork.controller.util.ControllerUtils;
 import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.dto.*;
 import com.course.PhotoNetwork.model.types.BookingEnum;
@@ -15,11 +16,14 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
@@ -221,11 +225,15 @@ public class WebController {
     /**
      * Form submission
      * @param newUser
-     * @param response
      */
     @PostMapping(value = "/registration")
-    public String registrationForm(@ModelAttribute UserDtoIn newUser, HttpServletResponse response, RedirectAttributes redirectAttributes) throws IOException {
+    public String registrationForm(@Valid @ModelAttribute UserDtoIn newUser, BindingResult bindingResult, Model model,
+                                   RedirectAttributes redirectAttributes) {
 
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("newUser", newUser);
+            return "/registration";
+        }
         try {
             userService.registerUser(newUser);
             return "redirect:/";

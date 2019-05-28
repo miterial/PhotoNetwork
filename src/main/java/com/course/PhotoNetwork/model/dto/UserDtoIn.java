@@ -2,20 +2,33 @@ package com.course.PhotoNetwork.model.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
 public class UserDtoIn {
     @JsonProperty(required = true)
+    @Email(message = "Некорректный Email")
+    @NotBlank(message = "Заполните поле Email")
     private String email;
+
     @JsonProperty(required = true)
-    private String password;
+    @Transient
+    @Length(min=6, message = "Пароль должен быть не короче 6 символов")
+    transient private String password;
+
     @JsonProperty(required = true)
+    @NotBlank(message = "Заполните поле Login")
     private String username;
+
     @JsonProperty
     private String name;
     @JsonProperty
