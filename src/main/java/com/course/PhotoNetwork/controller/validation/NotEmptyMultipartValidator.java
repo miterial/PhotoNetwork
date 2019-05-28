@@ -11,7 +11,7 @@ public class NotEmptyMultipartValidator implements ConstraintValidator<NotEmptyM
     public boolean isValid(MultipartFile object, ConstraintValidatorContext constraintContext) {
 
         try {
-            return !object.getName().isEmpty() && object.getBytes().length != 0;
+            return object != null && !object.getName().isEmpty() && object.getBytes().length != 0;
         } catch (IOException e) {
             e.printStackTrace();
         }

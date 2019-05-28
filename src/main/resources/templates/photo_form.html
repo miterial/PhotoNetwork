@@ -3,7 +3,7 @@
       xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="row">
         <div class="col-6">
-            <input th:if="${newPhoto.id != null}" type="hidden" name="id" th:value="${newPhoto.id}"/>
+            <input th:if="${newPhoto.id != null}" type="hidden" th:value="*{id}" name="id" />
             <div th:if="${newPhoto.id == null}" class="form-group">
                 <input type="file" id="photofile" name="file" th:field="*{photofile}" th:classappend="${#fields.hasErrors('photofile')}? 'is-invalid'" class="custom-file-input" value="Выбрать">
                 <label class="custom-file-label" for="photofile">Выбрать файл...</label>

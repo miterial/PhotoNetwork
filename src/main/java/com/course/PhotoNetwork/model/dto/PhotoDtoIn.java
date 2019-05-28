@@ -86,4 +86,8 @@ public class PhotoDtoIn {
     public void setLicense(PhotoLicense license) {
         this.license = license;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

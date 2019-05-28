@@ -41,7 +41,7 @@ public class PhotoController {
     private PhotoService photoService;
 
     @PostMapping(value = "/add", consumes = "multipart/form-data")
-    public String addPhoto(@Valid @ModelAttribute("newPhoto") PhotoDtoIn newPhoto, BindingResult bindingResult, Model model,Authentication auth) {
+    public String addPhoto(@Valid @ModelAttribute("newPhoto") PhotoDtoIn newPhoto, BindingResult bindingResult, Model model, Authentication auth) {
         UserModel user = userService.findByEmail(auth.getName());
 
         if(bindingResult.hasErrors()) {
@@ -79,9 +79,12 @@ public class PhotoController {
     }
 
     @PostMapping(value = "/modify", consumes = "multipart/form-data")
-    public String modifyPhoto(@Valid @ModelAttribute PhotoDtoIn photoDtoIn, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String modifyPhoto(@Valid @ModelAttribute("newPhoto") PhotoDtoIn photoDtoIn, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model, Authentication auth) {
 
-        if(bindingResult.hasErrors()) {
+        if(bindingResult.hasFieldErrors("name")) {
+
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("userPhotos", photoService.findByUser(auth.getName()));
             return "upload";
         }
         PhotoModel photo;
@@ -92,7 +95,8 @@ public class PhotoController {
                 photo = optional.get();
                 photo.setName(photoDtoIn.getName());
                 photo.setDescription(photoDtoIn.getDescription());
-                photo.setCategory(categoryService.findByName(photoDtoIn.getCategory()).get());
+                photo.setCategory(categoryService.findById(Long.parseLong(photoDtoIn.getCategory())).get());
+                photo.setLicense(photoDtoIn.getLicense());
                 long id = photoService.save(photo);
 
                 return "redirect:/photo/" + id;
