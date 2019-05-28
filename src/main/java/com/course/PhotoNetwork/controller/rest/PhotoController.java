@@ -1,9 +1,7 @@
 package com.course.PhotoNetwork.controller.rest;
 
-import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.PhotoModel;
 import com.course.PhotoNetwork.model.UserModel;
-import com.course.PhotoNetwork.model.dto.PhotoDtoOutSmall;
 import com.course.PhotoNetwork.service.CategoryService;
 import com.course.PhotoNetwork.service.PhotoService;
 import com.course.PhotoNetwork.service.UserService;
@@ -17,7 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -56,9 +56,9 @@ public class PhotoController {
             UserModel user = userService.findByEmail(auth.getName());
             photo.setUser(user);
 
-            photoService.save(photo);
+            long id = photoService.save(photo);
 
-            return "redirect:/upload";
+            return "redirect:/photo/" + id;
         } catch (IOException ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateException ex) {
@@ -69,38 +69,38 @@ public class PhotoController {
         return "redirect:/error";
     }
 
-    @RequestMapping(value = "/modify", consumes = "multipart/form-data")
-    public String modifyPhoto(@ModelAttribute PhotoDtoIn photoDtoIn, ModelAndView model) {
+    @PostMapping(value = "/modify", consumes = "multipart/form-data")
+    public String modifyPhoto(@ModelAttribute PhotoDtoIn photoDtoIn, RedirectAttributes redirectAttributes) {
 
         PhotoModel photo;
 
         try {
-            Optional<PhotoModel> optional = photoService.findById(Long.parseLong(photoDtoIn.getId()));
+            Optional<PhotoModel> optional = photoService.findById(photoDtoIn.getId());
             if (optional.isPresent()) {
                 photo = optional.get();
                 photo.setName(photoDtoIn.getName());
                 photo.setDescription(photoDtoIn.getDescription());
                 photo.setCategory(categoryService.findByName(photoDtoIn.getCategory()).get());
-                photoService.save(photo);
+                long id = photoService.save(photo);
 
-                return "redirect:/upload";
+                return "redirect:/photo/" + id;
             }
-        } catch (IllegalStateException ex) {
-            Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        redirectAttributes.addFlashAttribute("errorMessage", "Не удалось обновить фото");
         return "redirect:/error";
     }
 
-    @DeleteMapping
-    public HttpStatus deletePhoto(long photo_id) {
+    @DeleteMapping("/{photoId}")
+    public ResponseEntity deletePhoto(@PathVariable Long photoId) {
         try {
-            photoService.deleteById(photo_id);
+            photoService.deleteById(photoId);
+            return ResponseEntity.status(HttpStatus.OK).body("Фото удалено");
         } catch (Exception ex) {
             Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getLocalizedMessage());
         }
-        return HttpStatus.OK;
     }
 
     @GetMapping(value = "/popular")

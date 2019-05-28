@@ -3,7 +3,6 @@ package com.course.PhotoNetwork.controller.web;
 import com.course.PhotoNetwork.controller.rest.PhotoController;
 import com.course.PhotoNetwork.controller.rest.UserController;
 import com.course.PhotoNetwork.model.BookingModel;
-import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.dto.*;
 import com.course.PhotoNetwork.model.types.BookingEnum;
 import com.course.PhotoNetwork.service.*;
@@ -18,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class WebController {
     }
 
     @GetMapping("/registration")
-    public ModelAndView registrationPage(ModelAndView modelAndView, HttpServletResponse response,Authentication auth) throws IOException {
+    public ModelAndView registrationPage(ModelAndView modelAndView, HttpServletResponse response, Authentication auth) throws IOException {
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
             response.sendRedirect("/");
         } else {
@@ -161,27 +161,6 @@ public class WebController {
         return model;
     }
 
-    @GetMapping("/category/{categoryName}")
-    public ModelAndView getPhotosFromCategory(@PathVariable String categoryName, ModelAndView model) {
-        List<PhotoModel> photosInCategory = null;
-        ArrayList<PhotoDtoOut> photosInCategoryDTO = new ArrayList<>();
-
-        try {
-            Optional<CategoryModel> category = categoryService.findByName(categoryName);
-            if(category.isPresent()) {
-                photosInCategory = photoService.findByCategory(category.get());
-                photosInCategoryDTO.addAll(photoService.toDto(photosInCategory));
-            }
-            model.addObject("photos",photosInCategoryDTO);
-            model.addObject("title","Фото в категории " + categoryName);
-            model.setViewName("index");
-        } catch (Exception ex) {
-            Logger.getLogger(PhotoController.class.getName()).log(Level.SEVERE, null, ex);
-            model.setViewName("error");
-        }
-        return model;
-    }
-
     @GetMapping("/services")
     public ModelAndView getSchedule(ModelAndView model) {
         try {
@@ -201,16 +180,21 @@ public class WebController {
     }
 
     @GetMapping("/upload")
-    public ModelAndView upload(ModelAndView model, Authentication auth) {
+    public ModelAndView upload(@RequestParam(required = false) Long modify, ModelAndView model, Authentication auth) {
         model.setViewName("upload");
         try {
-            model.addObject("newPhoto", new PhotoDtoIn());
+            if(modify == null)
+                model.addObject("newPhoto", new PhotoDtoIn());
+            else
+                model.addObject("newPhoto", photoService.toDto(photoService.findById(modify).get()));
 
             model.addObject("categories", categoryService.findAll());
             model.addObject("userPhotos", photoService.findByUser(auth.getName()));
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+            model.setViewName("error");
+            model.addObject("errorMessage","Не получается загрузить страницу изменения фото");
         }
         return model;
     }
@@ -240,14 +224,15 @@ public class WebController {
      * @param response
      */
     @PostMapping(value = "/registration")
-    public void registrationForm(@ModelAttribute UserDtoIn newUser, HttpServletResponse response) throws IOException {
+    public String registrationForm(@ModelAttribute UserDtoIn newUser, HttpServletResponse response, RedirectAttributes redirectAttributes) throws IOException {
 
         try {
             userService.registerUser(newUser);
-            response.sendRedirect("/");
+            return "redirect:/";
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
-            response.sendRedirect("/error");
+            redirectAttributes.addFlashAttribute("errorMessage",ex.getLocalizedMessage());
+            return "redirect:/error";
         }
     }
 }

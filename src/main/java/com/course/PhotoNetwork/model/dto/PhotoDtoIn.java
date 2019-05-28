@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PhotoDtoIn {
 
     @JsonProperty
-    private String id;
+    private Long id;
     @JsonProperty
     private String name;
     @JsonProperty
@@ -21,7 +21,7 @@ public class PhotoDtoIn {
 
     public PhotoDtoIn() {}
 
-    public PhotoDtoIn(String id, String name, String description, String category, MultipartFile photofile, PhotoLicense license) {
+    public PhotoDtoIn(Long id, String name, String description, String category, MultipartFile photofile, PhotoLicense license) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -62,7 +62,7 @@ public class PhotoDtoIn {
         this.photofile = photofile;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

@@ -1,12 +1,16 @@
 <form th:fragment="photo_form" role="form" method="POST" enctype="multipart/form-data"
-      th:action="@{/api/photo/add}" th:object="${newPhoto}" class="col-12"
+      th:action="@{newPhoto.id ? '/api/photo/modify' : '/api/photo/add'}" th:object="${newPhoto}" class="col-12"
       xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="row">
         <div class="col-6">
-            <div class="form-group">
+            <input th:if="${newPhoto}" type="hidden" name="id" th:value="${newPhoto.id}"/>
+            <div th:if="${newPhoto.id == null}" class="form-group">
                 <input type="file" name="file" th:field="*{photofile}" value="Выбрать">
             </div>
             <h3>Информация о фото</h3>
+            <div th:if="${newPhoto.id}" class="form-group">
+                <img th:src="${newPhoto.photofile}" class="img-fluid">
+            </div>
             <div class="form-group">
                 <div class="form-group">
                     <label>Название фото</label>
