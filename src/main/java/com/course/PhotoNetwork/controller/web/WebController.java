@@ -2,7 +2,6 @@ package com.course.PhotoNetwork.controller.web;
 
 import com.course.PhotoNetwork.controller.rest.PhotoController;
 import com.course.PhotoNetwork.controller.rest.UserController;
-import com.course.PhotoNetwork.controller.util.ControllerUtils;
 import com.course.PhotoNetwork.model.BookingModel;
 import com.course.PhotoNetwork.model.dto.*;
 import com.course.PhotoNetwork.model.types.BookingEnum;
@@ -11,12 +10,12 @@ import com.course.PhotoNetwork.controller.rest.AdminController;
 import com.course.PhotoNetwork.model.PhotoModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.repository.LikeRepository;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -227,16 +226,19 @@ public class WebController {
      * @param newUser
      */
     @PostMapping(value = "/registration")
-    public String registrationForm(@Valid @ModelAttribute UserDtoIn newUser, BindingResult bindingResult, Model model,
-                                   RedirectAttributes redirectAttributes) {
+    public String registrationForm(@Valid @ModelAttribute("newUser") UserDtoIn newUser, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
-            model.addAttribute("newUser", newUser);
-            return "/registration";
+            //model.addAttribute("newUser", newUser);
+            return "registration";
         }
         try {
             userService.registerUser(newUser);
             return "redirect:/";
+        } catch (ConstraintViolationException ex) {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+            redirectAttributes.addFlashAttribute("errorMessage", "Пользователь с такими email или login уже существует");
+            return "redirect:/error";
         } catch (Exception ex) {
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
             redirectAttributes.addFlashAttribute("errorMessage",ex.getLocalizedMessage());

@@ -29,16 +29,20 @@
                     </div>
                         <div class="form-group">
                             <div class="form-group">
-                                <input type="email" th:value="*{email}" th:field="*{email}" class="form-control" name="email" placeholder="email"/>
+                                <input type="email" th:value="*{email}" th:field="*{email}" th:classappend="${#fields.hasErrors('email')}? 'is-invalid'" class="form-control" name="email" placeholder="email"/>
+                                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback"> </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" th:value="*{username}" th:field="*{username}" class="form-control" name="username" placeholder="логин"/>
+                                <input type="text" th:value="*{username}" th:field="*{username}" th:classappend="${#fields.hasErrors('username')}? 'is-invalid'" class="form-control" name="username" placeholder="логин"/>
+                                <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="invalid-feedback"> </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" th:value="*{name}" th:field="*{name}" class="form-control" name="name" placeholder="имя"/>
+                                <input type="text" th:value="*{name}" th:field="*{name}" th:classappend="${#fields.hasErrors('name')}? 'is-invalid'" class="form-control" name="name" placeholder="имя"/>
+                                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"> </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" th:value="*{surname}" th:field="*{surname}" class="form-control" name="surname" placeholder="фамилия"/>
+                                <input type="text" th:value="*{surname}" th:field="*{surname}" th:classappend="${#fields.hasErrors('surname')}? 'is-invalid'" class="form-control" name="surname" placeholder="фамилия"/>
+                                <div th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="invalid-feedback"> </div>
                             </div>
                             <div class="form-group">
                                 <input type="text" id="account_birthday" th:value="*{birthday}" th:field="*{birthday}" class="form-control datepicker-here" name="birthday" placeholder="дата рождения"/>

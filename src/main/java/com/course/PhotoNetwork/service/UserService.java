@@ -100,8 +100,6 @@ public class UserService implements UserDetailsService {
     public UserModel registerUser(UserDtoIn newUser) {
         UserModel user = new UserModel();
         user.setEmail(newUser.getEmail());
-        if(newUser.getPassword().isEmpty() || newUser.getPassword().length() < 6)
-            throw new IllegalArgumentException("Пароль должен быть длиннее 6 символов");
 
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setUsername(newUser.getUsername());

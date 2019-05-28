@@ -10,28 +10,34 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
 public class UserDtoIn {
-    @JsonProperty(required = true)
+
+    @JsonProperty
+    private Long id;
+
+    @JsonProperty
     @Email(message = "Некорректный Email")
     @NotBlank(message = "Заполните поле Email")
     private String email;
 
-    @JsonProperty(required = true)
-    @Transient
+    @JsonProperty
     @Length(min=6, message = "Пароль должен быть не короче 6 символов")
-    transient private String password;
+    private String password;
 
-    @JsonProperty(required = true)
+    @JsonProperty
     @NotBlank(message = "Заполните поле Login")
     private String username;
 
     @JsonProperty
+    @Pattern(regexp = "[a-zA-Z]*", message = "Только буквы")
     private String name;
     @JsonProperty
+    @Pattern(regexp = "[a-zA-Z]*", message = "Только буквы")
     private String surname;
     @JsonProperty
     private String birthday;
@@ -143,5 +149,13 @@ public class UserDtoIn {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

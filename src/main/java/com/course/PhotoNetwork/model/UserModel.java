@@ -35,11 +35,10 @@ public class UserModel {
     private String username;
 
     @Column(nullable = false)
-    @Transient
     @Length(min=6, message = "Пароль должен быть не короче 6 символов")
-    transient private String password;
+    private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     @Email(message = "Некорректный Email")
     private String email;
 

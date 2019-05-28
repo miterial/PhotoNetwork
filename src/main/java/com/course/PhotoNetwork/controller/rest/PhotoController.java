@@ -13,10 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +41,15 @@ public class PhotoController {
     private PhotoService photoService;
 
     @PostMapping(value = "/add", consumes = "multipart/form-data")
-    public String addPhoto(@ModelAttribute PhotoDtoIn newPhoto, ModelAndView model) {
+    public String addPhoto(@Valid @ModelAttribute("newPhoto") PhotoDtoIn newPhoto, BindingResult bindingResult, Model model,Authentication auth) {
+        UserModel user = userService.findByEmail(auth.getName());
+
+        if(bindingResult.hasErrors()) {
+
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("userPhotos", photoService.findByUser(user));
+            return "upload";
+        }
 
         PhotoModel photo = null;
 
@@ -52,8 +63,6 @@ public class PhotoController {
             photo.setCategory(categoryService.findById(catId).get());
             photo.setLicense(newPhoto.getLicense());
 
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserModel user = userService.findByEmail(auth.getName());
             photo.setUser(user);
 
             long id = photoService.save(photo);
@@ -70,8 +79,11 @@ public class PhotoController {
     }
 
     @PostMapping(value = "/modify", consumes = "multipart/form-data")
-    public String modifyPhoto(@ModelAttribute PhotoDtoIn photoDtoIn, RedirectAttributes redirectAttributes) {
+    public String modifyPhoto(@Valid @ModelAttribute PhotoDtoIn photoDtoIn, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
+        if(bindingResult.hasErrors()) {
+            return "upload";
+        }
         PhotoModel photo;
 
         try {

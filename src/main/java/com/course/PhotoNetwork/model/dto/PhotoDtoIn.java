@@ -1,22 +1,35 @@
 package com.course.PhotoNetwork.model.dto;
 
+import com.course.PhotoNetwork.controller.validation.NotEmptyMultipart;
 import com.course.PhotoNetwork.model.types.PhotoLicense;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class PhotoDtoIn {
 
     @JsonProperty
     private Long id;
+
     @JsonProperty
+    @NotBlank(message = "Укажите название фото")
     private String name;
+
     @JsonProperty
     private String description;
-    @JsonProperty(required = true)
-    private String category;
-    @JsonProperty(required = true)
-    private MultipartFile photofile;
+
     @JsonProperty
+    @NotNull(message = "Укажите категорию")
+    private String category;
+
+    @JsonProperty
+    @NotEmptyMultipart
+    private MultipartFile photofile;
+
+    @JsonProperty
+    @NotNull(message = "Укажите лицензию")
     private PhotoLicense license;
 
     public PhotoDtoIn() {}

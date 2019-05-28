@@ -5,7 +5,6 @@ import com.course.PhotoNetwork.model.CategoryModel;
 import com.course.PhotoNetwork.model.LikeModel;
 import com.course.PhotoNetwork.model.PhotoModel;
 import com.course.PhotoNetwork.model.UserModel;
-import com.course.PhotoNetwork.model.dto.PhotoDtoIn;
 import com.course.PhotoNetwork.model.dto.PhotoDtoOut;
 import com.course.PhotoNetwork.model.dto.PhotoDtoOutSmall;
 import com.course.PhotoNetwork.model.dto.UserDtoOut;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -189,11 +187,15 @@ public class PhotoService {
         else throw new IllegalArgumentException("Фотография недоступна");
     }
 
-    public List<PhotoDtoOut> findByUser(String email) {
-        return toDto(photoRepository.findByUser(userService.findByEmail(email)));
+    public List<PhotoDtoOut> findByUser(UserModel user) {
+        return toDto(photoRepository.findByUser(user));
     }
 
     public void saveAll(List<PhotoModel> photos) {
         photoRepository.saveAll(photos);
+    }
+
+    public List<PhotoDtoOut> findByUser(String email) {
+        return toDto(photoRepository.findByUser(userService.findByEmail(email)));
     }
 }
