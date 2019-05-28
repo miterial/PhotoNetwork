@@ -29,6 +29,7 @@
             <li sec:authorize="hasAuthority('USER')" class="nav-item"><a class="nav-link" th:href="@{/account}"><span class="glyphicon glyphicon-master"></span> Профиль</a></li>
 
             <li sec:authorize="hasAuthority('USER')" class="nav-item"><a class="nav-link" th:href="@{/logout}"><span class="glyphicon glyphicon-master"></span> Выйти</a></li>
+            <li sec:authorize="isAnonymous()" class="nav-item"><a class="nav-link" th:href="@{/}"><span class="glyphicon glyphicon-master"></span> Войти</a></li>
         </ul>
     </div>
 </nav>

@@ -1,12 +1,9 @@
 package com.course.PhotoNetwork.service;
 
 import com.course.PhotoNetwork.exceptions.ServiceIsInUseException;
-import com.course.PhotoNetwork.model.RoleModel;
 import com.course.PhotoNetwork.model.dto.ServiceDto;
 import com.course.PhotoNetwork.model.dto.UserServicesDto;
-import com.course.PhotoNetwork.repository.BookingRepository;
 import com.course.PhotoNetwork.repository.RoleRepository;
-import com.course.PhotoNetwork.repository.UserRepository;
 import com.course.PhotoNetwork.model.ServiceModel;
 import com.course.PhotoNetwork.model.UserModel;
 import com.course.PhotoNetwork.model.dto.ServiceDtoSmall;
@@ -73,8 +70,10 @@ public class ServicesService {
      * Delete service only if no master provides it
      * @param serviceName
      */
+    @Transactional
     public void deleteByName(String serviceName) {
-        if(!serviceRepository.findByNameAndMaster(serviceName, null).isEmpty())
+        List<ServiceModel> res = serviceRepository.findByNameAndMasterIsNotNull(serviceName);
+        if(!res.isEmpty())
             throw new ServiceIsInUseException();
 
         serviceRepository.deleteByName(serviceName);

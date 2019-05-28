@@ -1,8 +1,16 @@
 package com.course.PhotoNetwork.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotBlank;
+
 public class CategoryDto {
-    private String name;
+
+    @JsonProperty
     private Long id;
+    @JsonProperty
+    @NotBlank(message = "Название категории не может быть пустым")
+    private String name;
 
     public CategoryDto() {
     }

@@ -24,5 +24,5 @@ public interface ServiceRepository extends JpaRepository<ServiceModel, Long> {
 
     ServiceModel findByMasterAndName(UserModel master, String name);
 
-    List<ServiceModel> findByNameAndMaster(String serviceName, UserModel master);
+    List<ServiceModel> findByNameAndMasterIsNotNull(String serviceName);
 }
