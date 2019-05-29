@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Level;
@@ -39,15 +40,13 @@ public class ReviewController {
     }
 
     @PostMapping("/form")
-    public String addReviewForm(@ModelAttribute ReviewDtoIn dtoIn) {
+    public String addReviewForm(@ModelAttribute ReviewDtoIn dtoIn, Model model) {
         try {
             reviewService.addReview(dtoIn);
             return "redirect:/user/" + dtoIn.getMasterId();
-        } catch (IllegalAccessError ex) {
+        } catch (IllegalAccessError | Exception ex) {
             Logger.getLogger(ReviewController.class.getName()).log(Level.SEVERE, null, ex);
-            return "/error";
-        } catch (Exception ex) {
-            Logger.getLogger(ReviewController.class.getName()).log(Level.SEVERE, null, ex);
+            model.addAttribute("errorMessage","Не удалось оставить отзыв");
             return "/error";
         }
     }

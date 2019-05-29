@@ -177,7 +177,7 @@ public class BookingService {
     }
 
 
-    public BookingModel findByClientAndMasterAndStatus(UserModel author, UserModel master, BookingEnum status) {
+    public List<BookingModel> findByClientAndMasterAndStatus(UserModel author, UserModel master, BookingEnum status) {
         return bookingRepository.findByCustomerAndMasterAndStatus(author,master,status);
     }
 

@@ -31,7 +31,7 @@ public class ReviewService {
         UserModel author = userRepository.findById(dtoIn.getAuthorId()).orElseThrow(IllegalAccessError::new);
         UserModel master = userRepository.findById(dtoIn.getMasterId()).orElseThrow(IllegalAccessError::new);
 
-        if(bookingService.findByClientAndMasterAndStatus(author, master, BookingEnum.FINISHED) == null)
+        if(bookingService.findByClientAndMasterAndStatus(author, master, BookingEnum.FINISHED).isEmpty())
             throw new IllegalArgumentException("Данный пользователь не может добавлять комментарии исполнителю с id=" + dtoIn.getMasterId());
 
         bookingService.findById(dtoIn.getBookingId()).ifPresent(b->{

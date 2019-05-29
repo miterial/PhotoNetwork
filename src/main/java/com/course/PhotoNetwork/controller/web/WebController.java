@@ -141,22 +141,24 @@ public class WebController {
         try {
             UserModel user = userService.findById(userId).orElseThrow(IllegalArgumentException::new);
             model.addObject("user", userService.toDto(user));
-            if(userService.isMaster(user)) {
+            if (userService.isMaster(user)) {
                 model.addObject("services", servicesService.getDefaultServices());
                 model.addObject("reviews", reviewService.toDto(reviewService.findAll()));
             }
 
-            UserModel currentUser = userService.findByEmail(auth.getName());
-            model.addObject("subscribed", user.getSubscribers().contains(currentUser));
-            model.addObject("isCurrent", currentUser.getId() == userId);
-            model.addObject("canWriteReview",false);
+            if (auth != null){
+                UserModel currentUser = userService.findByEmail(auth.getName());
+                model.addObject("subscribed", user.getSubscribers().contains(currentUser));
+                model.addObject("isCurrent", currentUser.getId() == userId);
 
-            List<BookingModel> currentUserBookings = bookingService.findByClientAndStatus(currentUser, BookingEnum.FINISHED);
-            model.addObject("currentUserBookings", bookingService.toDto(currentUserBookings));
-            if(!currentUserBookings.isEmpty() && userId != currentUser.getId()){
-                model.addObject("newReview",new ReviewDtoIn());
-                model.addObject("curId",currentUser.getId());
+                List<BookingModel> currentUserBookings = bookingService.findByClientAndStatus(currentUser, BookingEnum.FINISHED);
+                model.addObject("currentUserBookings", bookingService.toDto(currentUserBookings));
+                if(!currentUserBookings.isEmpty() && userId != currentUser.getId()){
+                    model.addObject("newReview",new ReviewDtoIn());
+                    model.addObject("curId",currentUser.getId());
+                }
             }
+            model.addObject("canWriteReview",false);
 
         } catch (Exception ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
