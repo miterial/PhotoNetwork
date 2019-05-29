@@ -16,7 +16,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "user")
-public class UserModel {
+public class UserModel implements Comparable<UserModel> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
@@ -228,4 +228,8 @@ public class UserModel {
         this.avgRate = avgRate;
     }
 
+    @Override
+    public int compareTo(UserModel o) {
+        return Double.compare(o.getAvgRate(), getAvgRate());
+    }
 }

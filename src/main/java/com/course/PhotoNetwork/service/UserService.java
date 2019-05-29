@@ -7,6 +7,9 @@ import com.course.PhotoNetwork.model.dto.*;
 import com.course.PhotoNetwork.repository.RoleRepository;
 import com.course.PhotoNetwork.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+import java.awt.print.Book;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -152,6 +156,16 @@ public class UserService implements UserDetailsService {
                 usr.getAvatar(), usr.getAvgRate(), services, isMaster(usr), reviewService.toDto(usr.getReviews()), photoService.toDtoSmall(usr.getPhotos()));
     }
 
+    private List<UserDtoOut> toDto(List<UserModel> entities) throws ParseException {
+        List<UserDtoOut> res = new ArrayList<>();
+
+        for(UserModel u: entities) {
+            res.add(toDto(u));
+        }
+
+        return res;
+    }
+
     @Deprecated
     public void changeAvatar(MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -228,5 +242,41 @@ public class UserService implements UserDetailsService {
 
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    public Page<UserDtoOut> findPaginated(String service, PageRequest pageRequest) throws ParseException {
+
+        int pageSize = pageRequest.getPageSize();
+        int currentPage = pageRequest.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        List<UserModel> allPhotographers = userRepository.findAll();
+
+        allPhotographers.removeIf(u->u.getPhotos().isEmpty());
+
+        if(service != null && !service.isEmpty())
+            allPhotographers.removeIf(user -> {
+
+                if(user.getServices().isEmpty())
+                    return true;
+
+                for(ServiceModel s: user.getServices()) {
+                   if(s.getName().equals(service)) {
+                       return false;
+                   }
+                }
+               return true;
+            });
+
+        List<UserDtoOut> res;
+
+        if (allPhotographers.size() < startItem) {
+            res = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, allPhotographers.size());
+            res = toDto(allPhotographers.subList(startItem, toIndex));
+        }
+
+        return new PageImpl<>(res, PageRequest.of(currentPage, pageSize), allPhotographers.size());
     }
 }

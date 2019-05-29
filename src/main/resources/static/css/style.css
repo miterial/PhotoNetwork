@@ -4,6 +4,8 @@ input[name="price"] {
 }
 .avatar-photo {
     width: 40px;
+    height: 40px;
+    object-fit: cover;
 }
 .avatar-photo-big {
     width: 150px;

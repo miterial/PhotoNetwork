@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="partials/header :: header"/>
+<body>
+<nav th:replace="partials/header :: navigation"/>
+
+<main class="my-5">
+    <h1 class="text-center mb-2" th:text="${title}"></h1>
+    <div class="container">
+        <div class="mb-5" th:if="${#httpServletRequest.getParameter('service')}">
+            <a th:href="@{/photographers}"
+                th:text="${'Сбросить параметры фильтра: ' + #httpServletRequest.getParameter('service')}"></a>
+        </div>
+        <div class="row mb-5 align-items-center" th:each="user : ${userPage.content}">
+            <img class="rounded-circle img-fluid avatar-photo mr-3" th:src="${user.avatar}"/>
+            <a th:href="@{'/user/' + ${user.id}}" th:text="${'@' + user.username}"></a>
+            <span class="ml-3 badge badge-secondary" th:text="${user.avgRate}"></span>
+
+            <a th:if="${user.services.size() > 0}"
+               th:each="service : ${user.services}"
+               th:href="@{/photographers(service=${service.name})}"
+                th:text="${service.name}"
+                class="badge badge-success ml-2"></a>
+        </div>
+
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" th:if="${userPage.totalPages > 0}"
+                    th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link" th:href="@{/photographers(size=${userPage.size}, page=${pageNumber}, service=${#httpServletRequest.getParameter('service')})}"
+                       th:text=${pageNumber}
+                       th:appendClass="${pageNumber==userPage.number + 1} ? active">Previous</a>
+                </li>
+            </ul>
+        </nav>
+
+
+    </div>
+</main>
+
+</body>
+</html>

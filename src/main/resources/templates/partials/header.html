@@ -6,7 +6,7 @@
     <meta http-equiv="content-language" content="ru">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.min.css" rel="stylesheet">
-    <!--<link href="https://weloveiconfonts.com/api/?family=iconicfill" rel="stylesheet">-->
+    <link href="https://weloveiconfonts.com/api/?family=iconicfill" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
     <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet">
 </head>
@@ -21,6 +21,7 @@
         <ul class="nav navbar-nav">
             <li sec:authorize="hasAuthority('USER')" class="nav-item" ><a class="nav-link" th:href="@{/}"><span class="glyphicon glyphicon-home"></span> Главная</a></li>
             <li class="nav-item"><a class="nav-link" th:href="@{/popular}"><span class="glyphicon glyphicon-camera"></span>Популярное</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/photographers}"><span class="glyphicon glyphicon-cloud-upload"></span>Лучшие фотографы</a></li>
             <li sec:authorize="hasAuthority('USER')" class="nav-item"><a class="nav-link" th:href="@{/upload}"><span class="glyphicon glyphicon-cloud-upload"></span>Загрузить</a></li>
         </ul>
         <ul class="navbar-nav ml-auto">

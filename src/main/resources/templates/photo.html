@@ -9,10 +9,12 @@
         <div class="row">
             <div class="col-9 text-center">
                 <img id="photoFile" th:src="${photo.photofile}" class="img-thumbnail" alt="img" th:data-id="${photo.id}" th:data-user-id="${photo.user.id}">
-                <button sec:authorize="hasAuthority('USER')" th:unless="${isAuthor}" id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
-                <a th:if="${photo.license != T(com.course.PhotoNetwork.model.types.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success" target="_blank">Скачать</a>
-                <a th:if="${isAuthor || isAdmin}" th:href="@{'/upload?modify=' + ${photo.id}}" id="updatePhotoBtn" class="btn btn-primary">Изменить</a>
-                <button th:if="${isAuthor || isAdmin}" id="deletePhotoBtn" class="btn btn-danger">Удалить</button>
+                <div>
+                    <button sec:authorize="hasAuthority('USER')" th:unless="${isAuthor}" id="likeBtn" class="btn btn-danger" th:text="${liked ? 'dislike' : 'like'}"></button>
+                    <a th:if="${photo.license != T(com.course.PhotoNetwork.model.types.PhotoLicense).TRADITIONAL}" id="downloadBtn" class="btn btn-success" target="_blank">Скачать</a>
+                    <a th:if="${isAuthor || isAdmin}" th:href="@{'/upload?modify=' + ${photo.id}}" id="updatePhotoBtn" class="btn btn-primary">Изменить</a>
+                    <button th:if="${isAuthor || isAdmin}" id="deletePhotoBtn" class="btn btn-danger">Удалить</button>
+                </div>
             </div>
             <div class="col-3">
                 <a th:href="@{'/user/' + ${photo.user.id}}" th:text="${' @' + photo.user.username}"><img class="rounded-circle img-fluid avatar-photo" th:src="${photo.user.avatar}"/></a>
