@@ -59,8 +59,7 @@ public class UserModel {
     @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH,org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE})
     private Set<ServiceModel> services;
 
-    @OneToMany
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @ManyToMany
     private List<UserModel> subscribers;
 
     @OneToMany(mappedBy = "user")
