@@ -1,5 +1,12 @@
 $( document ).ready(function() {
 
+    /** формирование ссылки для скачивания */
+    var link = $("#photoFile").attr("src");
+    $("#downloadBtn").attr("href",link);
+    var name = $("#photoFile").attr("data-id");
+    var ext = $("#photoFile").attr("src").split(';')[0].split('/')[1];
+    $("#downloadBtn").attr("download",name+"."+ext);
+
     $("#likeBtn").on('click', function () {
         var action = $(this).text() === "like" ? "like" : "dislike";
         var id = $(this).parents(".row").find("img").data("id");
@@ -31,13 +38,6 @@ $( document ).ready(function() {
             }
         });
     });
-
-    /** формирование ссылки для скачивания */
-    var link = $("#photoFile").attr("src");
-    $("#downloadBtn").attr("href",link);
-    var name = $("#photoFile").attr("data-id");
-    var ext = $("#photoFile").attr("src").split(';')[0].split('/')[1];
-    $("#downloadBtn").attr("download",name+"."+ext);
 
     showSuccessToast = function(text) {
         'use strict';
