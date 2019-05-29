@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<BookingModel, Long> {
-    BookingModel findByMasterAndBookingDate(UserModel user, Date bookedDate);
+    List<BookingModel> findByMasterAndBookingDate(UserModel user, Date bookedDate);
 
     List<BookingModel> findByMaster(UserModel userModel);
 

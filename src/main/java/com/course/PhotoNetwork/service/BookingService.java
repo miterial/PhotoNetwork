@@ -30,7 +30,7 @@ public class BookingService {
     @Transactional
     public BookingModel bookService(UserModel customer, BookingServiceDtoIn bookingServiceDtoIn) throws ParseException {
 
-        if(findByMasterAndDate(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDatetime()))
+        if(!checkIfDateAvailable(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getDatetime()))
             throw new IllegalStateException("Дата уже зарезервирована");
 
         if(servicesService.findByMasterAndName(bookingServiceDtoIn.getMasterId(), bookingServiceDtoIn.getServiceId()) == null)
@@ -71,13 +71,20 @@ public class BookingService {
      * @return
      * @throws ParseException
      */
-    private boolean findByMasterAndDate(String masterId, String date) throws ParseException {
+    private boolean checkIfDateAvailable(String masterId, String date) throws ParseException {
         long id = Long.parseLong(masterId);
         Optional<UserModel> master = userService.findById(id);
 
         Date bookingDate = new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(date);
 
-        return bookingRepository.findByMasterAndBookingDate(master.get(), bookingDate) != null;
+        List<BookingModel> list = bookingRepository.findByMasterAndBookingDate(master.get(), bookingDate);
+
+        for(BookingModel b : list) {
+            if(b.getStatus() != BookingEnum.FINISHED && b.getStatus() != BookingEnum.DELETED)
+                return false;
+        }
+
+        return true;
 
     }
 
